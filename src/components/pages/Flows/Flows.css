@@ -1,0 +1,9 @@
+.app {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-body {
+  display: flex;
+  height: calc(100vh - 60px);
+}

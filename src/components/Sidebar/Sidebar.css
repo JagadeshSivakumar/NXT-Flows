@@ -1,0 +1,47 @@
+.sidebar {
+  padding: 45px 0 20px;
+  width: 240px;
+  background: #fafafa;
+  border-right: 1px solid #e5e7eb;
+  height: calc(100vh - 60px);
+  background-color: #f2f4f7;
+  font-family: sans-serif;
+}
+.sidebar-header h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+.flow-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin: 0 12px;
+  border-radius: 8px;
+}
+.flow-item:hover {
+  background: #f3f4f6;
+}
+.flow-item.active {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+.flow-icon {
+  width: 32px;
+  height: 32px;
+  background: #fef3c7;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.flow-item span {
+  font-size: 14px;
+  font-weight: 500;
+}

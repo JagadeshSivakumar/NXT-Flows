@@ -1,0 +1,223 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.branding-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: 200px;
+}
+
+.brand-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.brand-text img {
+  max-width: 100px;
+  height: auto;
+}
+
+.brand-flows {
+  color: #1f2937;
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #fff;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 28rem;
+  padding: 0 1rem;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  color: #111827;
+  background-color: #fff;
+  outline: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-input::placeholder {
+  color: #6b7280;
+}
+
+.form-input:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.forgot-password-container {
+  text-align: right;
+}
+
+.forgot-password-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.forgot-password-link:hover {
+  color: #2563eb;
+}
+
+.signin-button {
+  width: 100%;
+  background-color: #111827;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.signin-button:hover {
+  background-color: #1f2937;
+}
+
+.signin-button:active {
+  transform: translateY(1px);
+}
+
+.signup-container {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.signup-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.signup-link:hover {
+  color: #2563eb;
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 768px) {
+  .login-container {
+    flex-direction: row;
+  }
+  
+  .branding-section {
+    min-height: 100vh;
+  }
+  
+  .brand-wrapper {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+  
+  .brand-text {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  
+  .brand-flows {
+    margin-left: 0.75rem;
+    margin-top: 0;
+    font-size: 2rem;
+  }
+  
+  .brand-text img {
+    max-width: 120px;
+  }
+}
+
+/* Large screens (desktops) */
+@media (min-width: 1024px) {
+  .branding-section {
+    padding: 3rem;
+  }
+  
+  .form-section {
+    padding: 3rem;
+  }
+  
+  .brand-text {
+    font-size: 2.25rem;
+  }
+  
+  .brand-flows {
+    font-size: 2.25rem;
+  }
+}

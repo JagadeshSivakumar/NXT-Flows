@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./components/pages/Login/Login";
+import Flows from "./components/pages/Flows/Flows";
+import Exploreflow from "./components/pages/Exploreflow/Exploreflow";
+import Studio from "./components/pages/Studio/Studio";
+import Knowledge from "./components/pages/Knowledge/Knowledge";
+import Settings from "./components/pages/Settings/Settings";
+import FlowBuilder from "./components/pages/StudioNewBlank/StudioNewBlank";
+import "./App.css";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Exploreflow" element={<Exploreflow />} />
+        <Route path="/flows" element={<Flows />} />
+        <Route path="/studio" element={<Studio />} />
+       <Route path="/studio/:id" element={<FlowBuilder />} />
+
+        <Route path="/knowledge" element={<Knowledge />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Router>
   );
 }
 
