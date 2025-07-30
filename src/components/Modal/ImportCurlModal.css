@@ -1,0 +1,177 @@
+.curl-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* Make sure this is above other UI elements */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.curl-modal-container {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.curl-modal-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.curl-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.curl-modal-body {
+  padding: 1px 24px;
+}
+
+.curl-textarea-container {
+  position: relative;
+}
+
+.curl-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 16px;
+ border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+  line-height: 1.5;
+  color: #374151;
+  background-color: #f2f4f7;
+  resize: vertical;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.curl-textarea:focus {
+  border-color: grey;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.curl-textarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.curl-modal-footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f3f4f6;
+  background-color: #fafafa;
+}
+
+.curl-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+  min-width: 80px;
+}
+
+.curl-btn-cancel {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.curl-btn-cancel:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.curl-btn-save {
+  background: #3b82f6;
+  color: white;
+  border: 1px solid #3b82f6;
+}
+
+.curl-btn-save:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.curl-btn-save:active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .curl-modal-container {
+    width: 95%;
+    margin: 20px;
+    max-height: 85vh;
+  }
+  
+  .curl-modal-header {
+    padding: 20px 20px 12px;
+  }
+  
+  .curl-modal-body {
+    padding: 16px 20px;
+  }
+  
+  .curl-textarea {
+    min-height: 150px;
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .curl-modal-footer {
+    padding: 12px 20px 20px;
+    flex-direction: column-reverse;
+  }
+  
+  .curl-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Scrollbar styling for textarea */
+.curl-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.curl-textarea::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.curl-textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.curl-textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
