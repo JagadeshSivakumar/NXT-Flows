@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import AuthorizationModal from "../../Modal/AuthorizationModal";
 import NoteWidget from "../Notes/NoteWidget";
+import MiniPanelButton from "../../MiniPanelButton";
 import { FiCopy as CopyIcon, FiMaximize2 as MaximizeIcon, FiMinimize2 as MinimizeIcon } from 'react-icons/fi';
 import {
   ReactFlow,
@@ -1190,36 +1191,26 @@ const handleNoteIconClick = () => {
         </ReactFlow>
 
          <div className="flowSideMiniPanel">
-          <div className="miniPanelRow">
-            <FaPlusCircle size={16} />
-          </div>
-          <div className="miniPanelRow" onClick={handleNoteIconClick}>
-            <RiStickyNoteAddLine size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <FaArrowPointer size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <FaRegHand size={16} onClick={handleIconClick} />
-          </div>
-          <div className="miniPanelRow">
-            <RiExportLine size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <SlOrganization size={16} />
-          </div>
-          <div className="miniPanelRow" onClick={toggleSidebar}>
-            <LuMaximize
-              size={16}
-              style={{
-                transform: isSidebarCollapsed
-                  ? "rotate(0deg)"
-                  : isPartialExpand
-                  ? "rotate(90deg)"
-                  : "rotate(180deg)",
-              }}
-            />
-          </div>
+                   <MiniPanelButton icon={FaPlusCircle} label="Add Node" />
+         
+          
+          <MiniPanelButton icon={RiStickyNoteAddLine} label="Add Note" onClick={handleNoteIconClick} />
+          <MiniPanelButton icon={FaArrowPointer} label="Pointer Mode" />
+          <MiniPanelButton icon={FaRegHand} label="Hand Mode" onClick={handleIconClick} />
+          <MiniPanelButton icon={RiExportLine} label="Export Image" />
+         <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
+          <MiniPanelButton
+  icon={LuMaximize}
+  label="Maximize Canvas"
+  onClick={toggleSidebar}
+   rotation={
+    isSidebarCollapsed
+      ? 0
+      : isPartialExpand
+      ? 90
+      : 180
+  }
+/>
         </div>
 
         {showConditionMenu && (
