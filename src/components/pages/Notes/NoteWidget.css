@@ -1,0 +1,152 @@
+.note-widget {
+  background-color: hsl(var(--note-background));
+  border: 1px solid hsl(var(--note-border));
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: scale-in 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Active/focused state */
+.note-widget:focus-within {
+  border-color: hsl(210, 100%, 50%);
+  box-shadow: 0 0 0 1px hsl(210, 100%, 50%);
+}
+
+.note-widget.maximized {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 50;
+  width: auto !important;
+  height: auto !important;
+}
+
+.note-widget.resizing {
+  user-select: none;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background-color: hsl(var(--note-header-bg));
+  cursor: move;
+}
+
+.maximize-button, .close-button {
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.maximize-button:hover, .close-button:hover {
+  background-color: hsl(var(--accent));
+}
+
+.maximize-icon, .close-icon {
+  height: 0.75rem;
+  width: 0.75rem;
+  color: hsl(var(--note-brand));
+}
+
+.note-content {
+  padding: 0 1rem 0.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f4f7;
+}
+
+.note-textarea {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: hsl(var(--note-text));
+  font-size: 0.875rem;
+  line-height: 1.625;
+  padding: 0.5rem 0;
+  transition: border-color 0.2s ease;
+}
+
+.note-textarea:focus {
+  outline: none;
+}
+
+.note-textarea::placeholder {
+  color: hsl(var(--note-placeholder));
+}
+
+.note-brand {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: auto;
+  padding-bottom: 0.5rem;
+}
+
+.brand-text {
+  font-size: 0.75rem;
+  color: hsl(var(--note-brand));
+  font-weight: 500;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  cursor: se-resize;
+}
+
+.resize-icon-container {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
+}
+
+.resize-icon {
+  width: 12px;
+  height: 12px;
+  color: hsl(var(--note-border));
+  transition: color 0.15s ease-in-out;
+}
+
+.resize-handle:hover .resize-icon {
+  color: hsl(var(--note-brand));
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* CSS variables */
+:root {
+  --note-background: 0, 0%, 100%;
+  --note-border: 240, 5%, 90%;
+  --note-text: 240, 10%, 4%;
+  --note-placeholder: 240, 5%, 65%;
+  --note-brand: 240, 5%, 45%;
+  --note-header-bg: 240, 5%, 96%;
+  --accent: 240, 5%, 90%;
+}

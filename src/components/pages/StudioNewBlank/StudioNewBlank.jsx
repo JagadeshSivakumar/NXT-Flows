@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import AuthorizationModal from "../../Modal/AuthorizationModal";
-
+import NoteWidget from "../Notes/NoteWidget";
 import { FiCopy as CopyIcon, FiMaximize2 as MaximizeIcon, FiMinimize2 as MinimizeIcon } from 'react-icons/fi';
 import {
   ReactFlow,
@@ -1034,7 +1034,8 @@ const StudioNewBlank = ({
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
- 
+  const [showNoteWidget, setShowNoteWidget] = useState(false);
+  const [noteWidgetPosition, setNoteWidgetPosition] = useState({ x: 100, y: 100 });
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
   const [showFlowContainer, setShowFlowContainer] = useState(false);
@@ -1043,7 +1044,9 @@ const StudioNewBlank = ({
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
+const handleNoteIconClick = () => {
+    setShowNoteWidget(!showNoteWidget);
+  };
   const onNodeClick = useCallback(
     (_, node) => {
       if (!["Start", "End"].includes(node.data.label)) setSelectedNode(node);
@@ -1190,7 +1193,7 @@ const StudioNewBlank = ({
           <div className="miniPanelRow">
             <FaPlusCircle size={16} />
           </div>
-          <div className="miniPanelRow">
+          <div className="miniPanelRow" onClick={handleNoteIconClick}>
             <RiStickyNoteAddLine size={16} />
           </div>
           <div className="miniPanelRow">
@@ -1291,15 +1294,156 @@ const StudioNewBlank = ({
             />
           </>
         )}
+       
+{showNoteWidget && (
+  <NoteWidget 
+    onClose={() => setShowNoteWidget(false)}
+    position={{ x: 100, y: 100 }}
+    onPositionChange={() => {}}
+  />
+)}
       </div>
     </div>
   );
 };
+// const IfElseForm = ({ onAddNextStep }) => {
+//   const [conditions, setConditions] = useState([
+//     { type: 'if', condition: '' },
+//     { type: 'elif', condition: '' },
+//     { type: 'else', condition: '' }
+//   ]);
+
+//   // Add new condition
+//   const addCondition = (type) => {
+//     if (type === 'elif') {
+//       setConditions([...conditions, { type: 'elif', condition: '' }]);
+//     }
+//   };
+
+//   // Update condition
+//   const updateCondition = (index, value) => {
+//     const newConditions = [...conditions];
+//     newConditions[index].condition = value;
+//     setConditions(newConditions);
+//   };
+
+//   // Remove condition
+//   const removeCondition = (index) => {
+//     if (conditions.length > 1) {
+//       const newConditions = conditions.filter((_, i) => i !== index);
+//       setConditions(newConditions);
+//     }
+//   };
+
+//   return (
+//     <div className="ifelse-form">
+//       <div className="workflow-step">
+//         <div className="step-content">
+//           {conditions.map((cond, index) => (
+//             <React.Fragment key={index}>
+//               {cond.type === 'if' && (
+//                 <div className="condition-section">
+//                   <div className="condition-header">
+//                     <span className="condition-label">IF</span>
+//                     <button 
+//                       className="add-condition-btn"
+//                       onClick={() => addCondition('elif')}
+//                     >
+//                       + Add Condition
+//                     </button>
+//                   </div>
+//                   <input
+//                     type="text"
+//                     value={cond.condition}
+//                     onChange={(e) => updateCondition(index, e.target.value)}
+//                     placeholder="Add condition..."
+//                     className="condition-input"
+//                   />
+//                 </div>
+//               )}
+              
+//               {cond.type === 'elif' && (
+//                 <div className="elif-section">
+//                   <div className="elif-header">
+//                     <span className="elif-label">ELIF</span>
+//                     <button 
+//                       className="remove-condition-btn"
+//                       onClick={() => removeCondition(index)}
+//                     >
+//                       <IoMdClose size={14} />
+//                     </button>
+//                   </div>
+//                   <input
+//                     type="text"
+//                     value={cond.condition}
+//                     onChange={(e) => updateCondition(index, e.target.value)}
+//                     placeholder="Add condition..."
+//                     className="condition-input"
+//                   />
+//                 </div>
+//               )}
+              
+//               {cond.type === 'else' && (
+//                 <div className="else-section">
+//                   <div className="else-header">
+//                     <span className="else-label">ELSE</span>
+//                   </div>
+//                   <div className="else-description">
+//                     Used to define the logic that should be executed when the if condition is not met.
+//                   </div>
+//                 </div>
+//               )}
+//             </React.Fragment>
+//           ))}
+
+//           <div className="next-step-section">
+//             <div className="next-step-header">
+//               <span className="next-step-label">NEXT STEP</span>
+//             </div>
+//             <div className="next-step-description">
+//               Add the next step in this workflow
+//             </div>
+            
+//             <div className="workflow-branches">
+//               <div className="workflow-icon">
+//                 WF
+//               </div>
+//               <div className="branch-container">
+//                 {conditions.filter(c => c.type !== 'else').map((cond, index) => (
+//                   <div key={index} className="branch-item">
+//                     <div className="branch-label">{cond.type.toUpperCase()}</div>
+//                     <button 
+//                       className="select-step-btn"
+//                       onClick={onAddNextStep}
+//                     >
+//                       + SELECT NEXT STEP
+//                     </button>
+//                   </div>
+//                 ))}
+//                 <div className="branch-item">
+//                   <div className="branch-label">ELSE</div>
+//                   <button 
+//                     className="select-step-btn"
+//                     onClick={onAddNextStep}
+//                   >
+//                     + SELECT NEXT STEP
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
 
 
 
 const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
+  // const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const nodeTitle = selectedNode?.data?.label || "Node Settings";
   const [activeTab, setActiveTab] = useState('SETTINGS');
   const [responseData, setResponseData] = useState(null);
@@ -1383,6 +1527,15 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     }));
   };
 
+//    : isIfElseNode ? (
+//               <IfElseForm 
+//                 onAddNextStep={handleTextClick}
+//               />
+//             ) : isIterationNode ? (
+//   <WorkflowConfig 
+//     onAddNextStep={handleTextClick}
+//   />
+// )
   return (
     <div className="rightPanel">
       <div className="panelHeader">
@@ -1442,10 +1595,6 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     onAddNextStep={handleTextClick}
     requestData={requestData}
     updateRequestData={updateRequestData}
-  />
-) : isIterationNode ? (
-  <WorkflowConfig 
-    onAddNextStep={handleTextClick}
   />
 ) : (
             <>
