@@ -6,6 +6,7 @@ import {
   Layers,
   BookOpen,
   Plus,
+  
 } from "lucide-react";
 import { FaChevronDown } from "react-icons/fa";
 import "./Navbar.css";

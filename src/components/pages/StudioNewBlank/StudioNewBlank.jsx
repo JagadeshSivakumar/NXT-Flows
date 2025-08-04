@@ -53,6 +53,7 @@ import Navbar from "../../Navbar/Navbar";
 import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
+import MiniPanelButton from "../../MiniPanelButton";
 
 const menuItems = [
   { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
@@ -523,7 +524,8 @@ const updateFormData = (index, field, value) => {
       setUrlEncodedData(newData);
     }
   };
-
+const [isEditing, setIsEditing] = useState(false);
+const editorRef = useRef(null);
   return (
     <div className="http-request-container">
       <div className="scrollable-content">
@@ -720,16 +722,46 @@ const updateFormData = (index, field, value) => {
         </button>
       </div>
     </div>
-    <span className="json-editor-hint">
-      Write your prompt word here
-    </span>
+
     <div
-      className={`json-textarea ${isMaximized ? 'maximized' : ''}`}
-      value={jsonBody}
-      onChange={(e) => setJsonBody(e.target.value)}
+      ref={editorRef}
+      className={`json-editor-hint ${!jsonBody ? 'placeholder' : 'Write your Prompt here'}`}
+      contentEditable
+      suppressContentEditableWarning
+      onInput={(e) => {
+        const text = e.currentTarget.textContent || '';
+        setJsonBody(text);
+        if (text) {
+          e.currentTarget.classList.remove('placeholder');
+        } else {
+          e.currentTarget.classList.add('placeholder');
+        }
+      }}
+      onFocus={(e) => {
+        if (e.currentTarget.textContent === 'Write your prompt word here') {
+          e.currentTarget.textContent = '';
+          e.currentTarget.classList.remove('placeholder');
+          setJsonBody('');
+        }
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.textContent.trim()) {
+          e.currentTarget.textContent = 'Write your prompt word here';
+          e.currentTarget.classList.add('placeholder');
+          setJsonBody('');
+        }
+      }}
+      onKeyDown={(e) => {
+        // Prevent Enter key from creating new lines if needed
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+        }
+      }}
     />
   </div>
 )}
+
+
 {bodyType === 'raw' && (
   <div className="raw-editor-container">
     <div className="raw-editor-header">
@@ -1100,36 +1132,26 @@ const StudioNewBlank = ({
         </ReactFlow>
 
         <div className="flowSideMiniPanel">
-          <div className="miniPanelRow">
-            <FaPlusCircle size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <RiStickyNoteAddLine size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <FaArrowPointer size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <FaRegHand size={16} onClick={handleIconClick} />
-          </div>
-          <div className="miniPanelRow">
-            <RiExportLine size={16} />
-          </div>
-          <div className="miniPanelRow">
-            <SlOrganization size={16} />
-          </div>
-          <div className="miniPanelRow" onClick={toggleSidebar}>
-            <LuMaximize
-              size={16}
-              style={{
-                transform: isSidebarCollapsed
-                  ? "rotate(0deg)"
-                  : isPartialExpand
-                  ? "rotate(90deg)"
-                  : "rotate(180deg)",
-              }}
-            />
-          </div>
+          <MiniPanelButton icon={FaPlusCircle} label="Add Node" />
+         
+          
+          <MiniPanelButton icon={RiStickyNoteAddLine} label="Add Note" />
+          <MiniPanelButton icon={FaArrowPointer} label="Pointer Mode" />
+          <MiniPanelButton icon={FaRegHand} label="Hand Mode" onClick={handleIconClick} />
+          <MiniPanelButton icon={RiExportLine} label="Export Image" />
+         <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
+          <MiniPanelButton
+  icon={LuMaximize}
+  label="Maximize Canvas"
+  onClick={toggleSidebar}
+   rotation={
+    isSidebarCollapsed
+      ? 0
+      : isPartialExpand
+      ? 90
+      : 180
+  }
+/>
         </div>
 
         {showConditionMenu && (
