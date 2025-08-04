@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import AuthorizationModal from "../../Modal/AuthorizationModal";
+
 import { FiCopy as CopyIcon, FiMaximize2 as MaximizeIcon, FiMinimize2 as MinimizeIcon } from 'react-icons/fi';
 import {
   ReactFlow,
@@ -320,35 +321,119 @@ const ParamsTable = ({ params, onParamsChange }) => {
 
 
 
-const WorkflowConfig = ({onAddNextStep }) => {
+const WorkflowConfig = ({ onAddNextStep }) => {
   const [parallelMode, setParallelMode] = useState(true);
   const [maxParallelism, setMaxParallelism] = useState(10);
   const [errorMethod, setErrorMethod] = useState('Terminated');
- const [maximumParallelsim, setMaximumParallelsim] = useState(100);
+  const [maximumParallelsim, setMaximumParallelsim] = useState(100);
+  
+  // Input section state
+  const [showInputSearch, setShowInputSearch] = useState(false);
+  const [inputVariable, setInputVariable] = useState('');
+  
+  // Output section state
+  const [showOutputSearch, setShowOutputSearch] = useState(false);
+  const [outputVariable, setOutputVariable] = useState('');
+const handleInputClick = () => {
+  setShowOutputSearch(false);
+  setShowInputSearch(!showInputSearch);
+};
+
+const handleOutputClick = () => {
+  setShowInputSearch(false);
+  setShowOutputSearch(!showOutputSearch);
+};
+const dropdownRef = useRef();
+
+useEffect(() => {
+  const closeDropdowns = (e) => {
+    if (!dropdownRef.current?.contains(e.target)) {
+      setShowInputSearch(false);
+      setShowOutputSearch(false);
+    }
+  };
+  document.addEventListener('mousedown', closeDropdowns);
+  return () => document.removeEventListener('mousedown', closeDropdowns);
+}, []);
   return (
-    <div className="workflow-config">
+<div className="workflow-config">
       {/* INPUT Section */}
-      <div className="config-section">
+      <div className="config-section" style={{ position: 'relative' }}>
         <div className="section-header">
           <span className="section-title">INPUT <span className="required">*</span></span>
           <span className="array-label">Array</span>
         </div>
-        <div className="input-field">
-          <span className="x-icon"></span>
+        
+        {/* Main input field */}
+        <div className="input-field"  ref={dropdownRef} onClick={handleInputClick}>
           <span className="placeholder-text">Set variable</span>
         </div>
+        
+        {/* Search dropdown with absolute positioning */}
+        {showInputSearch && (
+          <div className="search-dropdown" style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            zIndex: 100,
+            width: '100%'
+          }}>
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Search variable"
+                value={inputVariable}
+                onChange={(e) => setInputVariable(e.target.value)}
+                className="search-input"
+                autoFocus
+              />
+              <CiSearch className="search-icon" size={16} />
+            </div>
+            <div className="no-variable-message">
+              {!inputVariable && "NO VARIABLE"}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* OUTPUT VARIABLES Section */}
-      <div className="config-section">
+      <div className="config-section" style={{ position: 'relative' }}>
         <div className="section-header">
           <span className="section-title">OUTPUT VARIABLES <span className="required">*</span></span>
           <span className="array-label">Array</span>
         </div>
-        <div className="input-field">
+        
+        {/* Main output field */}
+        <div className="input-field"  ref={dropdownRef} onClick={handleOutputClick}>
           <span className="x-icon"></span>
           <span className="placeholder-text">Set variable</span>
         </div>
+        
+        {/* Search dropdown for output */}
+        {showOutputSearch && (
+          <div className="search-dropdown" style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            zIndex: 100,
+            width: '100%'
+          }}>
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Search variable"
+                value={outputVariable}
+                onChange={(e) => setOutputVariable(e.target.value)}
+                className="search-input"
+                autoFocus
+              />
+              <CiSearch className="search-icon" size={16} />
+            </div>
+            <div className="no-variable-message">
+              {!outputVariable && "NO VARIABLE"}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* PARALLEL MODE Section */}
@@ -389,24 +474,22 @@ const WorkflowConfig = ({onAddNextStep }) => {
             onChange={(e) => setMaxParallelism(parseInt(e.target.value))}
             className="slider"
           />
-              <div className="setting-row">
-             
-              <div className="sliderparallel-group">
-                <input
-                  type="range"
-                  min="0"
-                  max="1000"
-                  value={maximumParallelsim}
-                  onChange={(e) => setMaximumParallelsim(parseInt(e.target.value))}
-                  className="interval-sliderr"
-                />
-                <div className="value-display">
-                  <span className="value-number">{maximumParallelsim}</span>
-                  <span className="unit-text">ms</span>
-                </div>
+          <div className="setting-row">
+            <div className="sliderparallel-group">
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                value={maximumParallelsim}
+                onChange={(e) => setMaximumParallelsim(parseInt(e.target.value))}
+                className="interval-sliderr"
+              />
+              <div className="value-display">
+                <span className="value-number">{maximumParallelsim}</span>
+                <span className="unit-text">ms</span>
               </div>
             </div>
-
+          </div>
         </div>
       </div>
 
@@ -415,19 +498,21 @@ const WorkflowConfig = ({onAddNextStep }) => {
         <div className="section-header">
           <span className="section-title">ERROR RESPONSE METHOD</span>
         </div>
-        <div className="dropdownn-wrapper"><select
-          value={errorMethod}
-          onChange={(e) => setErrorMethod(e.target.value)}
-          className="dropdownn-select"
-        >
-          <option className="dropdown-item" value="Terminated">Terminated</option>
-          <option className="dropdown-item" value="Continue">Continue</option>
-          <option className="dropdown-item" value="Retry">Retry</option>
-        </select> </div>
+        <div className="dropdownn-wrapper">
+          <select
+            value={errorMethod}
+            onChange={(e) => setErrorMethod(e.target.value)}
+            className="dropdownn-select"
+          >
+            <option className="dropdown-item" value="Terminated">Terminated</option>
+            <option className="dropdown-item" value="Continue">Continue</option>
+            <option className="dropdown-item" value="Retry">Retry</option>
+          </select> 
+        </div>
       </div>
       <hr className="section-divider" />
 
-<NextStepSection onAddNextStep={onAddNextStep} />
+      <NextStepSection onAddNextStep={onAddNextStep} />
     </div>
   );
 };
@@ -730,6 +815,8 @@ const updateFormData = (index, field, value) => {
     />
   </div>
 )}
+
+
 {bodyType === 'raw' && (
   <div className="raw-editor-container">
     <div className="raw-editor-header">
@@ -1099,7 +1186,7 @@ const StudioNewBlank = ({
           <Controls />
         </ReactFlow>
 
-        <div className="flowSideMiniPanel">
+         <div className="flowSideMiniPanel">
           <div className="miniPanelRow">
             <FaPlusCircle size={16} />
           </div>

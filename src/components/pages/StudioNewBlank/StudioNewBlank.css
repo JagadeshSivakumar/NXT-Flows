@@ -2418,3 +2418,53 @@ margin-left: 5px;
   border: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+
+/* Search dropdown styling */
+.search-dropdown {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 8px;
+  margin-top: 4px;
+  background-color: white;
+}
+
+
+
+.search-input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.search-input {
+  width: 100%;
+   padding: 8px 32px 8px 30px;  /* Right padding to make room for icon */
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none; /* So clicks pass through to input */
+}
+.no-variable-message {
+  color: #999;
+font-size: .75rem;
+font-weight: 500;
+  text-align: center;
+  padding: 4px;
+}
+
+.array-label {
+ 
+  font-size: 0.8em;
+  margin-left: px;
+
+}
