@@ -317,6 +317,147 @@ const ParamsTable = ({ params, onParamsChange }) => {
     </div>
   );
 };
+
+
+
+const WorkflowConfig = ({onAddNextStep }) => {
+  const [parallelMode, setParallelMode] = useState(true);
+  const [maxParallelism, setMaxParallelism] = useState(10);
+  const [errorMethod, setErrorMethod] = useState('Terminated');
+ const [maximumParallelsim, setMaximumParallelsim] = useState(100);
+  return (
+    <div className="workflow-config">
+      {/* INPUT Section */}
+      <div className="config-section">
+        <div className="section-header">
+          <span className="section-title">INPUT <span className="required">*</span></span>
+          <span className="array-label">Array</span>
+        </div>
+        <div className="input-field">
+          <span className="x-icon"></span>
+          <span className="placeholder-text">Set variable</span>
+        </div>
+      </div>
+
+      {/* OUTPUT VARIABLES Section */}
+      <div className="config-section">
+        <div className="section-header">
+          <span className="section-title">OUTPUT VARIABLES <span className="required">*</span></span>
+          <span className="array-label">Array</span>
+        </div>
+        <div className="input-field">
+          <span className="x-icon"></span>
+          <span className="placeholder-text">Set variable</span>
+        </div>
+      </div>
+
+      {/* PARALLEL MODE Section */}
+      <div className="config-section">
+        <div className="section-header">
+          <span className="section-title">PARALLEL MODE</span>
+          <span className="info-iconn">ⓘ</span>
+          <div className="toggle-switch">
+            <input
+              type="checkbox"
+              id="parallel-toggle"
+              checked={parallelMode}
+              onChange={(e) => setParallelMode(e.target.checked)}
+            />
+            <label htmlFor="parallel-toggle" className="toggle-label"></label>
+          </div>
+        </div>
+      </div>
+
+      {/* MAXIMUM PARALLELISM Section */}
+      <div className="config-section">
+        <div className="section-header">
+          <span className="section-title">MAXIMUM PARALLELISM</span>
+          {/* <span className="infoo-icon">ⓘ</span> */}
+        </div>
+        <div className="parallelism-controls">
+          <input
+            type="number"
+            value={maxParallelism}
+            onChange={(e) => setMaxParallelism(parseInt(e.target.value))}
+            className="number-input"
+          />
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={maxParallelism}
+            onChange={(e) => setMaxParallelism(parseInt(e.target.value))}
+            className="slider"
+          />
+              <div className="setting-row">
+             
+              <div className="sliderparallel-group">
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value={maximumParallelsim}
+                  onChange={(e) => setMaximumParallelsim(parseInt(e.target.value))}
+                  className="interval-sliderr"
+                />
+                <div className="value-display">
+                  <span className="value-number">{maximumParallelsim}</span>
+                  <span className="unit-text">ms</span>
+                </div>
+              </div>
+            </div>
+
+        </div>
+      </div>
+
+      {/* ERROR RESPONSE METHOD Section */}
+      <div className="config-section">
+        <div className="section-header">
+          <span className="section-title">ERROR RESPONSE METHOD</span>
+        </div>
+        <div className="dropdownn-wrapper"><select
+          value={errorMethod}
+          onChange={(e) => setErrorMethod(e.target.value)}
+          className="dropdownn-select"
+        >
+          <option className="dropdown-item" value="Terminated">Terminated</option>
+          <option className="dropdown-item" value="Continue">Continue</option>
+          <option className="dropdown-item" value="Retry">Retry</option>
+        </select> </div>
+      </div>
+      <hr className="section-divider" />
+
+<NextStepSection onAddNextStep={onAddNextStep} />
+    </div>
+  );
+};
+const NextStepSection = ({ onAddNextStep }) => {
+  return (
+    <div className="next-step-section">
+      <h3 className="next-step-title">NEXT STEP</h3>
+      <p className="next-step-description">Add the next step in this workflow</p>
+      
+      <div className="add-step-row">
+        <div className="workflow-icon">
+          WF
+        </div>
+        <button className="add-btn">
+          <Plus size={16} />
+        </button>
+        <span 
+          className="add-step-text" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddNextStep(e);
+          }}
+        >
+          SELECT NEXT STEP
+        </span>
+      </div>
+    </div>
+  );
+}
+
 const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   const { method, url, headers, params } = requestData;
   const setMethod = (value) => updateRequestData('method', value);
@@ -756,23 +897,7 @@ const updateFormData = (index, field, value) => {
             </div>
           </div>
 
-          <div className="next-step-section">
-            <h3 className="next-step-title">NEXT STEP</h3>
-            <p className="next-step-description">Add the next step in this workflow</p>
-            
-            <div className="add-step-row">
-              <div className="workflow-icon">
-                WF
-              </div>
-              <button className="add-btn">
-                <Plus size={16} />
-              </button>
-              <span className="add-step-text" onClick={(e) => {
-          e.stopPropagation();
-          onAddNextStep(e);  // Call the handler here
-        }}>SELECT NEXT STEP</span>
-            </div>
-          </div>
+<NextStepSection onAddNextStep={onAddNextStep} />
         </div>
         
       </div>
@@ -1014,7 +1139,7 @@ const StudioNewBlank = ({
               style={{
                 position: "fixed",
                 left: menuPosition.x + 40,
-                top: menuPosition.y + 40,
+                top: menuPosition.y - 25,
                 zIndex: 1000,
               }}
             >
@@ -1093,6 +1218,9 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const [responseData, setResponseData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  const isIterationNode = selectedNode?.data?.label === "Iteration";
+
   const [requestData, setRequestData] = useState({
     method: 'GET',
     url: '',
@@ -1222,13 +1350,17 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
       <div className="detail-content-renamed">
         {/* SETTINGS TAB CONTENT */}
        {activeTab === 'SETTINGS' && (
-            isHttpRequestNode ? (
-              <HttpRequestForm 
-                onAddNextStep={handleTextClick}
-                requestData={requestData}
-                updateRequestData={updateRequestData}
-              />
-            ) : (
+          isHttpRequestNode ? (
+  <HttpRequestForm 
+    onAddNextStep={handleTextClick}
+    requestData={requestData}
+    updateRequestData={updateRequestData}
+  />
+) : isIterationNode ? (
+  <WorkflowConfig 
+    onAddNextStep={handleTextClick}
+  />
+) : (
             <>
               <label className="label-renamed">Name</label>
               <input
