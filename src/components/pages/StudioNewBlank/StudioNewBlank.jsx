@@ -56,6 +56,7 @@ import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
 
+
 const menuItems = [
   { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
   { title: "Requests", icon: MdOutlineCode, isActive: false },
@@ -610,6 +611,21 @@ const updateFormData = (index, field, value) => {
     }
   };
 
+
+const [isEditing, setIsEditing] = useState(false);
+const editorRef = useRef(null);
+
+
+const [isRawEditing, setIsRawEditing] = useState(false);
+const rawEditorRef = useRef(null);
+
+const [isExpanded, setIsExpanded] = useState(false);
+
+const toggleExpand = () => {
+  setIsExpanded(prev => !prev);
+};
+
+
   return (
     <div className="http-request-container">
       <div className="scrollable-content">
@@ -785,8 +801,10 @@ const updateFormData = (index, field, value) => {
     </div>
   </div>
 )}
+
+
 {bodyType === 'JSON' && (
-  <div className="json-editor-container">
+  <div className={`json-editor-container ${isMaximized ? 'maximized' : ''}`}>
     <div className="json-editor-header">
       <div className="json-editor-label">JSON</div>
       <div className="json-editor-actions">
@@ -806,45 +824,96 @@ const updateFormData = (index, field, value) => {
         </button>
       </div>
     </div>
-    <span className="json-editor-hint">
-      Write your prompt word here
-    </span>
+
     <div
-      className={`json-textarea ${isMaximized ? 'maximized' : ''}`}
-      value={jsonBody}
-      onChange={(e) => setJsonBody(e.target.value)}
+      ref={editorRef}
+      className={`json-editor-hint ${!jsonBody ? 'placeholder' : ''}`}
+      contentEditable
+      suppressContentEditableWarning
+      onInput={(e) => {
+        const text = e.currentTarget.textContent || '';
+        setJsonBody(text);
+        e.currentTarget.classList.toggle('placeholder', !text);
+      }}
+      onFocus={(e) => {
+        if (e.currentTarget.textContent === 'Write your prompt word here') {
+          e.currentTarget.textContent = '';
+          e.currentTarget.classList.remove('placeholder');
+          setJsonBody('');
+        }
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.textContent.trim()) {
+          e.currentTarget.textContent = 'Write your prompt word here';
+          e.currentTarget.classList.add('placeholder');
+          setJsonBody('');
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) e.preventDefault();
+      }}
     />
   </div>
 )}
 
 
+
 {bodyType === 'raw' && (
-  <div className="raw-editor-container">
+  <div className={`raw-editor-container ${isMaximized ? 'maximized' : ''}`}>
     <div className="raw-editor-header">
       <div className="raw-editor-label">RAW</div>
       <div className="raw-editor-actions">
-        <button 
-          className="raw-action-btn" 
+        <button
+          className="raw-action-btn"
           onClick={() => navigator.clipboard.writeText(rawBody)}
           title="Copy RAW"
         >
           <CopyIcon size={16} />
         </button>
-        <button 
-          className="raw-action-btn" 
+        <button
+          className="raw-action-btn"
           onClick={() => setIsMaximized(!isMaximized)}
-          title={isMaximized ? "Minimize" : "Maximize"}
+          title={isMaximized ? 'Minimize' : 'Maximize'}
         >
           {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
         </button>
       </div>
     </div>
-    <span className="raw-editor-hint">
-      Write your prompt word here
-    </span>
-    
+
+    <div
+      ref={rawEditorRef}
+      className={`raw-editor-hint ${!rawBody ? 'placeholder' : ''}`}
+      contentEditable
+      suppressContentEditableWarning
+      onInput={(e) => {
+        const text = e.currentTarget.textContent || '';
+        setRawBody(text);
+        e.currentTarget.classList.toggle('placeholder', !text);
+      }}
+      onFocus={(e) => {
+        if (e.currentTarget.textContent === 'Write your prompt word here') {
+          e.currentTarget.textContent = '';
+          e.currentTarget.classList.remove('placeholder');
+          setRawBody('');
+        }
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.textContent.trim()) {
+          e.currentTarget.textContent = 'Write your prompt word here';
+          e.currentTarget.classList.add('placeholder');
+          setRawBody('');
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+        }
+      }}
+    />
   </div>
 )}
+
+
 {bodyType === 'binary' && (
   <div className="binary-editor-container">
     <div className="binary-editor-header">
