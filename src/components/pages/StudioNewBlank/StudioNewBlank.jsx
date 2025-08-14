@@ -484,7 +484,7 @@ useEffect(() => {
                 max="1000"
                 value={maximumParallelsim}
                 onChange={(e) => setMaximumParallelsim(parseInt(e.target.value))}
-                className="interval-sliderr"
+                className="interval-slider"
               />
               <div className="value-display">
                 <span className="value-number">{maximumParallelsim}</span>
@@ -992,21 +992,21 @@ const toggleExpand = () => {
                 checked={retryOnFailure}
                 onChange={(e) => setRetryOnFailure(e.target.checked)}
               />
-              <span className="slider"></span>
+              <span className="sliderr"></span>
             </label>
           </div>
 
           <div className="retry-settings">
             <div className="setting-row">
               <label className="setting-label">MAX RETRIES</label>
-              <div className="slider-group">
+              <div className="sliderr-group">
                 <input
                   type="range"
                   min="0"
                   max="10"
                   value={maxRetries}
                   onChange={(e) => setMaxRetries(parseInt(e.target.value))}
-                  className="interval-slider"
+                  className="interval-sliderr"
                 />
                 <div className="value-display">
                   <span className="value-number">{maxRetries}</span>
@@ -1017,14 +1017,14 @@ const toggleExpand = () => {
 
             <div className="setting-row">
               <label className="setting-label">RETRY INTERVAL</label>
-              <div className="slider-group">
+              <div className="sliderr-group">
                 <input
                   type="range"
                   min="0"
                   max="1000"
                   value={retryInterval}
                   onChange={(e) => setRetryInterval(parseInt(e.target.value))}
-                  className="interval-slider"
+                  className="interval-sliderr"
                 />
                 <div className="value-display">
                   <span className="value-number">{retryInterval}</span>
@@ -1367,241 +1367,9 @@ const handleNoteIconClick = () => {
     </div>
   );
 };
-// const IfElseForm = ({ onAddNextStep }) => {
-//   const [conditions, setConditions] = useState([
-//     { type: 'if', condition: '' },
-//     { type: 'elif', condition: '' },
-//     { type: 'else', condition: '' }
-//   ]);
-
-//   // Add new condition
-//   const addCondition = (type) => {
-//     if (type === 'elif') {
-//       setConditions([...conditions, { type: 'elif', condition: '' }]);
-//     }
-//   };
-
-//   // Update condition
-//   const updateCondition = (index, value) => {
-//     const newConditions = [...conditions];
-//     newConditions[index].condition = value;
-//     setConditions(newConditions);
-//   };
-
-//   // Remove condition
-//   const removeCondition = (index) => {
-//     if (conditions.length > 1) {
-//       const newConditions = conditions.filter((_, i) => i !== index);
-//       setConditions(newConditions);
-//     }
-//   };
-
-//   return (
-//     <div className="ifelse-form">
-//       <div className="workflow-step">
-//         <div className="step-content">
-//           {conditions.map((cond, index) => (
-//             <React.Fragment key={index}>
-//               {cond.type === 'if' && (
-//                 <div className="condition-section">
-//                   <div className="condition-header">
-//                     <span className="condition-label">IF</span>
-//                     <button 
-//                       className="add-condition-btn"
-//                       onClick={() => addCondition('elif')}
-//                     >
-//                       + Add Condition
-//                     </button>
-//                   </div>
-//                   <input
-//                     type="text"
-//                     value={cond.condition}
-//                     onChange={(e) => updateCondition(index, e.target.value)}
-//                     placeholder="Add condition..."
-//                     className="condition-input"
-//                   />
-//                 </div>
-//               )}
-              
-//               {cond.type === 'elif' && (
-//                 <div className="elif-section">
-//                   <div className="elif-header">
-//                     <span className="elif-label">ELIF</span>
-//                     <button 
-//                       className="remove-condition-btn"
-//                       onClick={() => removeCondition(index)}
-//                     >
-//                       <IoMdClose size={14} />
-//                     </button>
-//                   </div>
-//                   <input
-//                     type="text"
-//                     value={cond.condition}
-//                     onChange={(e) => updateCondition(index, e.target.value)}
-//                     placeholder="Add condition..."
-//                     className="condition-input"
-//                   />
-//                 </div>
-//               )}
-              
-//               {cond.type === 'else' && (
-//                 <div className="else-section">
-//                   <div className="else-header">
-//                     <span className="else-label">ELSE</span>
-//                   </div>
-//                   <div className="else-description">
-//                     Used to define the logic that should be executed when the if condition is not met.
-//                   </div>
-//                 </div>
-//               )}
-//             </React.Fragment>
-//           ))}
-
-//           <div className="next-step-section">
-//             <div className="next-step-header">
-//               <span className="next-step-label">NEXT STEP</span>
-//             </div>
-//             <div className="next-step-description">
-//               Add the next step in this workflow
-//             </div>
-            
-//             <div className="workflow-branches">
-//               <div className="workflow-icon">
-//                 WF
-//               </div>
-//               <div className="branch-container">
-//                 {conditions.filter(c => c.type !== 'else').map((cond, index) => (
-//                   <div key={index} className="branch-item">
-//                     <div className="branch-label">{cond.type.toUpperCase()}</div>
-//                     <button 
-//                       className="select-step-btn"
-//                       onClick={onAddNextStep}
-//                     >
-//                       + SELECT NEXT STEP
-//                     </button>
-//                   </div>
-//                 ))}
-//                 <div className="branch-item">
-//                   <div className="branch-label">ELSE</div>
-//                   <button 
-//                     className="select-step-btn"
-//                     onClick={onAddNextStep}
-//                   >
-//                     + SELECT NEXT STEP
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
 
 
 
-
-const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
-  const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
-   const isIfElseNode = selectedNode?.data?.label === "If/Else";
-  const nodeTitle = selectedNode?.data?.label || "Node Settings";
-  const [activeTab, setActiveTab] = useState('SETTINGS');
-  const [responseData, setResponseData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
-  const isIterationNode = selectedNode?.data?.label === "Iteration";
-// const isIfElseNode = selectedNode?.data?.label === "If/Else";
-  const [requestData, setRequestData] = useState({
-    method: 'GET',
-    url: '',
-    headers: [{ key: '', value: '' }],
-    params: [{ key: '', value: '' }]
-  });
-
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        console.log('Copied to clipboard');
-      })
-      .catch((err) => {
-        console.error('Failed to copy: ', err);
-      });
-  };
-
-  const handleRunRequest = async () => {
-    // if (!requestData.url) {
-    //   setError('Please enter a URL');
-    //   return;
-    // }
-
-    setIsLoading(true);
-    //setError(null);
-    
-    try {
-      const headersObj = {};
-      requestData.headers.forEach(header => {
-        if (header.key) headersObj[header.key] = header.value;
-      });
-
-      let urlWithParams = requestData.url;
-      const paramsObj = {};
-      requestData.params.forEach(param => {
-        if (param.key) paramsObj[param.key] = param.value;
-      });
-
-      if (requestData.method === 'GET' && Object.keys(paramsObj).length > 0) {
-        const queryString = new URLSearchParams(paramsObj).toString();
-        urlWithParams = `${requestData.url}?${queryString}`;
-      }
-
-      const response = await fetch(urlWithParams, {
-        method: requestData.method,
-        headers: headersObj,
-      });
-
-      const data = await response.json();
-      setResponseData({
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-        data,
-        timestamp: new Date().toISOString()
-      });
-      setActiveTab('LAST RUN');
-    } catch (err) {
-      
-      setResponseData({
-       
-        timestamp: new Date().toISOString()
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
- 
-  const updateRequestData = (field, value) => {
-    setRequestData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
- 
-
-
-
-
-//    : isIfElseNode ? (
-//               <IfElseForm 
-//                 onAddNextStep={handleTextClick}
-//               />
-//             ) : isIterationNode ? (
-//   <WorkflowConfig 
-//     onAddNextStep={handleTextClick}
-//   />
-// )
 const IfElseForm = ({ onAddNextStep }) => {
    const [showVariableDropdown, setShowVariableDropdown] = useState(false)
    const handleAddConditionClick = () => {
@@ -1743,6 +1511,100 @@ const IfElseForm = ({ onAddNextStep }) => {
 
 
 
+const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
+  const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
+   const isIfElseNode = selectedNode?.data?.label === "If/Else";
+  const nodeTitle = selectedNode?.data?.label || "Node Settings";
+  const [activeTab, setActiveTab] = useState('SETTINGS');
+  const [responseData, setResponseData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const isIterationNode = selectedNode?.data?.label === "Iteration";
+// const isIfElseNode = selectedNode?.data?.label === "If/Else";
+  const [requestData, setRequestData] = useState({
+    method: 'GET',
+    url: '',
+    headers: [{ key: '', value: '' }],
+    params: [{ key: '', value: '' }]
+  });
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        console.log('Copied to clipboard');
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
+  };
+
+  const handleRunRequest = async () => {
+    // if (!requestData.url) {
+    //   setError('Please enter a URL');
+    //   return;
+    // }
+
+    setIsLoading(true);
+    //setError(null);
+    
+    try {
+      const headersObj = {};
+      requestData.headers.forEach(header => {
+        if (header.key) headersObj[header.key] = header.value;
+      });
+
+      let urlWithParams = requestData.url;
+      const paramsObj = {};
+      requestData.params.forEach(param => {
+        if (param.key) paramsObj[param.key] = param.value;
+      });
+
+      if (requestData.method === 'GET' && Object.keys(paramsObj).length > 0) {
+        const queryString = new URLSearchParams(paramsObj).toString();
+        urlWithParams = `${requestData.url}?${queryString}`;
+      }
+
+      const response = await fetch(urlWithParams, {
+        method: requestData.method,
+        headers: headersObj,
+      });
+
+      const data = await response.json();
+      setResponseData({
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        data,
+        timestamp: new Date().toISOString()
+      });
+      setActiveTab('LAST RUN');
+    } catch (err) {
+      
+      setResponseData({
+       
+        timestamp: new Date().toISOString()
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+ 
+  const updateRequestData = (field, value) => {
+    setRequestData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+ 
+
+
+
+
+
+
+
 
   return (
     <div className="rightPanel">
@@ -1806,7 +1668,11 @@ const IfElseForm = ({ onAddNextStep }) => {
   />
 ) :  isIfElseNode ? (
   <IfElseForm onAddNextStep={handleTextClick} />
-) : (
+)  : isIterationNode ? (
+  <WorkflowConfig 
+    onAddNextStep={handleTextClick}
+  />
+): (
   <>
     <label className="label-renamed">Name</label>
     <input
