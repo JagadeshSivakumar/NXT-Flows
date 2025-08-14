@@ -2588,3 +2588,212 @@ font-weight: 500;
     width: 25%;
   }
 }
+.ifelse-wrapper {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+
+  background: #ffffff;
+  padding: 16px;
+  max-width: 100%;
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+.section,
+.section1,
+.section2 {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.ifsection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+}
+
+.section-desc {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+.add-condition-btn {
+  padding: 6px 12px;
+  border: 1px solid #D1D5DB;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  color: #111827;
+  transition: background 0.2s ease;
+   white-space: nowrap; /* Prevents wrapping */
+  display: inline-flex; /* Keeps button sized to content */
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  margin-right: 2px;
+}
+
+.elif-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #f6f8fa;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: #111827;
+  margin-top: 8px;
+  transition: background 0.2s ease;
+}
+
+.add-condition-btn:hover
+ {
+  background: white;
+}
+.elif-btn:hover{
+  background: #dedee3;
+}
+
+.next-step-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.workflow-icon-box {
+  background: #00aaff;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  width: 32px;
+  height: 32px;
+}
+
+.branches {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.branch {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.branch-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #57606a;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.select-step {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8c959f;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px dashed #d0d7de;
+  border-radius: 6px;
+  background: transparent;
+
+}
+
+.select-step::before {
+ 
+  font-size: 12px;
+  color: #8c959f;
+}
+
+.select-step:hover {
+  color: #0969da;
+  border-color: #0969da;
+}
+
+.select-step:hover::before {
+  color: #0969da;
+}
+.variable-dropdown {
+  position: absolute;
+  top: 40px; /* adjust based on button height */
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 200px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.variable-search {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.variable-item {
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.variable-item:hover {
+  background-color: #f0f0f0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+.remove-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: white;
+  color: #d32f2f;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+ 
+}
+
+.remove-btn:hover {
+  background-color: #f8d7da;
+}
