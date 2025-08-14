@@ -1232,6 +1232,7 @@ const handleNoteIconClick = () => {
               </div>
               <div className="flow-container-content">
                 {/* Add your content here */}
+                
               </div>
             </div>
           </div>
@@ -1503,7 +1504,7 @@ const handleNoteIconClick = () => {
 
 const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
- 
+   const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const nodeTitle = selectedNode?.data?.label || "Node Settings";
   const [activeTab, setActiveTab] = useState('SETTINGS');
   const [responseData, setResponseData] = useState(null);
@@ -1587,7 +1588,162 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     }));
   };
 
-  
+ 
+
+
+
+
+//    : isIfElseNode ? (
+//               <IfElseForm 
+//                 onAddNextStep={handleTextClick}
+//               />
+//             ) : isIterationNode ? (
+//   <WorkflowConfig 
+//     onAddNextStep={handleTextClick}
+//   />
+// )
+const IfElseForm = ({ onAddNextStep }) => {
+   const [showVariableDropdown, setShowVariableDropdown] = useState(false)
+   const handleAddConditionClick = () => {
+    setShowVariableDropdown(true);
+  };
+
+  const handleVariableSelect = (variable) => {
+    console.log("Selected:", variable);
+    setShowVariableDropdown(false); // close dropdown after selection
+  };
+   const [blocks, setBlocks] = useState([
+    { type: "IF", conditions: [] } // default first block
+  ]);
+
+  const handleAddBlock = (type) => {
+    setBlocks((prev) => [
+      ...prev,
+      { type, conditions: [] }
+    ]);
+  };
+
+  const handleAddCondition = (index) => {
+    setBlocks((prev) => {
+      const updated = [...prev];
+      updated[index].conditions.push(`${updated[index].conditions.length + 1}`);
+      return updated;
+    });
+  };
+
+  const handleRemoveBlock = (index) => {
+    setBlocks((prev) => prev.filter((_, i) => i !== index));
+  };
+  return (
+   
+    <div className="ifelse-wrapper">
+      {/* IF Section */}
+      <div className="section" style={{position: "relative"}}>
+        
+       
+           {showVariableDropdown && (
+          <div className="variable-dropdown">
+            <input
+              type="text"
+              placeholder="Search variable"
+              className="variable-search"
+            />
+            <div
+              className="variable-item"
+              onClick={() => handleVariableSelect("NO VARIABLE")}
+            >
+              NO VARIABLE
+            </div>
+          </div>
+        )}
+       
+      </div>
+      <div>
+         {blocks.map((block, index) => (
+        <div
+          key={index}
+          className="section"
+          style={{ position: "relative", marginBottom: "10px" }}
+        >
+          <div className="section-title">{block.type}</div>
+
+          {/* Add Condition Button */}
+          <button
+            type="button"
+            className="add-condition-btn"
+            onClick={() => {handleAddCondition(index);handleAddConditionClick()}}
+          >
+            + Add Condition
+          </button>
+
+          {/* Display Conditions */}
+          {block.conditions.map((c, i) => (
+            <div key={i} className="condition-item">
+              {c}
+            </div>
+          ))}
+
+          {/* Remove Button */}
+          {index !== 0 &&(
+          <button
+            type="button"
+            className="remove-btn"
+            onClick={() => handleRemoveBlock(index)}
+          >
+             <span className="remove-icon">🗑️</span>
+  Remove
+          </button>
+          )}
+        </div>
+      ))}
+    </div>
+      {/* ELIF button */}
+      <div className="section">
+        <button className="elif-btn" onClick={() => handleAddBlock("ELIF")}>
+          + ELIF
+        </button>
+      </div>
+
+     
+
+      {/* ELSE Section */}
+      <div className="section1">
+        <div className="section-title">ELSE</div>
+        <div className="section-desc">
+          Used to define the logic that should be executed when the if condition is not met.
+        </div>
+      </div>
+
+      {/* NEXT STEP Section */}
+      <div className="section2">
+        <div className="section-title">NEXT STEP</div>
+        <div className="section-desc">
+          Add the next step in this workflow
+        </div>
+
+        <div className="next-step-container">
+  <div className="workflow-icon-box">⤴</div>
+  <div className="branches">
+    <div className="branch">
+      <div className="branch-label">IF</div>
+      <button className="select-step" onClick={onAddNextStep}>+ SELECT NEXT STEP</button>
+    </div>
+    <div className="branch">
+      <div className="branch-label">ELSE</div>
+      <button className="select-step" onClick={onAddNextStep}>+ SELECT NEXT STEP</button>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+   
+  );
+};
+
+
+
+
   return (
     <div className="rightPanel">
       <div className="panelHeader">
@@ -1648,12 +1804,19 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     requestData={requestData}
     updateRequestData={updateRequestData}
   />
-)  : isIterationNode ? (
-  <WorkflowConfig 
-    onAddNextStep={handleTextClick}
-  />
-): 
- (
+) :  isIfElseNode ? (
+  <IfElseForm onAddNextStep={handleTextClick} />
+) : (
+  <>
+    <label className="label-renamed">Name</label>
+    <input
+      type="text"
+      value={selectedNode?.data?.label || ""}
+      className="textInput-renamed"
+      readOnly
+    />
+  </>
+) (
             <>
               <label className="label-renamed">Name</label>
               <input
