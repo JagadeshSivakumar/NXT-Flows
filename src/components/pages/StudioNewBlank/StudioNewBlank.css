@@ -2576,8 +2576,15 @@ font-weight: 500;
 
 /* For screens ≤ 1920px */
 @media (max-width: 1920px) {
- .rightPanel{top: 11%;}
+  .rightPanel { 
+    top: 11%; 
+    width: 35%; /* Add this to maintain consistent width */
+  }
 }
+
 @media (min-width: 1920px) {
- .rightPanel{top: 6%; width: 25%;}
+  .rightPanel { 
+    top: 6%; 
+    width: 25%;
+  }
 }
