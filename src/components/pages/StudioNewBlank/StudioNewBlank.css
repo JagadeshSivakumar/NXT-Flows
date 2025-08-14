@@ -243,10 +243,10 @@
 .rightPanel {
   position: absolute;
   right: 24px;
-  top: 6%;
+  
   height: 85vh;
   bottom: 24px;
-  width: 23%;
+ 
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -513,7 +513,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-left: 80rem;
+margin-left: auto;
 }
 .flowHeaderButton {
   display: flex;
@@ -1081,10 +1081,11 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: 40px;
+  padding-bottom: 25px;
   background-color: #2563eb;
   transition: 0.2s;
-  border-radius: 20px;
+  border-radius: 25px;
 }
 
 .slider:before {
@@ -2545,12 +2546,12 @@ font-weight: 500;
   line-height: 1.4;
 }
 
-.next-step-section {
+/* .next-step-section {
   background-color: white;
   border: 1px solid #e9ecef;
   border-radius: 6px;
   padding: 16px;
-}
+} */
 
 .next-step-label {
   font-weight: 600;
@@ -2659,11 +2660,12 @@ font-weight: 500;
 }
 .json-editor-container {
   position: relative;
-  border: 1px solid #ccc;
+ 
   background: #f2f4f7;
   padding: 8px;
+  margin-top: 10px;
   transition: all 0.3s ease;
-  height: 130px;
+  height: 80px;
   overflow: auto;
 }
 
@@ -2707,11 +2709,11 @@ font-weight: 500;
 
 .raw-editor-container {
   position: relative;
-  border: 1px solid #ccc;
+  
   background-color: #f2f4f7; /* light gray */
   padding: 8px;
   transition: all 0.3s ease;
-  height: 130px;
+  height: 80px;
   overflow: auto;
 }
 
@@ -2756,4 +2758,12 @@ font-weight: 500;
   border: none;
   cursor: pointer;
   padding: 4px;
+}
+
+/* For screens ≤ 1920px */
+@media (max-width: 1920px) {
+ .rightPanel{top: 11%;}
+}
+@media (min-width: 1920px) {
+ .rightPanel{top: 6%;}
 }
