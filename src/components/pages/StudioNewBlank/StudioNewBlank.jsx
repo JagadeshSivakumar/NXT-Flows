@@ -1503,7 +1503,7 @@ const handleNoteIconClick = () => {
 
 const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
-  // const isIfElseNode = selectedNode?.data?.label === "If/Else";
+ 
   const nodeTitle = selectedNode?.data?.label || "Node Settings";
   const [activeTab, setActiveTab] = useState('SETTINGS');
   const [responseData, setResponseData] = useState(null);
@@ -1511,7 +1511,7 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const [error, setError] = useState(null);
   
   const isIterationNode = selectedNode?.data?.label === "Iteration";
-
+// const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const [requestData, setRequestData] = useState({
     method: 'GET',
     url: '',
@@ -1530,13 +1530,13 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   };
 
   const handleRunRequest = async () => {
-    if (!requestData.url) {
-      setError('Please enter a URL');
-      return;
-    }
+    // if (!requestData.url) {
+    //   setError('Please enter a URL');
+    //   return;
+    // }
 
     setIsLoading(true);
-    setError(null);
+    //setError(null);
     
     try {
       const headersObj = {};
@@ -1570,16 +1570,16 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
       });
       setActiveTab('LAST RUN');
     } catch (err) {
-      setError(err.message);
+      
       setResponseData({
-        error: err.message,
+       
         timestamp: new Date().toISOString()
       });
     } finally {
       setIsLoading(false);
     }
   };
-
+ 
   const updateRequestData = (field, value) => {
     setRequestData(prev => ({
       ...prev,
@@ -1587,15 +1587,7 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     }));
   };
 
-//    : isIfElseNode ? (
-//               <IfElseForm 
-//                 onAddNextStep={handleTextClick}
-//               />
-//             ) : isIterationNode ? (
-//   <WorkflowConfig 
-//     onAddNextStep={handleTextClick}
-//   />
-// )
+  
   return (
     <div className="rightPanel">
       <div className="panelHeader">
@@ -1656,7 +1648,12 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     requestData={requestData}
     updateRequestData={updateRequestData}
   />
-) : (
+)  : isIterationNode ? (
+  <WorkflowConfig 
+    onAddNextStep={handleTextClick}
+  />
+): 
+ (
             <>
               <label className="label-renamed">Name</label>
               <input
