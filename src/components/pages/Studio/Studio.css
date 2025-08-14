@@ -1,9 +1,16 @@
 .studio-container {
   padding: 12px 12px;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 .app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
   background-color: #f2f4f7;
-  min-height: 100vh;
 }
 .studio-inner {
   max-width: 1120px;
@@ -80,7 +87,7 @@
 }
 .tab-icon {
   margin-right: 0.5rem;
-  
+
   background-color: white;
 }
 .tag-dropdown-wrapper {
@@ -266,10 +273,11 @@
   position: relative;
 }
 .modal-left {
-  width: 70%;
-  padding-left: 10rem;
+  
+  
+
   position: relative;
-  margin-top: 10%;
+  margin-top: 5%;
 }
 .modal-right {
   width: 50%;
@@ -364,24 +372,30 @@
   }
 }
 .content-grid-container {
-  padding: 8px 8px 8px 8px;
-  background-color: #f2f4f7;
+  flex: 1; /* Takes remaining space */
+  overflow-y: auto; /* Scroll when content overflows */
+  padding: 8px;
   margin-left: 20px;
+  
 }
+
+/* Grid layout for the content */
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
-  margin-left: 2rem;
+  padding: 1rem;
+  min-height: min-content;
+  
+  /* Mobile first approach */
+  grid-template-columns: 1fr;
 }
+
 .grid-card {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
   padding: 1.5rem;
-  height: 180px;
-  width: 93%;
   display: flex;
   flex-direction: column;
 }
@@ -390,6 +404,9 @@
 }
 .create-app-card .index-header {
   margin-bottom: 1.5rem;
+}
+.index-header .index-options{
+ color: #6b7280;
 }
 .index-options {
   display: flex;
@@ -438,7 +455,7 @@
   left: 0;
   right: 0;
   bottom: 0;
- background-color: rgba(0, 0, 0, 0.5);;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -492,22 +509,35 @@
 .confirm-btn:hover {
   background: #c53030;
 }
-@media (max-width: 1200px) {
-  .content-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
+@media (min-width: 600px) {
   .content-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 600px) {
-  .content-grid-container {
-    padding: 1rem;
-  }
+
+@media (min-width: 900px) {
   .content-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .content-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Specific for 1920px */
+@media (min-width: 1920px) {
+  .content-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* For screens larger than 1920px (5 columns) */
+@media (min-width: 2560px) { /* 2K/QHD screens and larger */
+  .content-grid {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 .container-card {
@@ -572,23 +602,22 @@
   width: 500px;
   max-width: 95%;
   border-radius: 1.5rem;
-    position: relative;
+  position: relative;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 .modal-label {
-font-weight: 500;
-font-size: .875rem;
-padding-top: .5rem;
-  padding-bottom: .5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   display: block;
   margin-bottom: 6px;
   margin-top: 5px;
 }
-.modal-input
-{
+.modal-input {
   width: 100%;
-  padding-left: .75rem;
-  padding-right: .75rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   border-radius: 6px;
   margin-bottom: 6px;
   margin-top: 5px;
@@ -605,17 +634,33 @@ padding-top: .5rem;
   border-radius: 6px;
   margin-top: 5px;
   margin-bottom: 6px;
- border: none;
+  border: none;
   font-size: 14px;
   box-sizing: border-box;
   height: 120px; /* or desired height */
   resize: none;
-  vertical-align: top; 
-    background-color: #f2f4f7;
+  vertical-align: top;
+  background-color: #f2f4f7;
 }
 
 .modal-textarea::placeholder {
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;
+}
+
+@media (max-width:1920px) {
+  .create-modal{overflow: auto;}
+  .modal-left{width:60%; padding-left: 15px;}
+  .modal-right{width: 38%;}
+  
+ 
+}
+
+@media (min-width:1920px) {
+  
+  .modal-left{width:60%; padding-left: 10rem;}
+  
+  
+ 
 }

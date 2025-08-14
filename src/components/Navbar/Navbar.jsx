@@ -5,8 +5,10 @@ import {
   Square,
   Layers,
   BookOpen,
-  Plus,
+  Plus
+  ,
 } from "lucide-react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaChevronDown } from "react-icons/fa";
 import "./Navbar.css";
 
@@ -24,6 +26,7 @@ const Navbar = ({
   const [currentApp, setCurrentApp] = useState(null);
   const [showStudioDropdown, setShowStudioDropdown] = useState(false);
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
+  const [isHoveringStudio, setIsHoveringStudio] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("containers");
@@ -49,18 +52,27 @@ const Navbar = ({
     else setActiveTab("Flows");
   }, [location.pathname]);
 
-const handleAppSelect = (app) => {
-  setCurrentApp(app);
-  setShowStudioDropdown(false);
-  // Force a full navigation by using replace instead of push
-  navigate(`/studio/${app.id}`, { replace: true });
-  // Optional: force a hard reload if needed
-  // window.location.href = `/studio/${app.id}`;
-};
+  const handleAppSelect = (app) => {
+    setCurrentApp(app);
+    setShowStudioDropdown(false);
+    navigate(`/studio/${app.id}`, { replace: true });
+  };
 
   const handleNewApp = () => {
     setShowStudioDropdown(false);
     onNewApp?.();
+  };
+
+  const handleStudioClick = () => {
+    if (isHoveringStudio && currentApp) {
+      // If hovering and we have a current app, navigate back
+      navigate(-1);
+      setCurrentApp(null);
+    } else {
+      // Normal behavior
+      setActiveTab("Studio");
+      navigate(currentApp ? `/studio/${currentApp.id}` : "/studio");
+    }
   };
 
   return (
@@ -137,13 +149,15 @@ const handleAppSelect = (app) => {
 
         <div
           className={`nav-item studio-tab ${activeTab === "Studio" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("Studio");
-            // If we have a current app, navigate to it, otherwise to studio root
-            navigate(currentApp ? `/studio/${currentApp.id}` : "/studio");
-          }}
+          onClick={handleStudioClick}
+          onMouseEnter={() => setIsHoveringStudio(true)}
+          onMouseLeave={() => setIsHoveringStudio(false)}
         >
-          <Layers size={16} />
+          {isHoveringStudio && currentApp ? (
+            <FaArrowLeftLong  size={16} />
+          ) : (
+            <Layers size={16} />
+          )}
           <span>Studio</span>
           {currentApp && <span className="slash">/</span>}
           {currentApp && (
