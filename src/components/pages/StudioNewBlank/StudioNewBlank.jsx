@@ -17,8 +17,9 @@ import {
   addEdge,
 } from "@xyflow/react";
 import { FaPlusCircle } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import "@xyflow/react/dist/style.css";
-import {  Copy} from "lucide-react";
+import { Copy } from "lucide-react";
 import { TbSquareRoundedPlus } from "react-icons/tb";
 import { FaPlay } from 'react-icons/fa';
 import { FaSortDown } from "react-icons/fa";
@@ -88,7 +89,7 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
           <div className="collapsed-project-avatar">
             <BsAlphabetUppercase size={20} />
           </div>
-          
+
           {/* Options icon placed right below the project avatar */}
           <div className="collapsed-options-icon" onClick={onOptionsClick}>
             <CgOptions size={20} />
@@ -158,9 +159,8 @@ const CustomNode = ({ data, selected }) => {
 
   return (
     <div
-      className={`rectangleNode ${selected ? "selected" : ""} ${
-        isSpecialNode ? "special-node inline-node" : ""
-      }`}
+      className={`rectangleNode ${selected ? "selected" : ""} ${isSpecialNode ? "special-node inline-node" : ""
+        }`}
     >
       <Handle type="target" position={Position.Left} className="customHandle" />
       {isSpecialNode ? (
@@ -237,7 +237,7 @@ const HeadersTable = ({ headers, onHeadersChange }) => {
       <div className="compact-headers-grid">
         <div className="compact-header">KEY</div>
         <div className="compact-header">VALUE</div>
-        
+
         {headers.map((header, index) => (
           <React.Fragment key={index}>
             <div className="compact-key-input">
@@ -263,7 +263,7 @@ const HeadersTable = ({ headers, onHeadersChange }) => {
                   onClick={() => removeRow(index)}
                   title="Remove row"
                 >
-                 <AiOutlineDelete size={15}/>
+                  <AiOutlineDelete size={15} />
                 </button>
               )}
             </div>
@@ -304,7 +304,7 @@ const ParamsTable = ({ params, onParamsChange }) => {
       <div className="compact-params-grid">
         <div className="compact-param">KEY</div>
         <div className="compact-param">VALUE</div>
-        
+
         {params.map((param, index) => (
           <React.Fragment key={index}>
             <div className="compact-key-input">
@@ -330,7 +330,7 @@ const ParamsTable = ({ params, onParamsChange }) => {
                   onClick={() => removeRow(index)}
                   title="Remove row"
                 >
-                 <AiOutlineDelete size={15}/>
+                  <AiOutlineDelete size={15} />
                 </button>
               )}
             </div>
@@ -348,49 +348,49 @@ const WorkflowConfig = ({ onAddNextStep }) => {
   const [maxParallelism, setMaxParallelism] = useState(10);
   const [errorMethod, setErrorMethod] = useState('Terminated');
   const [maximumParallelsim, setMaximumParallelsim] = useState(100);
-  
+
   // Input section state
   const [showInputSearch, setShowInputSearch] = useState(false);
   const [inputVariable, setInputVariable] = useState('');
-  
+
   // Output section state
   const [showOutputSearch, setShowOutputSearch] = useState(false);
   const [outputVariable, setOutputVariable] = useState('');
-const handleInputClick = () => {
-  setShowOutputSearch(false);
-  setShowInputSearch(!showInputSearch);
-};
-
-const handleOutputClick = () => {
-  setShowInputSearch(false);
-  setShowOutputSearch(!showOutputSearch);
-};
-const dropdownRef = useRef();
-
-useEffect(() => {
-  const closeDropdowns = (e) => {
-    if (!dropdownRef.current?.contains(e.target)) {
-      setShowInputSearch(false);
-      setShowOutputSearch(false);
-    }
+  const handleInputClick = () => {
+    setShowOutputSearch(false);
+    setShowInputSearch(!showInputSearch);
   };
-  document.addEventListener('mousedown', closeDropdowns);
-  return () => document.removeEventListener('mousedown', closeDropdowns);
-}, []);
+
+  const handleOutputClick = () => {
+    setShowInputSearch(false);
+    setShowOutputSearch(!showOutputSearch);
+  };
+  const dropdownRef = useRef();
+
+  useEffect(() => {
+    const closeDropdowns = (e) => {
+      if (!dropdownRef.current?.contains(e.target)) {
+        setShowInputSearch(false);
+        setShowOutputSearch(false);
+      }
+    };
+    document.addEventListener('mousedown', closeDropdowns);
+    return () => document.removeEventListener('mousedown', closeDropdowns);
+  }, []);
   return (
-<div className="workflow-config">
+    <div className="workflow-config">
       {/* INPUT Section */}
       <div className="config-section" style={{ position: 'relative' }}>
         <div className="section-header">
           <span className="section-title">INPUT <span className="required">*</span></span>
           <span className="array-label">Array</span>
         </div>
-        
+
         {/* Main input field */}
-        <div className="input-field"  ref={dropdownRef} onClick={handleInputClick}>
+        <div className="input-field" ref={dropdownRef} onClick={handleInputClick}>
           <span className="placeholder-text">Set variable</span>
         </div>
-        
+
         {/* Search dropdown with absolute positioning */}
         {showInputSearch && (
           <div className="search-dropdown" style={{
@@ -424,13 +424,13 @@ useEffect(() => {
           <span className="section-title">OUTPUT VARIABLES <span className="required">*</span></span>
           <span className="array-label">Array</span>
         </div>
-        
+
         {/* Main output field */}
-        <div className="input-field"  ref={dropdownRef} onClick={handleOutputClick}>
+        <div className="input-field" ref={dropdownRef} onClick={handleOutputClick}>
           <span className="x-icon"></span>
           <span className="placeholder-text">Set variable</span>
         </div>
-        
+
         {/* Search dropdown for output */}
         {showOutputSearch && (
           <div className="search-dropdown" style={{
@@ -529,7 +529,7 @@ useEffect(() => {
             <option className="dropdown-item" value="Terminated">Terminated</option>
             <option className="dropdown-item" value="Continue">Continue</option>
             <option className="dropdown-item" value="Retry">Retry</option>
-          </select> 
+          </select>
         </div>
       </div>
       <hr className="section-divider" />
@@ -543,7 +543,7 @@ const NextStepSection = ({ onAddNextStep }) => {
     <div className="next-step-section">
       <h3 className="next-step-title">NEXT STEP</h3>
       <p className="next-step-description">Add the next step in this workflow</p>
-      
+
       <div className="add-step-row">
         <div className="workflow-icon">
           WF
@@ -551,8 +551,8 @@ const NextStepSection = ({ onAddNextStep }) => {
         <button className="add-btn">
           <Plus size={16} />
         </button>
-        <span 
-          className="add-step-text" 
+        <span
+          className="add-step-text"
           onClick={(e) => {
             e.stopPropagation();
             onAddNextStep(e);
@@ -573,10 +573,10 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   const setParams = (value) => updateRequestData('params', value);
   const [bodyType, setBodyType] = useState('none');
   const [formData, setFormData] = useState([{ key: '', type: 'text', value: '' }]);
-const [urlEncodedData, setUrlEncodedData] = useState([{ key: '', value: '' }]);
+  const [urlEncodedData, setUrlEncodedData] = useState([{ key: '', value: '' }]);
   const [jsonBody, setJsonBody] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
-const [rawBody, setRawBody] = useState(''); 
+  const [rawBody, setRawBody] = useState('');
   const [sslVerify, setSslVerify] = useState(true);
   const [retryOnFailure, setRetryOnFailure] = useState(true);
   const [maxRetries, setMaxRetries] = useState(2);
@@ -584,8 +584,8 @@ const [rawBody, setRawBody] = useState('');
   const [errorHandling, setErrorHandling] = useState('None');
   const [showTimeoutInput, setShowTimeoutInput] = useState(false);
   const [showOutputVariable, setShowOutputVariable] = useState(false);
-const [showAuthorizationModal, setShowAuthorizationModal] = useState(false);
-const [showImportCurlModal, setShowImportCurlModal] = useState(false);
+  const [showAuthorizationModal, setShowAuthorizationModal] = useState(false);
+  const [showImportCurlModal, setShowImportCurlModal] = useState(false);
 
 
 
@@ -597,7 +597,7 @@ const [showImportCurlModal, setShowImportCurlModal] = useState(false);
   const toggleOutputVariable = () => {
     setShowOutputVariable(prev => !prev);
   };
-const updateFormData = (index, field, value) => {
+  const updateFormData = (index, field, value) => {
     const newFormData = [...formData];
     newFormData[index][field] = value;
     setFormData(newFormData);
@@ -607,14 +607,14 @@ const updateFormData = (index, field, value) => {
     setFormData([...formData, { key: '', type: 'text', value: '' }]);
   };
 
- 
+
   const removeFormDataRow = (index) => {
     if (formData.length > 1) {
       const newFormData = formData.filter((_, i) => i !== index);
       setFormData(newFormData);
     }
   };
-    const updateUrlEncodedData = (index, field, value) => {
+  const updateUrlEncodedData = (index, field, value) => {
     const newData = [...urlEncodedData];
     newData[index][field] = value;
     setUrlEncodedData(newData);
@@ -632,18 +632,18 @@ const updateFormData = (index, field, value) => {
   };
 
 
-const [isEditing, setIsEditing] = useState(false);
-const editorRef = useRef(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const editorRef = useRef(null);
 
 
-const [isRawEditing, setIsRawEditing] = useState(false);
-const rawEditorRef = useRef(null);
+  const [isRawEditing, setIsRawEditing] = useState(false);
+  const rawEditorRef = useRef(null);
 
-const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-const toggleExpand = () => {
-  setIsExpanded(prev => !prev);
-};
+  const toggleExpand = () => {
+    setIsExpanded(prev => !prev);
+  };
 
 
   return (
@@ -654,11 +654,11 @@ const toggleExpand = () => {
             <label className="section-label">API *</label>
             <div className="api-config">
               <span className="auth-info" onClick={() => setShowAuthorizationModal(true)}>
-    🔒 Authorization
-  </span>
-     <span className="import-curl" onClick={() => setShowImportCurlModal(true)}>
-  📥 Import from cURL
-</span>
+                🔒 Authorization
+              </span>
+              <span className="import-curl" onClick={() => setShowImportCurlModal(true)}>
+                📥 Import from cURL
+              </span>
             </div>
           </div>
           <div className="api-input-row">
@@ -689,268 +689,268 @@ const toggleExpand = () => {
         </div>
 
         <div className="section">
-  <label className="section-label">BODY *</label>
-  <div className="body-options">
-    <div className="radio-row">
-      {['none', 'form-data', 'x-www-form-urlencoded'].map((type) => (
-        <label key={type} className="radio-option">
-          <input
-            type="radio"
-            name="bodyType"
-            value={type}
-            checked={bodyType === type}
-            onChange={(e) => setBodyType(e.target.value)}
-          />
-          {type}
-        </label>
-      ))}
-    </div>
-    <div className="radio-row">
-      {['JSON', 'raw', 'binary'].map((type) => (
-        <label key={type} className="radio-option">
-          <input
-            type="radio"
-            name="bodyType"
-            value={type}
-            checked={bodyType === type}
-            onChange={(e) => setBodyType(e.target.value)}
-          />
-          {type}
-        </label>
-      ))}
-    </div>
-  </div>
-  {/* Add this form-data table */}
-  {bodyType === 'form-data' && (
-    <div className="form-data-table-container">
-      <div className="form-data-grid">
-        <div className="form-data-header">KEY</div>
-        <div className="form-data-header">TYPE</div>
-        <div className="form-data-header">VALUE</div>
-        
-        {formData.map((row, index) => (
-          <React.Fragment key={index}>
-            <div className="form-data-key-input">
-              <input
-                type="text"
-                placeholder="type '/' to insert variable"
-                value={row.key}
-                onChange={(e) => updateFormData(index, 'key', e.target.value)}
+          <label className="section-label">BODY *</label>
+          <div className="body-options">
+            <div className="radio-row">
+              {['none', 'form-data', 'x-www-form-urlencoded'].map((type) => (
+                <label key={type} className="radio-option">
+                  <input
+                    type="radio"
+                    name="bodyType"
+                    value={type}
+                    checked={bodyType === type}
+                    onChange={(e) => setBodyType(e.target.value)}
+                  />
+                  {type}
+                </label>
+              ))}
+            </div>
+            <div className="radio-row">
+              {['JSON', 'raw', 'binary'].map((type) => (
+                <label key={type} className="radio-option">
+                  <input
+                    type="radio"
+                    name="bodyType"
+                    value={type}
+                    checked={bodyType === type}
+                    onChange={(e) => setBodyType(e.target.value)}
+                  />
+                  {type}
+                </label>
+              ))}
+            </div>
+          </div>
+          {/* Add this form-data table */}
+          {bodyType === 'form-data' && (
+            <div className="form-data-table-container">
+              <div className="form-data-grid">
+                <div className="form-data-header">KEY</div>
+                <div className="form-data-header">TYPE</div>
+                <div className="form-data-header">VALUE</div>
+
+                {formData.map((row, index) => (
+                  <React.Fragment key={index}>
+                    <div className="form-data-key-input">
+                      <input
+                        type="text"
+                        placeholder="type '/' to insert variable"
+                        value={row.key}
+                        onChange={(e) => updateFormData(index, 'key', e.target.value)}
+                      />
+                    </div>
+                    <div className="form-data-type-select">
+                      <select
+                        value={row.type}
+                        onChange={(e) => updateFormData(index, 'type', e.target.value)}
+                      >
+                        <option value="text">Text</option>
+                        <option value="file">File</option>
+                      </select>
+                    </div>
+                    <div className="form-data-value-input">
+                      <input
+                        type={row.type === 'file' ? 'file' : 'text'}
+                        placeholder={row.type === 'file' ? '' : "type '/' to insert variable"}
+                        value={row.type === 'file' ? '' : row.value}
+                        onChange={(e) => updateFormData(index, 'value', e.target.value)}
+                        onClick={(e) => {
+                          // Add new row if this is the last row's value input
+                          if (index === formData.length - 1) {
+                            addFormDataRow();
+                          }
+                        }}
+                      />
+                      <button
+                        className="form-data-remove-btn"
+                        onClick={() => removeFormDataRow(index)}
+                        title="Remove row"
+                      >
+                        <AiOutlineDelete size={15} />
+                      </button>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {bodyType === 'x-www-form-urlencoded' && (
+            <div className="form-data-table-container">
+              <div className="form-data-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
+                {/* Headers - only KEY and VALUE */}
+                <div className="form-data-header">KEY</div>
+                <div className="form-data-header">VALUE</div>
+
+                {/* Rows */}
+                {urlEncodedData.map((row, index) => (
+                  <React.Fragment key={index}>
+                    {/* Key input */}
+                    <div className="form-data-key-input">
+                      <input
+                        type="text"
+                        placeholder="type '/' to insert variable"
+                        value={row.key}
+                        onChange={(e) => updateUrlEncodedData(index, 'key', e.target.value)}
+                      />
+                    </div>
+
+                    {/* Value input */}
+                    <div className="form-data-value-input">
+                      <input
+                        type="text"
+                        placeholder="type '/' to insert variable"
+                        value={row.value}
+                        onChange={(e) => updateUrlEncodedData(index, 'value', e.target.value)}
+                        onClick={(e) => {
+                          // Add new row if this is the last row's value input
+                          if (index === urlEncodedData.length - 1) {
+                            addUrlEncodedRow();
+                          }
+                        }}
+                      />
+                      <button
+                        className="form-data-remove-btn"
+                        onClick={() => removeUrlEncodedRow(index)}
+                        title="Remove row"
+                      >
+                        <AiOutlineDelete size={15} />
+                      </button>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
+
+
+          {bodyType === 'JSON' && (
+            <div className={`json-editor-container ${isMaximized ? 'maximized' : ''}`}>
+              <div className="json-editor-header">
+                <div className="json-editor-label">JSON</div>
+                <div className="json-editor-actions">
+                  <button
+                    className="json-action-btn"
+                    onClick={() => navigator.clipboard.writeText(jsonBody)}
+                    title="Copy JSON"
+                  >
+                    <CopyIcon size={16} />
+                  </button>
+                  <button
+                    className="json-action-btn"
+                    onClick={() => setIsMaximized(!isMaximized)}
+                    title={isMaximized ? "Minimize" : "Maximize"}
+                  >
+                    {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={editorRef}
+                className={`json-editor-hint ${!jsonBody ? 'placeholder' : ''}`}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) => {
+                  const text = e.currentTarget.textContent || '';
+                  setJsonBody(text);
+                  e.currentTarget.classList.toggle('placeholder', !text);
+                }}
+                onFocus={(e) => {
+                  if (e.currentTarget.textContent === 'Write your prompt word here') {
+                    e.currentTarget.textContent = '';
+                    e.currentTarget.classList.remove('placeholder');
+                    setJsonBody('');
+                  }
+                }}
+                onBlur={(e) => {
+                  if (!e.currentTarget.textContent.trim()) {
+                    e.currentTarget.textContent = 'Write your prompt word here';
+                    e.currentTarget.classList.add('placeholder');
+                    setJsonBody('');
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) e.preventDefault();
+                }}
               />
             </div>
-            <div className="form-data-type-select">
-              <select
-                value={row.type}
-                onChange={(e) => updateFormData(index, 'type', e.target.value)}
-              >
-                <option value="text">Text</option>
-                <option value="file">File</option>
-              </select>
-            </div>
-            <div className="form-data-value-input">
-              <input
-                type={row.type === 'file' ? 'file' : 'text'}
-                placeholder={row.type === 'file' ? '' : "type '/' to insert variable"}
-                value={row.type === 'file' ? '' : row.value}
-                onChange={(e) => updateFormData(index, 'value', e.target.value)}
-                onClick={(e) => {
-                  // Add new row if this is the last row's value input
-                  if (index === formData.length - 1) {
-                    addFormDataRow();
+          )}
+
+
+
+          {bodyType === 'raw' && (
+            <div className={`raw-editor-container ${isMaximized ? 'maximized' : ''}`}>
+              <div className="raw-editor-header">
+                <div className="raw-editor-label">RAW</div>
+                <div className="raw-editor-actions">
+                  <button
+                    className="raw-action-btn"
+                    onClick={() => navigator.clipboard.writeText(rawBody)}
+                    title="Copy RAW"
+                  >
+                    <CopyIcon size={16} />
+                  </button>
+                  <button
+                    className="raw-action-btn"
+                    onClick={() => setIsMaximized(!isMaximized)}
+                    title={isMaximized ? 'Minimize' : 'Maximize'}
+                  >
+                    {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={rawEditorRef}
+                className={`raw-editor-hint ${!rawBody ? 'placeholder' : ''}`}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) => {
+                  const text = e.currentTarget.textContent || '';
+                  setRawBody(text);
+                  e.currentTarget.classList.toggle('placeholder', !text);
+                }}
+                onFocus={(e) => {
+                  if (e.currentTarget.textContent === 'Write your prompt word here') {
+                    e.currentTarget.textContent = '';
+                    e.currentTarget.classList.remove('placeholder');
+                    setRawBody('');
+                  }
+                }}
+                onBlur={(e) => {
+                  if (!e.currentTarget.textContent.trim()) {
+                    e.currentTarget.textContent = 'Write your prompt word here';
+                    e.currentTarget.classList.add('placeholder');
+                    setRawBody('');
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
                   }
                 }}
               />
-              <button
-                className="form-data-remove-btn"
-                onClick={() => removeFormDataRow(index)}
-                title="Remove row"
-              >
-                <AiOutlineDelete size={15}/>
-              </button>
             </div>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-  )}
- 
-  {bodyType === 'x-www-form-urlencoded' && (
-  <div className="form-data-table-container">
-    <div className="form-data-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
-      {/* Headers - only KEY and VALUE */}
-      <div className="form-data-header">KEY</div>
-      <div className="form-data-header">VALUE</div>
-      
-      {/* Rows */}
-      {urlEncodedData.map((row, index) => (
-        <React.Fragment key={index}>
-          {/* Key input */}
-          <div className="form-data-key-input">
-            <input
-              type="text"
-              placeholder="type '/' to insert variable"
-              value={row.key}
-              onChange={(e) => updateUrlEncodedData(index, 'key', e.target.value)}
-            />
-          </div>
-          
-          {/* Value input */}
-          <div className="form-data-value-input">
-            <input
-              type="text"
-              placeholder="type '/' to insert variable"
-              value={row.value}
-              onChange={(e) => updateUrlEncodedData(index, 'value', e.target.value)}
-              onClick={(e) => {
-                // Add new row if this is the last row's value input
-                if (index === urlEncodedData.length - 1) {
-                  addUrlEncodedRow();
-                }
-              }}
-            />
-            <button
-              className="form-data-remove-btn"
-              onClick={() => removeUrlEncodedRow(index)}
-              title="Remove row"
-            >
-              <AiOutlineDelete size={15}/>
-            </button>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
-  </div>
-)}
+          )}
 
 
-{bodyType === 'JSON' && (
-  <div className={`json-editor-container ${isMaximized ? 'maximized' : ''}`}>
-    <div className="json-editor-header">
-      <div className="json-editor-label">JSON</div>
-      <div className="json-editor-actions">
-        <button 
-          className="json-action-btn" 
-          onClick={() => navigator.clipboard.writeText(jsonBody)}
-          title="Copy JSON"
-        >
-          <CopyIcon size={16} />
-        </button>
-        <button 
-          className="json-action-btn" 
-          onClick={() => setIsMaximized(!isMaximized)}
-          title={isMaximized ? "Minimize" : "Maximize"}
-        >
-          {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
-        </button>
-      </div>
-    </div>
+          {bodyType === 'binary' && (
+            <div className="binary-editor-container">
+              <div className="binary-editor-header">
 
-    <div
-      ref={editorRef}
-      className={`json-editor-hint ${!jsonBody ? 'placeholder' : ''}`}
-      contentEditable
-      suppressContentEditableWarning
-      onInput={(e) => {
-        const text = e.currentTarget.textContent || '';
-        setJsonBody(text);
-        e.currentTarget.classList.toggle('placeholder', !text);
-      }}
-      onFocus={(e) => {
-        if (e.currentTarget.textContent === 'Write your prompt word here') {
-          e.currentTarget.textContent = '';
-          e.currentTarget.classList.remove('placeholder');
-          setJsonBody('');
-        }
-      }}
-      onBlur={(e) => {
-        if (!e.currentTarget.textContent.trim()) {
-          e.currentTarget.textContent = 'Write your prompt word here';
-          e.currentTarget.classList.add('placeholder');
-          setJsonBody('');
-        }
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.shiftKey) e.preventDefault();
-      }}
-    />
-  </div>
-)}
+                <span className="binary-editor-hint">
+                  Set Variable
+                </span>
 
 
-
-{bodyType === 'raw' && (
-  <div className={`raw-editor-container ${isMaximized ? 'maximized' : ''}`}>
-    <div className="raw-editor-header">
-      <div className="raw-editor-label">RAW</div>
-      <div className="raw-editor-actions">
-        <button
-          className="raw-action-btn"
-          onClick={() => navigator.clipboard.writeText(rawBody)}
-          title="Copy RAW"
-        >
-          <CopyIcon size={16} />
-        </button>
-        <button
-          className="raw-action-btn"
-          onClick={() => setIsMaximized(!isMaximized)}
-          title={isMaximized ? 'Minimize' : 'Maximize'}
-        >
-          {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
-        </button>
-      </div>
-    </div>
-
-    <div
-      ref={rawEditorRef}
-      className={`raw-editor-hint ${!rawBody ? 'placeholder' : ''}`}
-      contentEditable
-      suppressContentEditableWarning
-      onInput={(e) => {
-        const text = e.currentTarget.textContent || '';
-        setRawBody(text);
-        e.currentTarget.classList.toggle('placeholder', !text);
-      }}
-      onFocus={(e) => {
-        if (e.currentTarget.textContent === 'Write your prompt word here') {
-          e.currentTarget.textContent = '';
-          e.currentTarget.classList.remove('placeholder');
-          setRawBody('');
-        }
-      }}
-      onBlur={(e) => {
-        if (!e.currentTarget.textContent.trim()) {
-          e.currentTarget.textContent = 'Write your prompt word here';
-          e.currentTarget.classList.add('placeholder');
-          setRawBody('');
-        }
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-        }
-      }}
-    />
-  </div>
-)}
-
-
-{bodyType === 'binary' && (
-  <div className="binary-editor-container">
-    <div className="binary-editor-header">
-     
-      <span className="binary-editor-hint">
-      Set Variable
-    </span>
-    
-    
-    </div>
-  </div>
-)}
-</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="section">
           <div className="toggle-row">
-            <label className="section-label">VERIFY SSL CERTIFICATE <GoQuestion size={15}/></label>
+            <label className="section-label">VERIFY SSL CERTIFICATE <GoQuestion size={15} /></label>
             <label className="toggle-switch">
               <input type="checkbox" checked={sslVerify} onChange={(e) => setSslVerify(e.target.checked)} />
               <span className="slider"></span>
@@ -1059,7 +1059,7 @@ const toggleExpand = () => {
                 <Info size={14} className="info-icon" />
               </div>
               <div className="dropdown-wrapper">
-                <select 
+                <select
                   value={errorHandling}
                   onChange={(e) => setErrorHandling(e.target.value)}
                   className="dropdown-select"
@@ -1074,35 +1074,35 @@ const toggleExpand = () => {
             </div>
           </div>
 
-<NextStepSection onAddNextStep={onAddNextStep} />
+          <NextStepSection onAddNextStep={onAddNextStep} />
         </div>
-        
+
       </div>
 
-   <AuthorizationModal
-  isOpen={showAuthorizationModal}
-  onClose={() => setShowAuthorizationModal(false)}
-  onSave={(data) => {
-    console.log("Authorization saved:", data);
-    // You can also update request headers here, if needed
-  }}
-/>
- {showImportCurlModal && (
-  <ImportCurlModal
-    isOpen={showImportCurlModal}
-    onClose={() => setShowImportCurlModal(false)}
-    onSave={(curlData) => {
-      // Handle the imported cURL data
-      console.log("Imported cURL:", curlData);
-      setShowImportCurlModal(false);
-    }}
-  />
-)}
-   
+      <AuthorizationModal
+        isOpen={showAuthorizationModal}
+        onClose={() => setShowAuthorizationModal(false)}
+        onSave={(data) => {
+          console.log("Authorization saved:", data);
+          // You can also update request headers here, if needed
+        }}
+      />
+      {showImportCurlModal && (
+        <ImportCurlModal
+          isOpen={showImportCurlModal}
+          onClose={() => setShowImportCurlModal(false)}
+          onSave={(curlData) => {
+            // Handle the imported cURL data
+            console.log("Imported cURL:", curlData);
+            setShowImportCurlModal(false);
+          }}
+        />
+      )}
+
 
     </div>
 
-    
+
   );
 };
 
@@ -1112,7 +1112,7 @@ const StudioNewBlank = ({
   isSidebarCollapsed,
   toggleSidebar,
   isPartialExpand,
-   handleIconClick,
+  handleIconClick,
   handleTextClick,
   menuPosition,
   setMenuPosition,
@@ -1128,13 +1128,16 @@ const StudioNewBlank = ({
   const [noteWidgetPosition, setNoteWidgetPosition] = useState({ x: 100, y: 100 });
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
-  const [showFlowContainer, setShowFlowContainer] = useState(false);
+  const [showFlowContainer, setShowFlowContainer] = useState(null);
+  const [showRunHistory, setShowRunHistory] = useState(false);
+  const [showChecklist, setShowChecklist] = useState(false);
+
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-const handleNoteIconClick = () => {
+  const handleNoteIconClick = () => {
     setShowNoteWidget(!showNoteWidget);
   };
   const onNodeClick = useCallback(
@@ -1182,7 +1185,7 @@ const handleNoteIconClick = () => {
     setApp(found);
   }, [id]);
 
- 
+
   const addConditionNode = (type) => {
     const position = screenToFlowPosition({ x: 250, y: 300 });
     const newNode = {
@@ -1196,10 +1199,10 @@ const handleNoteIconClick = () => {
         icon: type === "Start"
           ? "LuGitPullRequest"
           : type === "End"
-          ? "MdOutlineCode"
-          : type === "HTTP Request"
-          ? "RiWebhookLine"
-          : "MdOutlineLoop",
+            ? "MdOutlineCode"
+            : type === "HTTP Request"
+              ? "RiWebhookLine"
+              : "MdOutlineLoop",
         condition: type === "If/Else" ? "Add condition..." : "",
       },
       deletable: type !== "Start" && type !== "End",
@@ -1210,20 +1213,25 @@ const handleNoteIconClick = () => {
 
   return (
     <div
-      className={`flowDiagramWrapper ${
-        isSidebarCollapsed ? "sidebar-hidden" : ""
-      }`}
+      className={`flowDiagramWrapper ${isSidebarCollapsed ? "sidebar-hidden" : ""
+        }`}
     >
+
+
+
       <div className="flowHeader">
-        <div className="flowHeaderLeft" onClick={() => setShowFlowContainer(!showFlowContainer)}>
-          <button className="flowHeaderButton">
+        <div className="flowHeaderLeft">
+          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Conversation Variables")}>
+            <FaPlusCircle size={16} />
+          </button>
+          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Environment Variables")}>
             <FaArrowPointer size={16} />
           </button>
           <button className="flowHeaderButton">
             <span className="blueIcon"><CiPlay1 size={16} /></span>
             <span className="blueText">Run</span>
-            <IoIosTimer size={16} />
-            <FaArrowPointer size={16} />
+            <IoIosTimer size={16} onClick={() => setShowRunHistory(true)} />
+            <FaArrowPointer size={16} onClick={() => setShowChecklist(true)} />
           </button>
           <button className="flowHeaderButton">
             <MdScheduleSend size={16} />
@@ -1238,21 +1246,136 @@ const handleNoteIconClick = () => {
             <IoIosTimer size={16} />
           </button>
         </div>
+        {showRunHistory && (
+  <div className="run-history-popup">
+    <div className="run-history-header">
+      <h4>Run History</h4>
+      <button
+        className="close-btn"
+        onClick={() => setShowRunHistory(false)}
+      >
+        <IoMdClose size={16} />
+      </button>
+    </div>
+    <div className="run-history-content">
+      <div className="history-icon">
+        <IoIosTimer size={28} />
+      </div>
+      <p>Not running yet</p>
+    </div>
+  </div>
+)}
+
+{showChecklist && (
+  <div className="checklist-popup">
+    <div className="checklist-header">
+      <h4>Checklist (3)</h4>
+      <button className="close-btn" onClick={() => setShowChecklist(false)}>
+        <IoMdClose size={16} />
+      </button>
+    </div>
+
+    <p className="checklist-subtitle">
+      Make sure all issues are resolved before publishing
+    </p>
+
+    <div className="checklist-item">
+      <div className="checklist-item-header">
+        <span className="item-icon">🌐</span>
+        <span className="item-title">HTTP Request</span>
+      </div>
+      <ul>
+        <li>⚠ This step is not connected to anything</li>
+        <li>⚠ API is required</li>
+      </ul>
+    </div>
+
+    <div className="checklist-item">
+      <div className="checklist-item-header">
+        <span className="item-icon">🔀</span>
+        <span className="item-title">IF/ELSE</span>
+      </div>
+      <ul>
+        <li>⚠ This step is not connected to anything</li>
+        <li>⚠ ELIF is required</li>
+      </ul>
+    </div>
+
+    <div className="checklist-item">
+      <div className="checklist-item-header">
+        <span className="item-icon">🔀</span>
+        <span className="item-title">IF/ELSE 2</span>
+      </div>
+      <ul>
+        <li>⚠ This step is not connected to anything</li>
+        <li>⚠ IF is required</li>
+      </ul>
+    </div>
+  </div>
+)}
+
         {showFlowContainer && (
           <div className={`flow-container-overlay ${selectedNode ? "shifted-left" : ""}`}>
             <div className="flow-container">
               <div className="flow-container-header">
-                <h3>Flow Container</h3>
-                <button 
-                  className="close-flow-container" 
-                  onClick={() => setShowFlowContainer(false)}
+                <h3>{showFlowContainer === "Conversation Variables" && "Conversation Variables"}
+                  {showFlowContainer === "Environment Variables" && "Environment Variables"}
+                </h3>
+                <button
+                  className="close-flow-container"
+                  onClick={() => setShowFlowContainer(null)}
                 >
                   <IoMdClose size={20} />
                 </button>
               </div>
               <div className="flow-container-content">
-                {/* Add your content here */}
+                {showFlowContainer === "Conversation Variables" && <div className="conversation-variables">
+                  {/* Tips Section */}
+                  <div className="tips-box">
+                    <span className="tips-badge">TIPS</span>
+                    <p className="tips-text">
+                      Conversation Variables are used to store interactive information that
+                      LLM needs to remember, including conversation history, uploaded files,
+                      user preferences. They are read-write.{" "}
+                      <a href="#" className="tips-link">
+                        Visit our docs to learn more.
+                      </a>
+                    </p><br></br>
+                    {/* Variable Card */}
+                    <div className="variable-carde" style={{ display: "flex", alignItems: "center" }}>
+                      <div className="variable-card" style={{ marginRight: "20px" }}>
+
+                        <div className="variable-icon">🔄</div>
+                        <div className="variable-content">
+                          <h4 className="variable-name">conversation_var</h4>
+                          <span className="variable-type">String</span>
+
+                        </div>
+                      </div>
+                      <div className="variable-arrows">
+                        <span>← WRITE (⚙ Variable Assigner)</span>
+                        <span>READ → (🤖 LLM)</span>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  {/* Add Variable Button */}
+                  <button className="add-variable">
+                    <FaPlus size={14} /> Add Variable
+                  </button>
+                </div>}
+
+                {/* Environment variables */}
+                {showFlowContainer === "Environment Variables" && <div><p>Environment variables can be used to store private information and credentials. They are read-only and can be separated from the DSL file during export.</p><br></br>
                 
+                  <button className="add-variable">
+                    <FaPlus size={14} /> Add Variable
+                  </button></div>}
+                {/* Add your content here */}
+
+
               </div>
             </div>
           </div>
@@ -1280,27 +1403,27 @@ const handleNoteIconClick = () => {
           <Controls />
         </ReactFlow>
 
-         <div className="flowSideMiniPanel">
-                   <MiniPanelButton icon={FaPlusCircle} label="Add Node" />
-         
-          
+        <div className="flowSideMiniPanel">
+          <MiniPanelButton icon={FaPlusCircle} label="Add Node" />
+
+
           <MiniPanelButton icon={RiStickyNoteAddLine} label="Add Note" onClick={handleNoteIconClick} />
           <MiniPanelButton icon={FaArrowPointer} label="Pointer Mode" />
           <MiniPanelButton icon={FaRegHand} label="Hand Mode" onClick={handleIconClick} />
           <MiniPanelButton icon={RiExportLine} label="Export Image" />
-         <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
+          <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
           <MiniPanelButton
-  icon={LuMaximize}
-  label="Maximize Canvas"
-  onClick={toggleSidebar}
-   rotation={
-    isSidebarCollapsed
-      ? 0
-      : isPartialExpand
-      ? 90
-      : 180
-  }
-/>
+            icon={LuMaximize}
+            label="Maximize Canvas"
+            onClick={toggleSidebar}
+            rotation={
+              isSidebarCollapsed
+                ? 0
+                : isPartialExpand
+                  ? 90
+                  : 180
+            }
+          />
         </div>
 
         {showConditionMenu && (
@@ -1375,14 +1498,14 @@ const handleNoteIconClick = () => {
             />
           </>
         )}
-       
-{showNoteWidget && (
-  <NoteWidget 
-    onClose={() => setShowNoteWidget(false)}
-    position={{ x: 100, y: 100 }}
-    onPositionChange={() => {}}
-  />
-)}
+
+        {showNoteWidget && (
+          <NoteWidget
+            onClose={() => setShowNoteWidget(false)}
+            position={{ x: 100, y: 100 }}
+            onPositionChange={() => { }}
+          />
+        )}
       </div>
     </div>
   );
@@ -1561,15 +1684,15 @@ const IfElseForm = ({ onAddNextStep }) => {
 
 const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
-   const isIfElseNode = selectedNode?.data?.label === "If/Else";
+  const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const nodeTitle = selectedNode?.data?.label || "Node Settings";
   const [activeTab, setActiveTab] = useState('SETTINGS');
   const [responseData, setResponseData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const isIterationNode = selectedNode?.data?.label === "Iteration";
-// const isIfElseNode = selectedNode?.data?.label === "If/Else";
+  // const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const [requestData, setRequestData] = useState({
     method: 'GET',
     url: '',
@@ -1595,7 +1718,7 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
 
     setIsLoading(true);
     //setError(null);
-    
+
     try {
       const headersObj = {};
       requestData.headers.forEach(header => {
@@ -1628,16 +1751,16 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
       });
       setActiveTab('LAST RUN');
     } catch (err) {
-      
+
       setResponseData({
-       
+
         timestamp: new Date().toISOString()
       });
     } finally {
       setIsLoading(false);
     }
   };
- 
+
   const updateRequestData = (field, value) => {
     setRequestData(prev => ({
       ...prev,
@@ -1645,7 +1768,7 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     }));
   };
 
- 
+
 
 
 
@@ -1660,21 +1783,21 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
         <div className="header">
           <div className="header-left">
             <div className="iconn">
-              {selectedNode?.data?.icon && 
+              {selectedNode?.data?.icon &&
                 React.createElement(iconComponents[selectedNode.data.icon], { size: 18 })}
             </div>
             <span className="title">{nodeTitle}</span>
           </div>
           <div className="header-actions">
-            <button 
+            <button
               className="action-btn"
               onClick={handleRunRequest}
               disabled={isLoading}
             >
               {isLoading ? '...' : <CiPlay1 size={20} />}
             </button>
-            <button className="action-btn"><TbSquareRoundedPlus size={20}/></button>
-            <button className="action-btn"><BsThreeDots size={20}/></button>
+            <button className="action-btn"><TbSquareRoundedPlus size={20} /></button>
+            <button className="action-btn"><BsThreeDots size={20} /></button>
             <button className="action-btn" onClick={onClose}>
               <IoMdClose size={20} />
             </button>
@@ -1682,20 +1805,20 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
         </div>
 
         <div className="description">
-          <input 
-            type="text" 
-            placeholder="Add description..." 
-            className="description-input" 
+          <input
+            type="text"
+            placeholder="Add description..."
+            className="description-input"
           />
         </div>
         <div className="tabs">
-          <button 
+          <button
             className={`tab ${activeTab === 'SETTINGS' ? 'active' : ''}`}
             onClick={() => setActiveTab('SETTINGS')}
           >
             SETTINGS
           </button>
-          <button 
+          <button
             className={`tab ${activeTab === 'LAST RUN' ? 'active' : ''}`}
             onClick={() => setActiveTab('LAST RUN')}
           >
@@ -1704,173 +1827,171 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
         </div>
       </div>
       <div className="panelContent">
-<div className="scrollabe-content">
-      <div className="detail-content-renamed">
-        {/* SETTINGS TAB CONTENT */}
-       {activeTab === 'SETTINGS' && (
-          isHttpRequestNode ? (
-  <HttpRequestForm 
-    onAddNextStep={handleTextClick}
-    requestData={requestData}
-    updateRequestData={updateRequestData}
-  />
-) :  isIfElseNode ? (
-  <IfElseForm onAddNextStep={handleTextClick} />
-)  : isIterationNode ? (
-  <WorkflowConfig 
-    onAddNextStep={handleTextClick}
-  />
-): (
-  <>
-    <label className="label-renamed">Name</label>
-    <input
-      type="text"
-      value={selectedNode?.data?.label || ""}
-      className="textInput-renamed"
-      readOnly
-    />
-  </>
-) (
-            <>
-              <label className="label-renamed">Name</label>
-              <input
-                type="text"
-                value={selectedNode?.data?.label || ""}
-                className="textInput-renamed"
-                readOnly
-              />
-            </>
-          )
-        )}
-
-        {/* LAST RUN TAB CONTENT */}
-        {activeTab === 'LAST RUN' && (
-          <>
-            {responseData ? (
-              <>
-                {/* Status Card */}
-                <div className={`status-card-renamed ${
-                  responseData.status >= 200 && responseData.status < 300 ? 'success-bg' : 'error-bg'
-                }`}>
-                  <div className="status-item-renamed">
-                    <div className="status-label-renamed">Status</div>
-                    <div className={`status-value-renamed ${
-                      responseData.status >= 200 && responseData.status < 300 ? 'success' : 'error'
-                    }`}>
-                      ● {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
-                    </div>
-                  </div>
-                  <div className="status-item-renamed">
-                    <div className="status-label-renamed">Status Code</div>
-                    <div className="status-value-renamed">{responseData.status}</div>
-                  </div>
-                  <div className="status-item-renamed">
-                    <div className="status-label-renamed">Timestamp</div>
-                    <div className="status-value-renamed">
-                      {new Date(responseData.timestamp).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Request Section */}
-                <div className="workflow-card-renamed">
-                  <div className="workflow-headerr-renamed">
-                    <span className="workflow-title-renamed">Input</span>
-                    <div className="workflow-actions-renamed">
-                      <button
-                        className="workflow-action-btn-renamed"
-                        onClick={() => handleCopy(JSON.stringify(requestData, null, 2))}
-                      >
-                        <Copy className="Icon-Copy" size={15} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="workflow-content-renamed">
-                    <div className="workflow-code-renamed">
-                      <div className="workflow-code-container-renamed">
-                        <pre>{JSON.stringify(requestData, null, 2)}</pre>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Response Section */}
-                <div className="workflow-card-renamed">
-                  <div className="workflow-headerr-renamed">
-                    <span className="workflow-title-renamed">RESPONSE</span>
-                    <div className="workflow-actions-renamed">
-                      <button
-                        className="workflow-action-btn-renamed"
-                        onClick={() => handleCopy(JSON.stringify(responseData.data, null, 2))}
-                      >
-                        <Copy className="Icon-Copy" size={15} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="workflow-content-renamed">
-                    <div className="workflow-code-renamed workflow-output-content-renamed">
-                      <div className="workflow-code-container-renamed">
-                        <pre>{JSON.stringify(responseData.data, null, 2)}</pre>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Metadata Section */}
-                <div className="workfloww-card-renamed">
-                  <div className="workflow-headerr-renamed">
-                    <span className="workflow-title-renamed">METADATA</span>
-                  </div>
-                  <div className="metadata-content">
-                    <div className="metadata-row">
-                      <span className="metadata-label">Status</span>
-                      <span className="metadata-value success">
-                        {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
-                      </span>
-                    </div>
-                    <div className="metadata-row">
-                      <span className="metadata-label">Executor</span>
-                      <span className="metadata-value">N/A</span>
-                    </div>
-                    <div className="metadata-row">
-                      <span className="metadata-label">Start Time</span>
-                      <span className="metadata-value">
-                        {new Date(responseData.timestamp).toLocaleDateString('en-US', {
-                          month: '2-digit',
-                          day: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                    <div className="metadata-row">
-                      <span className="metadata-label">Elapsed Time</span>
-                      <span className="metadata-value">0.084s</span>
-                    </div>
-                    <div className="metadata-row">
-                      <span className="metadata-label">Total Tokens</span>
-                      <span className="metadata-value">0 Tokens</span>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="no-data-renamed">No request has been made yet</div>
+        <div className="scrollabe-content">
+          <div className="detail-content-renamed">
+            {/* SETTINGS TAB CONTENT */}
+            {activeTab === 'SETTINGS' && (
+              isHttpRequestNode ? (
+                <HttpRequestForm
+                  onAddNextStep={handleTextClick}
+                  requestData={requestData}
+                  updateRequestData={updateRequestData}
+                />
+              ) : isIfElseNode ? (
+                <IfElseForm onAddNextStep={handleTextClick} />
+              ) : isIterationNode ? (
+                <WorkflowConfig
+                  onAddNextStep={handleTextClick}
+                />
+              ) : (
+                <>
+                  <label className="label-renamed">Name</label>
+                  <input
+                    type="text"
+                    value={selectedNode?.data?.label || ""}
+                    className="textInput-renamed"
+                    readOnly
+                  />
+                </>
+              )(
+                <>
+                  <label className="label-renamed">Name</label>
+                  <input
+                    type="text"
+                    value={selectedNode?.data?.label || ""}
+                    className="textInput-renamed"
+                    readOnly
+                  />
+                </>
+              )
             )}
-          </>
-        )}
 
-        {/* Loading and Error States */}
-        {isLoading && (
-          <div className="loading-renamed">Loading...</div>
-        )}
+            {/* LAST RUN TAB CONTENT */}
+            {activeTab === 'LAST RUN' && (
+              <>
+                {responseData ? (
+                  <>
+                    {/* Status Card */}
+                    <div className={`status-card-renamed ${responseData.status >= 200 && responseData.status < 300 ? 'success-bg' : 'error-bg'
+                      }`}>
+                      <div className="status-item-renamed">
+                        <div className="status-label-renamed">Status</div>
+                        <div className={`status-value-renamed ${responseData.status >= 200 && responseData.status < 300 ? 'success' : 'error'
+                          }`}>
+                          ● {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
+                        </div>
+                      </div>
+                      <div className="status-item-renamed">
+                        <div className="status-label-renamed">Status Code</div>
+                        <div className="status-value-renamed">{responseData.status}</div>
+                      </div>
+                      <div className="status-item-renamed">
+                        <div className="status-label-renamed">Timestamp</div>
+                        <div className="status-value-renamed">
+                          {new Date(responseData.timestamp).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
 
-        {error && (
-          <div className="error-message-renamed">Error: {error}</div>
-        )}
-      </div>
-      </div>
+                    {/* Request Section */}
+                    <div className="workflow-card-renamed">
+                      <div className="workflow-headerr-renamed">
+                        <span className="workflow-title-renamed">Input</span>
+                        <div className="workflow-actions-renamed">
+                          <button
+                            className="workflow-action-btn-renamed"
+                            onClick={() => handleCopy(JSON.stringify(requestData, null, 2))}
+                          >
+                            <Copy className="Icon-Copy" size={15} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="workflow-content-renamed">
+                        <div className="workflow-code-renamed">
+                          <div className="workflow-code-container-renamed">
+                            <pre>{JSON.stringify(requestData, null, 2)}</pre>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Response Section */}
+                    <div className="workflow-card-renamed">
+                      <div className="workflow-headerr-renamed">
+                        <span className="workflow-title-renamed">RESPONSE</span>
+                        <div className="workflow-actions-renamed">
+                          <button
+                            className="workflow-action-btn-renamed"
+                            onClick={() => handleCopy(JSON.stringify(responseData.data, null, 2))}
+                          >
+                            <Copy className="Icon-Copy" size={15} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="workflow-content-renamed">
+                        <div className="workflow-code-renamed workflow-output-content-renamed">
+                          <div className="workflow-code-container-renamed">
+                            <pre>{JSON.stringify(responseData.data, null, 2)}</pre>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Metadata Section */}
+                    <div className="workfloww-card-renamed">
+                      <div className="workflow-headerr-renamed">
+                        <span className="workflow-title-renamed">METADATA</span>
+                      </div>
+                      <div className="metadata-content">
+                        <div className="metadata-row">
+                          <span className="metadata-label">Status</span>
+                          <span className="metadata-value success">
+                            {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
+                          </span>
+                        </div>
+                        <div className="metadata-row">
+                          <span className="metadata-label">Executor</span>
+                          <span className="metadata-value">N/A</span>
+                        </div>
+                        <div className="metadata-row">
+                          <span className="metadata-label">Start Time</span>
+                          <span className="metadata-value">
+                            {new Date(responseData.timestamp).toLocaleDateString('en-US', {
+                              month: '2-digit',
+                              day: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                        <div className="metadata-row">
+                          <span className="metadata-label">Elapsed Time</span>
+                          <span className="metadata-value">0.084s</span>
+                        </div>
+                        <div className="metadata-row">
+                          <span className="metadata-label">Total Tokens</span>
+                          <span className="metadata-value">0 Tokens</span>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="no-data-renamed">No request has been made yet</div>
+                )}
+              </>
+            )}
+
+            {/* Loading and Error States */}
+            {isLoading && (
+              <div className="loading-renamed">Loading...</div>
+            )}
+
+            {error && (
+              <div className="error-message-renamed">Error: {error}</div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1895,28 +2016,28 @@ const FlowBuilder = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isPartialExpand, setIsPartialExpand] = useState(false);
   const [showOptionsPanel, setShowOptionsPanel] = useState(false);
-   const [showConditionMenu, setShowConditionMenu] = useState(false);
+  const [showConditionMenu, setShowConditionMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const { id } = useParams();
   const [currentApp, setCurrentApp] = useState(null);
-const handleIconClick = (event) => {
-  const rect = event.target.getBoundingClientRect();
-  setMenuPosition({ 
-    x: rect.left, 
-    y: rect.top - 150 
-  });
-  setShowConditionMenu(true);
-};
+  const handleIconClick = (event) => {
+    const rect = event.target.getBoundingClientRect();
+    setMenuPosition({
+      x: rect.left,
+      y: rect.top - 150
+    });
+    setShowConditionMenu(true);
+  };
 
-const handleTextClick = (event) => {
-  const target = event.currentTarget;
-  const rect = target.getBoundingClientRect();
-  setMenuPosition({
-    x: rect.left + rect.width/2 - 100,
-    y: rect.top - 400
-  });
-  setShowConditionMenu(true);
-};
+  const handleTextClick = (event) => {
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    setMenuPosition({
+      x: rect.left + rect.width / 2 - 100,
+      y: rect.top - 400
+    });
+    setShowConditionMenu(true);
+  };
   useEffect(() => {
     const stored = localStorage.getItem("containers");
     const parsed = stored ? JSON.parse(stored) : [];
@@ -1963,11 +2084,11 @@ const handleTextClick = (event) => {
               toggleSidebar={toggleSidebar}
               isPartialExpand={isPartialExpand}
               handleIconClick={handleIconClick}
-        handleTextClick={handleTextClick}
-        menuPosition={menuPosition}
-        setMenuPosition={setMenuPosition}
-        showConditionMenu={showConditionMenu}
-        setShowConditionMenu={setShowConditionMenu}
+              handleTextClick={handleTextClick}
+              menuPosition={menuPosition}
+              setMenuPosition={setMenuPosition}
+              showConditionMenu={showConditionMenu}
+              setShowConditionMenu={setShowConditionMenu}
 
             />
           )}
@@ -1975,7 +2096,7 @@ const handleTextClick = (event) => {
             <RightPanel
               selectedNode={selectedNode}
               onClose={() => setSelectedNode(null)}
-                handleTextClick={handleTextClick}
+              handleTextClick={handleTextClick}
             />
           )}
           {showOptionsPanel && (
