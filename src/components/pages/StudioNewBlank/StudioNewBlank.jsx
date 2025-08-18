@@ -1129,8 +1129,31 @@ const StudioNewBlank = ({
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
   const [showFlowContainer, setShowFlowContainer] = useState(null);
+  
   const [showRunHistory, setShowRunHistory] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
+
+
+  const runHistoryRef = useRef(null);
+const checklistRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (showRunHistory && runHistoryRef.current && !runHistoryRef.current.contains(event.target)) {
+      setShowRunHistory(false);
+    }
+    if (showChecklist && checklistRef.current && !checklistRef.current.contains(event.target)) {
+      setShowChecklist(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showRunHistory, showChecklist]);
+
+
 
 
   const onConnect = useCallback(
@@ -1246,14 +1269,11 @@ const StudioNewBlank = ({
             <IoIosTimer size={16} />
           </button>
         </div>
-        {showRunHistory && (
-  <div className="run-history-popup">
+{showRunHistory && (
+  <div ref={runHistoryRef} className="run-history-popup">
     <div className="run-history-header">
       <h4>Run History</h4>
-      <button
-        className="close-btn"
-        onClick={() => setShowRunHistory(false)}
-      >
+      <button className="close-btn" onClick={() => setShowRunHistory(false)}>
         <IoMdClose size={16} />
       </button>
     </div>
@@ -1267,7 +1287,7 @@ const StudioNewBlank = ({
 )}
 
 {showChecklist && (
-  <div className="checklist-popup">
+  <div ref={checklistRef} className="checklist-popup">
     <div className="checklist-header">
       <h4>Checklist (3)</h4>
       <button className="close-btn" onClick={() => setShowChecklist(false)}>
@@ -1289,30 +1309,10 @@ const StudioNewBlank = ({
         <li>⚠ API is required</li>
       </ul>
     </div>
-
-    <div className="checklist-item">
-      <div className="checklist-item-header">
-        <span className="item-icon">🔀</span>
-        <span className="item-title">IF/ELSE</span>
-      </div>
-      <ul>
-        <li>⚠ This step is not connected to anything</li>
-        <li>⚠ ELIF is required</li>
-      </ul>
-    </div>
-
-    <div className="checklist-item">
-      <div className="checklist-item-header">
-        <span className="item-icon">🔀</span>
-        <span className="item-title">IF/ELSE 2</span>
-      </div>
-      <ul>
-        <li>⚠ This step is not connected to anything</li>
-        <li>⚠ IF is required</li>
-      </ul>
-    </div>
+    {/* other items ... */}
   </div>
 )}
+
 
         {showFlowContainer && (
           <div className={`flow-container-overlay ${selectedNode ? "shifted-left" : ""}`}>
