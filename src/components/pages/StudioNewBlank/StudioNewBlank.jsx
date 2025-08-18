@@ -88,10 +88,27 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
           <div className="collapsed-project-avatar">
             <BsAlphabetUppercase size={20} />
           </div>
+          
+          {/* Options icon placed right below the project avatar */}
           <div className="collapsed-options-icon" onClick={onOptionsClick}>
             <CgOptions size={20} />
           </div>
-          <div className="collapsed-menu-icon" onClick={toggleSidebar}>
+
+          {/* Menu icons */}
+          <div className="collapsed-menu-icons">
+            {menuItems.map((item) => (
+              <div
+                key={item.title}
+                className={`collapsed-menu-icon ${item.isActive ? "active" : ""}`}
+                title={item.title}
+              >
+                <item.icon size={20} />
+              </div>
+            ))}
+          </div>
+
+          {/* Expand icon at the bottom */}
+          <div className="collapsed-expand-icon" onClick={toggleSidebar}>
             <VscLayoutMenubar size={20} />
           </div>
         </div>
@@ -126,12 +143,15 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
               </div>
             ))}
           </div>
+          {/* Expand/collapse icon at the bottom in non-collapsed state */}
+          <div className="expand-icon" onClick={toggleSidebar}>
+            <VscLayoutMenubar size={20} />
+          </div>
         </>
       )}
     </div>
   );
 };
-
 const CustomNode = ({ data, selected }) => {
   const IconComponent = iconComponents[data.icon];
   const isSpecialNode = data.label === "Start" || data.label === "End";
@@ -1370,181 +1390,144 @@ const handleNoteIconClick = () => {
 
 
 
-
-
-
-
-
-
-
-
 const IfElseForm = ({ onAddNextStep }) => {
-  const [showVariableDropdown, setShowVariableDropdown] = useState(null); // store index of open dropdown
-  const [blocks, setBlocks] = useState([{ type: "IF", conditions: [] }]);
-  const dropdownRef = useRef(null);
-
-  // Handle clicking outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowVariableDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleAddConditionClick = (index) => {
-    setShowVariableDropdown(index);
+   const [showVariableDropdown, setShowVariableDropdown] = useState(false)
+   const handleAddConditionClick = () => {
+    setShowVariableDropdown(true);
   };
 
-  const handleVariableSelect = (index, variable) => {
-    if (variable !== "NO VARIABLE") {
-      setBlocks((prev) => {
-        const updated = [...prev];
-        updated[index].conditions.push(variable); // store only variable name
-        return updated;
-      });
-    }
-    setShowVariableDropdown(null); // Close dropdown in all cases
+  const handleVariableSelect = (variable) => {
+    console.log("Selected:", variable);
+    setShowVariableDropdown(false); // close dropdown after selection
   };
+   const [blocks, setBlocks] = useState([
+    { type: "IF", conditions: [] } // default first block
+  ]);
 
   const handleAddBlock = (type) => {
-    setBlocks((prev) => [...prev, { type, conditions: [] }]);
+    setBlocks((prev) => [
+      ...prev,
+      { type, conditions: [] }
+    ]);
+  };
+
+  const handleAddCondition = (index) => {
+    setBlocks((prev) => {
+      const updated = [...prev];
+      updated[index].conditions.push(`${updated[index].conditions.length + 1}`);
+      return updated;
+    });
   };
 
   const handleRemoveBlock = (index) => {
     setBlocks((prev) => prev.filter((_, i) => i !== index));
   };
-
-  const elifAdded = blocks.some((b) => b.type === "ELIF");
-
   return (
+   
     <div className="ifelse-wrapper">
-      {/* IF / ELIF Sections */}
-      <div>
-        {blocks.map((block, index) => (
-          <div
-            key={index}
-            className="ifsection"
-            style={{ position: "relative", marginBottom: "10px" }}
-          >
-            <div className="section-title">
-              {block.type}
-              <div style={{ fontSize: "12px", color: "#777" }}>
-                CASE {index + 1}
-              </div>
-            </div>
-
-            {/* Add Condition Button */}
-            <button
-              type="button"
-              className="add-condition-btn"
-              onClick={() => handleAddConditionClick(index)}
+      {/* IF Section */}
+      <div className="section" style={{position: "relative"}}>
+        
+       
+           {showVariableDropdown && (
+          <div className="variable-dropdown">
+            <input
+              type="text"
+              placeholder="Search variable"
+              className="variable-search"
+            />
+            <div
+              className="variable-item"
+              onClick={() => handleVariableSelect("NO VARIABLE")}
             >
-              + Add Condition
-            </button>
-
-            {/* Show dropdown if this block's dropdown is open */}
-            {showVariableDropdown === index && (
-              <div
-                className="variable-dropdown"
-                ref={dropdownRef}
-                style={{ position: "absolute", zIndex: 10, background: "#fff" }}
-              >
-                <input
-                  type="text"
-                  placeholder="Search variable"
-                  className="variable-search"
-                />
-                <div
-                  className="variable-item"
-                  onClick={() => handleVariableSelect(index, "NO VARIABLE")}
-                >
-                  NO VARIABLE
-                </div>
-                
-              </div>
-            )}
-
-            {/* Show conditions */}
-            {block.conditions.map((c, i) => (
-              <div key={i} className="condition-item">
-                {c}
-              </div>
-            ))}
-
-            {/* Remove Button (shown if more than one block exists) */}
-            {blocks.length > 1 && (
-              <span
-                type="button"
-                className="remove-btn"
-                onClick={() => handleRemoveBlock(index)}
-                style={{ color: "red", cursor: "pointer" }}
-              >
-                🗑 Remove
-              </span>
-            )}
+              NO VARIABLE
+            </div>
           </div>
-        ))}
+        )}
+       
       </div>
-
-      {/* ELIF Button */}
-      <div className="section">
-        <button
-          className="elif-btn"
-          onClick={() => handleAddBlock("ELIF")}
+      <div>
+         {blocks.map((block, index) => (
+        <div
+          key={index}
+          className="section"
+          style={{ position: "relative", marginBottom: "10px" }}
         >
+          <div className="section-title">{block.type}</div>
+
+          {/* Add Condition Button */}
+          <button
+            type="button"
+            className="add-condition-btn"
+            onClick={() => {handleAddCondition(index);handleAddConditionClick()}}
+          >
+            + Add Condition
+          </button>
+
+          {/* Display Conditions */}
+          {block.conditions.map((c, i) => (
+            <div key={i} className="condition-item">
+              {c}
+            </div>
+          ))}
+
+          {/* Remove Button */}
+          {index !== 0 &&(
+          <button
+            type="button"
+            className="remove-btn"
+            onClick={() => handleRemoveBlock(index)}
+          >
+             <span className="remove-icon">🗑️</span>
+  Remove
+          </button>
+          )}
+        </div>
+      ))}
+    </div>
+      {/* ELIF button */}
+      <div className="section">
+        <button className="elif-btn" onClick={() => handleAddBlock("ELIF")}>
           + ELIF
         </button>
       </div>
+
+     
 
       {/* ELSE Section */}
       <div className="section1">
         <div className="section-title">ELSE</div>
         <div className="section-desc">
-          Used to define the logic that should be executed when the IF condition
-          is not met.
+          Used to define the logic that should be executed when the if condition is not met.
         </div>
       </div>
 
       {/* NEXT STEP Section */}
       <div className="section2">
         <div className="section-title">NEXT STEP</div>
-        <div className="section-desc">Add the next step in this workflow</div>
+        <div className="section-desc">
+          Add the next step in this workflow
+        </div>
 
         <div className="next-step-container">
-          <div className="workflow-icon-box">⤴</div>
-          <div className="branches">
-            <div className="branch">
-              <div className="branch-label">IF</div>
-              <button className="select-step" onClick={onAddNextStep}>
-                + SELECT NEXT STEP
-              </button>
-            </div>
-            <div className="branch">
-              <div className="branch-label">ELSE</div>
-              <button className="select-step" onClick={onAddNextStep}>
-                + SELECT NEXT STEP
-              </button>
-            </div>
-          </div>
-        </div>
+  <div className="workflow-icon-box">⤴</div>
+  <div className="branches">
+    <div className="branch">
+      <div className="branch-label">IF</div>
+      <button className="select-step" onClick={onAddNextStep}>+ SELECT NEXT STEP</button>
+    </div>
+    <div className="branch">
+      <div className="branch-label">ELSE</div>
+      <button className="select-step" onClick={onAddNextStep}>+ SELECT NEXT STEP</button>
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
+   
   );
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1977,3 +1960,4 @@ const handleTextClick = (event) => {
 };
 
 export default FlowBuilder;
+
