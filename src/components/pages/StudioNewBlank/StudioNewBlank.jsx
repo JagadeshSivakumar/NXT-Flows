@@ -1134,8 +1134,12 @@ const StudioNewBlank = ({
   const [showChecklist, setShowChecklist] = useState(false);
 
 
+
+
   const runHistoryRef = useRef(null);
 const checklistRef = useRef(null);
+
+
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -1690,6 +1694,19 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const [responseData, setResponseData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+    // for right panel 3-dots menu
+const [showMoreMenu, setShowMoreMenu] = useState(false);
+const moreMenuRef = useRef(null);
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
+      setShowMoreMenu(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [moreMenuRef, setShowMoreMenu]);
+
 
   const isIterationNode = selectedNode?.data?.label === "Iteration";
   // const isIfElseNode = selectedNode?.data?.label === "If/Else";
@@ -1797,7 +1814,32 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
               {isLoading ? '...' : <CiPlay1 size={20} />}
             </button>
             <button className="action-btn"><TbSquareRoundedPlus size={20} /></button>
-            <button className="action-btn"><BsThreeDots size={20} /></button>
+            <button className="action-btn"><BsThreeDots size={20}  onClick={() => setShowMoreMenu(!showMoreMenu)}  /></button>
+            {showMoreMenu && (
+  <div className="more-menu" ref={moreMenuRef}>
+    <div className="menu-item">Run this step</div>
+    <div className="menu-item">Change Node</div>
+    <hr className="menu-divider" />
+    <div className="menu-item">
+      Copy <span className="shortcut">Ctrl C</span>
+    </div>
+    <div className="menu-item">
+      Duplicate <span className="shortcut">Ctrl D</span>
+    </div>
+    <div className="menu-item delete">
+      Delete <span className="shortcut">Del</span>
+    </div>
+    <hr className="menu-divider" />
+    <div className="menu-section">
+      <div className="menu-label">ABOUT</div>
+      <p className="menu-desc">
+        Allows you to split the workflow into two branches based on if/else conditions
+      </p>
+      <p className="menu-meta">Created by Dify</p>
+    </div>
+  </div>
+)}
+
             <button className="action-btn" onClick={onClose}>
               <IoMdClose size={20} />
             </button>
