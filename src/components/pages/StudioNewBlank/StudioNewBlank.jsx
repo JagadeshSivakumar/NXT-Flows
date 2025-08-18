@@ -1260,7 +1260,7 @@ useEffect(() => {
             <IoIosTimer size={16} onClick={() => setShowRunHistory(true)} />
             <FaArrowPointer size={16} onClick={() => setShowChecklist(true)} />
           </button>
-          <button className="flowHeaderButton">
+          <button className="flowHeaderButton"onClick={() => setShowFlowContainer("Features Variables")}>
             <MdScheduleSend size={16} />
             <span>Schedule</span>
           </button>
@@ -1324,6 +1324,7 @@ useEffect(() => {
               <div className="flow-container-header">
                 <h3>{showFlowContainer === "Conversation Variables" && "Conversation Variables"}
                   {showFlowContainer === "Environment Variables" && "Environment Variables"}
+                  {showFlowContainer === "Features Variables" && "Features Variables"}
                 </h3>
                 <button
                   className="close-flow-container"
@@ -1378,6 +1379,120 @@ useEffect(() => {
                     <FaPlus size={14} /> Add Variable
                   </button></div>}
                 {/* Add your content here */}
+                 {/* Features variables */}
+                 {showFlowContainer === "Features Variables" && 
+    <div>
+      {/* Header */}
+      
+      <p className="subtext">Enhance web app user experience</p>
+
+      {/* Info Banner */}
+      <div className="info-banner">
+        <span className="info-icon">ℹ️</span>
+        <p>
+          Image upload features have been upgraded to file upload.{" "}
+          <a href="#">Learn more</a>
+        </p>
+      </div>
+
+      {/* Feature List */}
+      <div className="feature-list">
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Conversation Opener</h3>
+            <p>
+              In a chat app, the first sentence that the AI actively speaks to
+              the user is usually used as a welcome.
+            </p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Follow-up</h3>
+            <p>
+              Setting up next questions suggestion can give users a better chat.
+            </p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Text to Speech</h3>
+            <p>Conversation messages can be converted to speech.</p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Speech to Text</h3>
+            <p>Voice input can be used in chat.</p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>File Upload</h3>
+            <p>
+              The chat input box allows uploading of images, documents, and
+              other files.
+            </p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Citations and Attributions</h3>
+            <p>
+              Show source document and attributed section of the generated
+              content.
+            </p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-info">
+            <h3>Content moderation</h3>
+            <p>
+              Secure model output by using moderation API or maintaining a
+              sensitive word list.
+            </p>
+          </div>
+          <label className="toggle">
+            <input type="checkbox" disabled />
+            <span className="snider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+
+ }
 
 
               </div>
