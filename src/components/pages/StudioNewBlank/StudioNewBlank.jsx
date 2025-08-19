@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import PublishPopup from "../../PublishPopup";
+import TimerPopup from "../../TimerPopup";
 import { useParams } from "react-router-dom";
 import AuthorizationModal from "../../Modal/AuthorizationModal";
 import NoteWidget from "../Notes/NoteWidget";
@@ -56,6 +58,7 @@ import Navbar from "../../Navbar/Navbar";
 import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
+
 
 
 const menuItems = [
@@ -1119,6 +1122,10 @@ const StudioNewBlank = ({
   showConditionMenu,
   setShowConditionMenu
 }) => {
+    const [showPublish, setShowPublish] = useState(false);
+    const [open, setOpen] = useState(false);
+
+
   const { id } = useParams();
   const [app, setApp] = useState(null);
   const reactFlowWrapper = useRef(null);
@@ -1130,9 +1137,12 @@ const StudioNewBlank = ({
   const { screenToFlowPosition } = useReactFlow();
   const [showFlowContainer, setShowFlowContainer] = useState(null);
   
+  
   const [showRunHistory, setShowRunHistory] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
+  
 
+  
 
 
 
@@ -1160,6 +1170,8 @@ useEffect(() => {
     document.removeEventListener("mousedown", handleClickOutside);
   };
 }, [showRunHistory, showChecklist]);
+
+
 
 
 
@@ -1250,6 +1262,7 @@ useEffect(() => {
 
 
 
+
       <div className="flowHeader">
         <div className="flowHeaderLeft">
           <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Conversation Variables")}>
@@ -1269,14 +1282,22 @@ useEffect(() => {
             <span>Schedule</span>
           </button>
           <div className="publishContainer">
-            <button className="flowHeaderButton publishButton">
+            <button className="flowHeaderButton publishButton"  onClick={() => setShowPublish(true)}>
               Publish <IoIosArrowDown />
             </button>
+            
           </div>
-          <button className="flowHeaderButton">
+          <button className="flowHeaderButton" onClick={() => setOpen(true)} >
             <IoIosTimer size={16} />
           </button>
         </div>
+         {open && (
+        <TimerPopup onClose={() => setOpen(false)} />
+      )}
+         {showPublish && (
+        <PublishPopup onClose={() => setShowPublish(false)} />
+      )}
+
 {showRunHistory && (
   <div ref={runHistoryRef} className="run-history-popup">
     <div className="run-history-header">
@@ -1506,6 +1527,8 @@ const FlowContainer = ({ type, onClose,rightPanelOpen }) => {
                   </div>
                 </div>
               </div>
+
+              
 
               {/* Add Variable Button */}
               <button className="add-variable">
@@ -1801,6 +1824,7 @@ const moreMenuRef = useRef(null);
     }));
   };
 
+  
 
 
 

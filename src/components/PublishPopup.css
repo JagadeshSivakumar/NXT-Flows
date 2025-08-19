@@ -1,0 +1,91 @@
+
+
+/* Overlay */
+/* Overlay behind popup */
+.publish-overlay {
+  position: fixed;
+  top: 120px;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: transparent; /* No blur or dark background */
+  z-index: 9999; /* Stay on top */
+}
+
+/* Container */
+.publish-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 400px; /* adjust as needed */
+  background: #fff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 10000;
+}
+
+/* Header */
+.publish-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
+  font-weight: 600;
+}
+.publish-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Body */
+.publish-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.publish-status {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.publish-update {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.publish-update:hover {
+  background: #1e40af;
+}
+
+.publish-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.publish-options button {
+  background: #f3f4f6;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
