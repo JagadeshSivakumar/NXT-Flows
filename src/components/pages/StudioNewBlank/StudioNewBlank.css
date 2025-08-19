@@ -389,7 +389,7 @@
   color: #374151;
 }
 .project-sidebar {
-  width: 300px;
+  width: 250px;
   height: 100vh;
   background-color: #fff;
   transition: all 0.3s ease;
@@ -615,9 +615,9 @@ margin-left: auto;
 }
 .flow-container-overlay {
   position: fixed;
-  top: 12vh;
+  
   right: 10px;
-  width: 23%;
+  
   height: 85vh;
   z-index: 100;
   display: flex;
@@ -636,9 +636,6 @@ margin-left: auto;
   pointer-events: auto; /* Enable interaction within the container */
 }
 
-.flow-container-overlay.shifted-left {
-  right: 480px; /* adjust based on your rightPanel width */
-}
 
 
 .flow-container-header {
@@ -2617,6 +2614,13 @@ font-weight: 500;
     top: 11%; 
     width: 35%; /* Add this to maintain consistent width */
   }
+  .flow-container-overlay{
+    top: 21%; 
+    width: 35%;
+  }
+  .flow-container-overlay.shifted-left {
+  right: 475px; /* adjust based on your rightPanel width */
+}
 }
 
 @media (min-width: 1920px) {
@@ -2624,6 +2628,14 @@ font-weight: 500;
     top: 6%; 
     width: 25%;
   }
+  .flow-container-overlay{
+    top: 12.5%; 
+    width: 25%;
+  }
+  .flow-container-overlay.shifted-left {
+  right: 520px; /* adjust based on your rightPanel width */
+}
+
 }
 .ifelse-wrapper {
   font-family: ui-sans-serif, system-ui, sans-serif;

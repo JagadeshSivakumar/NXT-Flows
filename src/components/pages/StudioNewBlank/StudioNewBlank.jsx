@@ -1318,187 +1318,11 @@ useEffect(() => {
 )}
 
 
-        {showFlowContainer && (
-          <div className={`flow-container-overlay ${selectedNode ? "shifted-left" : ""}`}>
-            <div className="flow-container">
-              <div className="flow-container-header">
-                <h3>{showFlowContainer === "Conversation Variables" && "Conversation Variables"}
-                  {showFlowContainer === "Environment Variables" && "Environment Variables"}
-                  {showFlowContainer === "Features Variables" && "Features Variables"}
-                </h3>
-                <button
-                  className="close-flow-container"
-                  onClick={() => setShowFlowContainer(null)}
-                >
-                  <IoMdClose size={20} />
-                </button>
-              </div>
-              <div className="flow-container-content">
-                {showFlowContainer === "Conversation Variables" && <div className="conversation-variables">
-                  {/* Tips Section */}
-                  <div className="tips-box">
-                    <span className="tips-badge">TIPS</span>
-                    <p className="tips-text">
-                      Conversation Variables are used to store interactive information that
-                      LLM needs to remember, including conversation history, uploaded files,
-                      user preferences. They are read-write.{" "}
-                      <a href="#" className="tips-link">
-                        Visit our docs to learn more.
-                      </a>
-                    </p><br></br>
-                    {/* Variable Card */}
-                    <div className="variable-carde" style={{ display: "flex", alignItems: "center" }}>
-                      <div className="variable-card" style={{ marginRight: "20px" }}>
-
-                        <div className="variable-icon">🔄</div>
-                        <div className="variable-content">
-                          <h4 className="variable-name">conversation_var</h4>
-                          <span className="variable-type">String</span>
-
-                        </div>
-                      </div>
-                      <div className="variable-arrows">
-                        <span>← WRITE (⚙ Variable Assigner)</span>
-                        <span>READ → (🤖 LLM)</span>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  {/* Add Variable Button */}
-                  <button className="add-variable">
-                    <FaPlus size={14} /> Add Variable
-                  </button>
-                </div>}
-
-                {/* Environment variables */}
-                {showFlowContainer === "Environment Variables" && <div><p>Environment variables can be used to store private information and credentials. They are read-only and can be separated from the DSL file during export.</p><br></br>
-                
-                  <button className="add-variable">
-                    <FaPlus size={14} /> Add Variable
-                  </button></div>}
-                {/* Add your content here */}
-                 {/* Features variables */}
-                 {showFlowContainer === "Features Variables" && 
-    <div>
-      {/* Header */}
-      
-      <p className="subtext">Enhance web app user experience</p>
-
-      {/* Info Banner */}
-      <div className="info-banner">
-        <span className="info-icon">ℹ️</span>
-        <p>
-          Image upload features have been upgraded to file upload.{" "}
-          <a href="#">Learn more</a>
-        </p>
-      </div>
-
-      {/* Feature List */}
-      <div className="feature-list">
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Conversation Opener</h3>
-            <p>
-              In a chat app, the first sentence that the AI actively speaks to
-              the user is usually used as a welcome.
-            </p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Follow-up</h3>
-            <p>
-              Setting up next questions suggestion can give users a better chat.
-            </p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Text to Speech</h3>
-            <p>Conversation messages can be converted to speech.</p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Speech to Text</h3>
-            <p>Voice input can be used in chat.</p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>File Upload</h3>
-            <p>
-              The chat input box allows uploading of images, documents, and
-              other files.
-            </p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Citations and Attributions</h3>
-            <p>
-              Show source document and attributed section of the generated
-              content.
-            </p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-
-        <div className="feature-item">
-          <div className="feature-info">
-            <h3>Content moderation</h3>
-            <p>
-              Secure model output by using moderation API or maintaining a
-              sensitive word list.
-            </p>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" disabled />
-            <span className="snider"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-
-
- }
-
-
-              </div>
-            </div>
-          </div>
-        )}
+      {showFlowContainer && (
+  <FlowContainer 
+    type={showFlowContainer} 
+    onClose={() => setShowFlowContainer(null)} 
+  />)}
       </div>
 
       <div
@@ -1630,7 +1454,78 @@ useEffect(() => {
   );
 };
 
+const FlowContainer = ({ type, onClose }) => {
+  return (
+    <div className={`flow-container-overlay ${type ? "shifted-left" : ""}`}>
+      <div className="flow-container">
+        <div className="flow-container-header">
+          <h3>
+            {type === "Conversation Variables" && "Conversation Variables"}
+            {type === "Environment Variables" && "Environment Variables"}
+          </h3>
+          <button
+            className="close-flow-container"
+            onClick={onClose}
+          >
+            <IoMdClose size={20} />
+          </button>
+        </div>
+        <div className="flow-container-content">
+          {type === "Conversation Variables" && (
+            <div className="conversation-variables">
+              {/* Tips Section */}
+              <div className="tips-box">
+                <span className="tips-badge">TIPS</span>
+                <p className="tips-text">
+                  Conversation Variables are used to store interactive information that
+                  LLM needs to remember, including conversation history, uploaded files,
+                  user preferences. They are read-write.{" "}
+                  <a href="#" className="tips-link">
+                    Visit our docs to learn more.
+                  </a>
+                </p>
+                <br></br>
+                {/* Variable Card */}
+                <div className="variable-carde" style={{ display: "flex", alignItems: "center" }}>
+                  <div className="variable-card" style={{ marginRight: "20px" }}>
+                    <div className="variable-icon">🔄</div>
+                    <div className="variable-content">
+                      <h4 className="variable-name">conversation_var</h4>
+                      <span className="variable-type">String</span>
+                    </div>
+                  </div>
+                  <div className="variable-arrows">
+                    <span>← WRITE (⚙ Variable Assigner)</span>
+                    <span>READ → (🤖 LLM)</span>
+                  </div>
+                </div>
+              </div>
 
+              {/* Add Variable Button */}
+              <button className="add-variable">
+                <FaPlus size={14} /> Add Variable
+              </button>
+            </div>
+          )}
+
+          {/* Environment variables */}
+          {type === "Environment Variables" && (
+            <div>
+              <p>
+                Environment variables can be used to store private information and credentials. 
+                They are read-only and can be separated from the DSL file during export.
+              </p>
+              <br></br>
+              <button className="add-variable">
+                <FaPlus size={14} /> Add Variable
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 
 
