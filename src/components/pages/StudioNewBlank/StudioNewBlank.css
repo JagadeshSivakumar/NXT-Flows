@@ -2592,7 +2592,7 @@ input:checked + .sliderr:before {
     width: 35%;
   }
   .flow-container-overlay.shifted-left {
-    right: 475px; /* adjust based on your rightPanel width */
+    right: 510px; /* adjust based on your rightPanel width */
   }
   .tips-box{
     width: 75vh;

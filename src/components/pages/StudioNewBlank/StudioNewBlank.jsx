@@ -1139,7 +1139,11 @@ const StudioNewBlank = ({
   const runHistoryRef = useRef(null);
 const checklistRef = useRef(null);
 
+ const [rightPanelOpen, setRightPanelOpen] = useState(false);
 
+  useEffect(() => {
+    setRightPanelOpen(!!selectedNode);
+  }, [selectedNode]);
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -1318,11 +1322,13 @@ useEffect(() => {
 )}
 
 
-      {showFlowContainer && (
-  <FlowContainer 
-    type={showFlowContainer} 
-    onClose={() => setShowFlowContainer(null)} 
-  />)}
+         {showFlowContainer && (
+        <FlowContainer 
+          type={showFlowContainer} 
+          onClose={() => setShowFlowContainer(null)}
+          rightPanelOpen={rightPanelOpen}
+        />
+      )}
       </div>
 
       <div
@@ -1454,9 +1460,9 @@ useEffect(() => {
   );
 };
 
-const FlowContainer = ({ type, onClose }) => {
+const FlowContainer = ({ type, onClose,rightPanelOpen }) => {
   return (
-    <div className={`flow-container-overlay ${type ? "shifted-left" : ""}`}>
+   <div className={`flow-container-overlay ${rightPanelOpen ? "shifted-left" : ""}`}>
       <div className="flow-container">
         <div className="flow-container-header">
           <h3>
