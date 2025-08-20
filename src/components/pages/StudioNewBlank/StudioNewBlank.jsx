@@ -1569,7 +1569,7 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                 />
 
                 <label>Type</label>
-                <select
+                <select style={{color:"#757575"}}
                   value={newVariable.type}
                   onChange={(e) => setNewVariable({ ...newVariable, type: e.target.value })}
                 >
@@ -1587,7 +1587,8 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                 />
 
                 <label>Description</label>
-                <textarea
+                <input
+                type="text" style={{height:"80px"}}
                   placeholder="Describe the variable"
                   value={newVariable.description}
                   onChange={(e) => setNewVariable({ ...newVariable, description: e.target.value })}
@@ -1672,7 +1673,8 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
           />
 
           <label className="env-label">Description</label>
-          <textarea
+          <input
+          type="text"
             placeholder="Describe the variable"
             className="env-textarea"
             value={newEnvVar.description}

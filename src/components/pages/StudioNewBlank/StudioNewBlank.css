@@ -3284,7 +3284,8 @@ input:checked + .sliderr:before {
 .modal textarea {
   width: 100%;
   padding: 8px 10px;
-  border: 1px solid #ccc;
+  background-color: #f0f2f5;
+  border: 1px solid #f0f2f5;
   border-radius: 6px;
   font-size: 14px;
   outline: none;
@@ -3321,8 +3322,9 @@ input:checked + .sliderr:before {
 }
 
 .modal-actions button:first-child {
-  background: #f3f4f6; /* gray */
+  background: #ffffff; /* gray */
   color: #111;
+  border: 1px solid #dedfe0;
 }
 
 .modal-actions button:first-child:hover {
@@ -3388,25 +3390,26 @@ input:checked + .sliderr:before {
 .env-input, .env-textarea {
   width: 100%;
   padding: 8px 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #f0f2f5;
   border-radius: 6px;
   font-size: 14px;
   margin-bottom: 10px;
+  background-color: #f0f2f5;
 }
 .env-textarea { resize: vertical; min-height: 60px; }
 
 .env-type-buttons { display: flex; gap: 8px; margin-bottom: 12px; }
 .env-type-btn {
   padding: 6px 12px;
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
+  border: 1px solid #f0f2f5;
+  background: #fcfcfc;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
 }
 .env-type-btn.active {
-  background: #2563eb;
-  color: #fff;
+  background: #fff;
+  color: black;
   border-color: #2563eb;
 }
 
@@ -3418,8 +3421,8 @@ input:checked + .sliderr:before {
 }
 .env-btn-cancel {
   padding: 6px 12px;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border: 1px solid #dedfe0;
   border-radius: 6px;
   cursor: pointer;
 }
