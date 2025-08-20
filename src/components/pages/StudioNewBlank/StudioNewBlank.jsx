@@ -1122,8 +1122,8 @@ const StudioNewBlank = ({
   showConditionMenu,
   setShowConditionMenu
 }) => {
-    const [showPublish, setShowPublish] = useState(false);
-    const [open, setOpen] = useState(false);
+  const [showPublish, setShowPublish] = useState(false);
+  const [open, setOpen] = useState(false);
 
 
   const { id } = useParams();
@@ -1136,40 +1136,40 @@ const StudioNewBlank = ({
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
   const [showFlowContainer, setShowFlowContainer] = useState(null);
-  
-  
+
+
   const [showRunHistory, setShowRunHistory] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
-  
 
-  
+
+
 
 
 
   const runHistoryRef = useRef(null);
-const checklistRef = useRef(null);
+  const checklistRef = useRef(null);
 
- const [rightPanelOpen, setRightPanelOpen] = useState(false);
+  const [rightPanelOpen, setRightPanelOpen] = useState(false);
 
   useEffect(() => {
     setRightPanelOpen(!!selectedNode);
   }, [selectedNode]);
 
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (showRunHistory && runHistoryRef.current && !runHistoryRef.current.contains(event.target)) {
-      setShowRunHistory(false);
-    }
-    if (showChecklist && checklistRef.current && !checklistRef.current.contains(event.target)) {
-      setShowChecklist(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showRunHistory && runHistoryRef.current && !runHistoryRef.current.contains(event.target)) {
+        setShowRunHistory(false);
+      }
+      if (showChecklist && checklistRef.current && !checklistRef.current.contains(event.target)) {
+        setShowChecklist(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [showRunHistory, showChecklist]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showRunHistory, showChecklist]);
 
 
 
@@ -1277,79 +1277,79 @@ useEffect(() => {
             <IoIosTimer size={16} onClick={() => setShowRunHistory(true)} />
             <FaArrowPointer size={16} onClick={() => setShowChecklist(true)} />
           </button>
-          <button className="flowHeaderButton"onClick={() => setShowFlowContainer("Features Variables")}>
+          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Features Variables")}>
             <MdScheduleSend size={16} />
             <span>Schedule</span>
           </button>
           <div className="publishContainer">
-            <button className="flowHeaderButton publishButton"  onClick={() => setShowPublish(true)}>
+            <button className="flowHeaderButton publishButton" onClick={() => setShowPublish(true)}>
               Publish <IoIosArrowDown />
             </button>
-            
+
           </div>
           <button className="flowHeaderButton" onClick={() => setOpen(true)} >
             <IoIosTimer size={16} />
           </button>
         </div>
-         {open && (
-        <TimerPopup onClose={() => setOpen(false)} />
-      )}
-         {showPublish && (
-        <PublishPopup onClose={() => setShowPublish(false)} />
-      )}
+        {open && (
+          <TimerPopup onClose={() => setOpen(false)} />
+        )}
+        {showPublish && (
+          <PublishPopup onClose={() => setShowPublish(false)} />
+        )}
 
-{showRunHistory && (
-  <div ref={runHistoryRef} className="run-history-popup">
-    <div className="run-history-header">
-      <h4>Run History</h4>
-      <button className="close-btn" onClick={() => setShowRunHistory(false)}>
-        <IoMdClose size={16} />
-      </button>
-    </div>
-    <div className="run-history-content">
-      <div className="history-icon">
-        <IoIosTimer size={28} />
-      </div>
-      <p>Not running yet</p>
-    </div>
-  </div>
-)}
+        {showRunHistory && (
+          <div ref={runHistoryRef} className="run-history-popup">
+            <div className="run-history-header">
+              <h4>Run History</h4>
+              <button className="close-btn" onClick={() => setShowRunHistory(false)}>
+                <IoMdClose size={16} />
+              </button>
+            </div>
+            <div className="run-history-content">
+              <div className="history-icon">
+                <IoIosTimer size={28} />
+              </div>
+              <p>Not running yet</p>
+            </div>
+          </div>
+        )}
 
-{showChecklist && (
-  <div ref={checklistRef} className="checklist-popup">
-    <div className="checklist-header">
-      <h4>Checklist (3)</h4>
-      <button className="close-btn" onClick={() => setShowChecklist(false)}>
-        <IoMdClose size={16} />
-      </button>
-    </div>
+        {showChecklist && (
+          <div ref={checklistRef} className="checklist-popup">
+            <div className="checklist-header">
+              <h4>Checklist (3)</h4>
+              <button className="close-btn" onClick={() => setShowChecklist(false)}>
+                <IoMdClose size={16} />
+              </button>
+            </div>
 
-    <p className="checklist-subtitle">
-      Make sure all issues are resolved before publishing
-    </p>
+            <p className="checklist-subtitle">
+              Make sure all issues are resolved before publishing
+            </p>
 
-    <div className="checklist-item">
-      <div className="checklist-item-header">
-        <span className="item-icon">🌐</span>
-        <span className="item-title">HTTP Request</span>
-      </div>
-      <ul>
-        <li>⚠ This step is not connected to anything</li>
-        <li>⚠ API is required</li>
-      </ul>
-    </div>
-    {/* other items ... */}
-  </div>
-)}
+            <div className="checklist-item">
+              <div className="checklist-item-header">
+                <span className="item-icon">🌐</span>
+                <span className="item-title">HTTP Request</span>
+              </div>
+              <ul>
+                <li>⚠ This step is not connected to anything</li>
+                <li>⚠ API is required</li>
+              </ul>
+            </div>
+            {/* other items ... */}
+          </div>
+        )}
 
 
-         {showFlowContainer && (
-        <FlowContainer 
-          type={showFlowContainer} 
-          onClose={() => setShowFlowContainer(null)}
-          rightPanelOpen={rightPanelOpen}
-        />
-      )}
+        {showFlowContainer && (
+          <FlowContainer
+            type={showFlowContainer}
+            onClose={() => setShowFlowContainer(null)}
+            rightPanelOpen={rightPanelOpen}
+          />
+        )}
       </div>
 
       <div
@@ -1481,9 +1481,27 @@ useEffect(() => {
   );
 };
 
-const FlowContainer = ({ type, onClose,rightPanelOpen }) => {
+const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
+  const [variables, setVariables] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newVariable, setNewVariable] = useState({
+    name: "",
+    type: "string",
+    defaultValue: "",
+    description: ""
+  });
+  const [showEnvModal, setShowEnvModal] = useState(false);
+  const [newEnvVar, setNewEnvVar] = useState({
+    type: "string",
+    name: "",
+    value: "",
+    description: ""
+  });
+
+
+
   return (
-   <div className={`flow-container-overlay ${rightPanelOpen ? "shifted-left" : ""}`}>
+    <div className={`flow-container-overlay ${rightPanelOpen ? "shifted-left" : ""}`}>
       <div className="flow-container">
         <div className="flow-container-header">
           <h3>
@@ -1528,33 +1546,164 @@ const FlowContainer = ({ type, onClose,rightPanelOpen }) => {
                 </div>
               </div>
 
-              
+
 
               {/* Add Variable Button */}
-              <button className="add-variable">
+              <button className="add-variable" onClick={() => setShowAddModal(true)}>
                 <FaPlus size={14} /> Add Variable
               </button>
             </div>
           )}
 
-          {/* Environment variables */}
-          {type === "Environment Variables" && (
-            <div>
-              <p>
-                Environment variables can be used to store private information and credentials. 
-                They are read-only and can be separated from the DSL file during export.
-              </p>
-              <br></br>
-              <button className="add-variable">
-                <FaPlus size={14} /> Add Variable
-              </button>
+          {showAddModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Add Conversation Variable</h3>
+
+                <label>Name</label>
+                <input
+                  type="text"
+                  placeholder="Variable name"
+                  value={newVariable.name}
+                  onChange={(e) => setNewVariable({ ...newVariable, name: e.target.value })}
+                />
+
+                <label>Type</label>
+                <select
+                  value={newVariable.type}
+                  onChange={(e) => setNewVariable({ ...newVariable, type: e.target.value })}
+                >
+                  <option value="string">string</option>
+                  <option value="number">number</option>
+                  <option value="boolean">boolean</option>
+                </select>
+
+                <label>Default Value</label>
+                <input
+                  type="text"
+                  placeholder="Default value, leave blank to not set"
+                  value={newVariable.defaultValue}
+                  onChange={(e) => setNewVariable({ ...newVariable, defaultValue: e.target.value })}
+                />
+
+                <label>Description</label>
+                <textarea
+                  placeholder="Describe the variable"
+                  value={newVariable.description}
+                  onChange={(e) => setNewVariable({ ...newVariable, description: e.target.value })}
+                />
+
+                <div className="modal-actions">
+                  <button onClick={() => setShowAddModal(false)}>Cancel</button>
+                  <button
+                    onClick={() => {
+                      setVariables([...variables, newVariable]);
+                      setNewVariable({ name: "", type: "string", defaultValue: "", description: "" });
+                      setShowAddModal(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                </div>
+
+              </div>
             </div>
           )}
+          
+
+
+
+  {type === "Environment Variables" && (
+  <div>
+    <p>
+      Environment variables can be used to store private information and credentials.
+      They are read-only and can be separated from the DSL file during export.
+    </p>
+    <br />
+
+    <button className="add-variable" onClick={() => setShowEnvModal(true)}>
+      <FaPlus size={14} /> Add Variable
+    </button>
+
+   
+  </div>
+)}
+ 
+
+  {showEnvModal && (
+      <div className="env-modal">
+        <h3>Add Environment Variable</h3>
+
+        <label>Type</label>
+        <div className="type-buttons">
+          {["string", "number", "secret"].map((t) => (
+            <button
+              key={t}
+              className={`type-btn ${newEnvVar.type === t ? "active" : ""}`}
+              onClick={() => setNewEnvVar({ ...newEnvVar, type: t })}
+            >
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <label>Name</label>
+        <input
+          type="text"
+          placeholder="env name"
+          value={newEnvVar.name}
+          onChange={(e) => setNewEnvVar({ ...newEnvVar, name: e.target.value })}
+        />
+
+        <label>Value</label>
+        <input
+          type="text"
+          placeholder="env value"
+          value={newEnvVar.value}
+          onChange={(e) => setNewEnvVar({ ...newEnvVar, value: e.target.value })}
+        />
+
+        <label>Description</label>
+        <textarea
+          placeholder="Describe the variable"
+          value={newEnvVar.description}
+          onChange={(e) => setNewEnvVar({ ...newEnvVar, description: e.target.value })}
+        />
+
+        <div className="modal-actions">
+          <button onClick={() => setShowEnvModal(false)}>Cancel</button>
+          <button
+            onClick={() => {
+              console.log("Saved Env Var:", newEnvVar);
+              setShowEnvModal(false);
+            }}
+          >
+            Save
+          </button>
         </div>
       </div>
+    )}
+    
+
+        </div>
+        
+    
+
+
+      </div>
+
+
     </div>
+
+    
+
+
+
+
   );
+  
 };
+
 
 
 
@@ -1733,18 +1882,18 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const [responseData, setResponseData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-    // for right panel 3-dots menu
-const [showMoreMenu, setShowMoreMenu] = useState(false);
-const moreMenuRef = useRef(null);
+  // for right panel 3-dots menu
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const moreMenuRef = useRef(null);
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
-      setShowMoreMenu(false);
-    }
-  };
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, [moreMenuRef, setShowMoreMenu]);
+    const handleClickOutside = (event) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
+        setShowMoreMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [moreMenuRef, setShowMoreMenu]);
 
 
   const isIterationNode = selectedNode?.data?.label === "Iteration";
@@ -1824,7 +1973,7 @@ const moreMenuRef = useRef(null);
     }));
   };
 
-  
+
 
 
 
@@ -1854,31 +2003,31 @@ const moreMenuRef = useRef(null);
               {isLoading ? '...' : <CiPlay1 size={20} />}
             </button>
             <button className="action-btn"><TbSquareRoundedPlus size={20} /></button>
-            <button className="action-btn"><BsThreeDots size={20}  onClick={() => setShowMoreMenu(!showMoreMenu)}  /></button>
+            <button className="action-btn"><BsThreeDots size={20} onClick={() => setShowMoreMenu(!showMoreMenu)} /></button>
             {showMoreMenu && (
-  <div className="more-menu" ref={moreMenuRef}>
-    <div className="menu-item">Run this step</div>
-    <div className="menu-item">Change Node</div>
-    <hr className="menu-divider" />
-    <div className="menu-item">
-      Copy <span className="shortcut">Ctrl C</span>
-    </div>
-    <div className="menu-item">
-      Duplicate <span className="shortcut">Ctrl D</span>
-    </div>
-    <div className="menu-item delete">
-      Delete <span className="shortcut">Del</span>
-    </div>
-    <hr className="menu-divider" />
-    <div className="menu-section">
-      <div className="menu-label">ABOUT</div>
-      <p className="menu-desc">
-        Allows you to split the workflow into two branches based on if/else conditions
-      </p>
-      <p className="menu-meta">Created by Dify</p>
-    </div>
-  </div>
-)}
+              <div className="more-menu" ref={moreMenuRef}>
+                <div className="menu-item">Run this step</div>
+                <div className="menu-item">Change Node</div>
+                <hr className="menu-divider" />
+                <div className="menu-item">
+                  Copy <span className="shortcut">Ctrl C</span>
+                </div>
+                <div className="menu-item">
+                  Duplicate <span className="shortcut">Ctrl D</span>
+                </div>
+                <div className="menu-item delete">
+                  Delete <span className="shortcut">Del</span>
+                </div>
+                <hr className="menu-divider" />
+                <div className="menu-section">
+                  <div className="menu-label">ABOUT</div>
+                  <p className="menu-desc">
+                    Allows you to split the workflow into two branches based on if/else conditions
+                  </p>
+                  <p className="menu-meta">Created by Dify</p>
+                </div>
+              </div>
+            )}
 
             <button className="action-btn" onClick={onClose}>
               <IoMdClose size={20} />

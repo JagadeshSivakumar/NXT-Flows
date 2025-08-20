@@ -3236,3 +3236,194 @@ input:checked + .sliderr:before {
 .toggle input:checked + .snider:before {
   transform: translateX(16px);
 }
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Modal Box */
+.modal {
+  background: #fff;
+  width: 400px;
+  max-width: 95%;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.modal h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Inputs */
+.modal label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus {
+  border-color: #2563eb; /* blue-600 */
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+.modal textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Buttons */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.modal-actions button {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-actions button:first-child {
+  background: #f3f4f6; /* gray */
+  color: #111;
+}
+
+.modal-actions button:first-child:hover {
+  background: #e5e7eb;
+}
+
+.modal-actions button:last-child {
+  background: #2563eb; /* blue */
+  color: white;
+  font-weight: 500;
+}
+
+.modal-actions button:last-child:hover {
+  background: #1e40af; /* darker blue */
+}
+.env-modal {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-right: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  width: 70%;
+  height: 50%;
+}
+
+.env-modal h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.env-modal label {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.env-modal input,
+.env-modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.env-modal textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+/* Type buttons */
+.type-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.type-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9fafb;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.type-btn.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Actions */
+.env-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.env-modal .modal-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.env-modal .modal-actions button:first-child {
+  background: #f3f4f6;
+}
+
+.env-modal .modal-actions button:last-child {
+  background: #2563eb;
+  color: white;
+}
+
+
+
+
