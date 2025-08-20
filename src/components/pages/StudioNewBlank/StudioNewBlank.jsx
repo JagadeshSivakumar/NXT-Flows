@@ -1630,60 +1630,77 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
 )}
  
 
-  {showEnvModal && (
-      <div className="env-modal">
-        <h3>Add Environment Variable</h3>
+  {/* Modal inside FlowContainer */}
+    {showEnvModal && (
+      <div className="env-modal-overlay">
+        <div className="env-modal">
+          <h3 className="env-modal-title">Add Environment Variable</h3>
 
-        <label>Type</label>
-        <div className="type-buttons">
-          {["string", "number", "secret"].map((t) => (
+          <label className="env-label">Type</label>
+          <div className="env-type-buttons">
+            {["string", "number", "secret"].map((t) => (
+              <button
+                key={t}
+                className={`env-type-btn ${newEnvVar.type === t ? "active" : ""}`}
+                onClick={() => setNewEnvVar({ ...newEnvVar, type: t })}
+              >
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          <label className="env-label">Name</label>
+          <input
+            type="text"
+            placeholder="env name"
+            className="env-input"
+            value={newEnvVar.name}
+            onChange={(e) =>
+              setNewEnvVar({ ...newEnvVar, name: e.target.value })
+            }
+          />
+
+          <label className="env-label">Value</label>
+          <input
+            type="text"
+            placeholder="env value"
+            className="env-input"
+            value={newEnvVar.value}
+            onChange={(e) =>
+              setNewEnvVar({ ...newEnvVar, value: e.target.value })
+            }
+          />
+
+          <label className="env-label">Description</label>
+          <textarea
+            placeholder="Describe the variable"
+            className="env-textarea"
+            value={newEnvVar.description}
+            onChange={(e) =>
+              setNewEnvVar({ ...newEnvVar, description: e.target.value })
+            }
+          />
+
+          <div className="env-modal-actions">
             <button
-              key={t}
-              className={`type-btn ${newEnvVar.type === t ? "active" : ""}`}
-              onClick={() => setNewEnvVar({ ...newEnvVar, type: t })}
+              className="env-btn-cancel"
+              onClick={() => setShowEnvModal(false)}
             >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              Cancel
             </button>
-          ))}
-        </div>
-
-        <label>Name</label>
-        <input
-          type="text"
-          placeholder="env name"
-          value={newEnvVar.name}
-          onChange={(e) => setNewEnvVar({ ...newEnvVar, name: e.target.value })}
-        />
-
-        <label>Value</label>
-        <input
-          type="text"
-          placeholder="env value"
-          value={newEnvVar.value}
-          onChange={(e) => setNewEnvVar({ ...newEnvVar, value: e.target.value })}
-        />
-
-        <label>Description</label>
-        <textarea
-          placeholder="Describe the variable"
-          value={newEnvVar.description}
-          onChange={(e) => setNewEnvVar({ ...newEnvVar, description: e.target.value })}
-        />
-
-        <div className="modal-actions">
-          <button onClick={() => setShowEnvModal(false)}>Cancel</button>
-          <button
-            onClick={() => {
-              console.log("Saved Env Var:", newEnvVar);
-              setShowEnvModal(false);
-            }}
-          >
-            Save
-          </button>
+            <button
+              className="env-btn-save"
+              onClick={() => {
+                console.log("Saved Env Var:", newEnvVar);
+                setShowEnvModal(false);
+              }}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     )}
-    
 
         </div>
         
