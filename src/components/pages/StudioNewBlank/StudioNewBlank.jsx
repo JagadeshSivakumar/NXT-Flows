@@ -1374,12 +1374,12 @@ const StudioNewBlank = ({
         </ReactFlow>
 
         <div className="flowSideMiniPanel">
-          <MiniPanelButton icon={FaPlusCircle} label="Add Node" />
+          <MiniPanelButton icon={FaPlusCircle} label="Add Node" onClick={handleIconClick}/>
 
 
           <MiniPanelButton icon={RiStickyNoteAddLine} label="Add Note" onClick={handleNoteIconClick} />
           <MiniPanelButton icon={FaArrowPointer} label="Pointer Mode" />
-          <MiniPanelButton icon={FaRegHand} label="Hand Mode" onClick={handleIconClick} />
+          <MiniPanelButton icon={FaRegHand} label="Hand Mode"  />
           <MiniPanelButton icon={RiExportLine} label="Export Image" />
           <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
           <MiniPanelButton
