@@ -7,6 +7,7 @@ import Studio from "./components/pages/Studio/Studio";
 import Knowledge from "./components/pages/Knowledge/Knowledge";
 import Settings from "./components/pages/Settings/Settings";
 import FlowBuilder from "./components/pages/StudioNewBlank/StudioNewBlank";
+import Signup from"./components/pages/Signup/Signup";
 import "./App.css";
 
 
@@ -14,8 +15,9 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Signup />} />
         <Route path="/" element={<Login />} />
-        <Route path="/Exploreflow" element={<Exploreflow />} />
+       <Route path="/Exploreflow" element={<Exploreflow />} />
         <Route path="/flows" element={<Flows />} />
         <Route path="/studio" element={<Studio />} />
        <Route path="/studio/:id" element={<FlowBuilder />} />
