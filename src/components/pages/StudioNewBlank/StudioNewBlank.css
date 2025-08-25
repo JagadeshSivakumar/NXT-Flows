@@ -1981,10 +1981,11 @@ input:checked + .sliderr:before {
   padding: 4px;
 }
 .json-editor-hint {
-  color: #666;
+  color: black;
   font-size: 0.875rem;
   margin-top: -20px;
   padding-left: 15px;
+  caret-color: #000;
 }
 
 .json-editor-actions {
