@@ -63,18 +63,16 @@ import ImportCurlModal from "../../Modal/ImportCurlModal";
 
 const menuItems = [
   { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
-  { title: "Requests", icon: MdOutlineCode, isActive: false },
-  { title: "Database", icon: GoDatabase, isActive: false },
   { title: "Webhook", icon: RiWebhookLine, isActive: false },
 ];
 
 const iconComponents = {
   LuGitPullRequest,
   MdOutlineCode,
-  GoDatabase,
   TbTimelineEventText,
   GrTrigger,
   RiWebhookLine,
+  GoDatabase,
   MdOutlineDataSaverOff,
   RiTerminalFill,
   MdOutlineLoop,
