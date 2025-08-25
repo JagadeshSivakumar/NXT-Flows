@@ -131,7 +131,7 @@ const Navbar = ({
           )}
         </div>
 
-        <button className="add-button">+</button>
+        
       </div>
 
       {/* Center Section */}

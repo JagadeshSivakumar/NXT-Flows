@@ -32,9 +32,11 @@ const Sidebar = ({ onFlowSelect }) => {
   };
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" >
       <div className="sidebar-header">
         <h3>PROJECTS</h3>
+        <div style={{marginLeft:"60px"}}>
+        <button className="add-button">+</button></div>
       </div>
       
       {flows.map((flow) => (

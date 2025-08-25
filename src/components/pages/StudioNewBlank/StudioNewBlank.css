@@ -296,6 +296,8 @@
 }
 .sidebar-header {
   padding: 1.5rem;
+  display: flex;
+  align-items: center;
 }
 .project-info {
   display: flex;
