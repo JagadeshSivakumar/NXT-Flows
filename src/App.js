@@ -16,7 +16,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Signup />} />
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
        <Route path="/Exploreflow" element={<Exploreflow />} />
         <Route path="/flows" element={<Flows />} />
         <Route path="/studio" element={<Studio />} />
