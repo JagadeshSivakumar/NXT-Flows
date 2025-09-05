@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import'./Login.css';
 function Login() {
    const [email, setEmail] = useState('');
@@ -90,9 +90,9 @@ function Login() {
             {/* Sign up link */}
             <div className="signup-container">
               Not a member yet?{' '}
-              <a href="#" className="signup-link">
+              <Link to="/signup" className="signup-link">
                 Sign Up
-              </a>
+              </Link>
             </div>
           </form>
         </div>
