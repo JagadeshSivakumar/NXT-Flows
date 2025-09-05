@@ -18,6 +18,25 @@ import { useNavigate } from "react-router-dom";
 import "./Studio.css";
 import Navbar from "../../Navbar/Navbar";
 import { FaRobot } from "react-icons/fa";
+import axios from "axios";
+
+const API_URL = "http://192.168.1.137:4000";
+
+export const createWorkspace = async (data) => {
+  try {
+    const token = localStorage.getItem("token"); // ✅ fetch token
+    const response = await axios.post(`${API_URL}/workspaces`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ attach token
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating workspace:", error.response?.data || error.message);
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
 
 
 const CreateOption = ({ icon: Icon, title, onClick }) => (
@@ -57,22 +76,48 @@ const Studio = () => {
     localStorage.setItem("containers", JSON.stringify(containers));
   }, [containers]);
 
-  const handleCreateContainer = () => {
-    if (containerName.trim()) {
-      const newContainer = {
-        id: Date.now(),
-        name: containerName,
+ 
+
+const handleCreateContainer = async () => {
+  if (containerName.trim()) {
+    try {
+      const payload = {
+        name: containerName, // backend expects "name"
         project: projectName,
         description: editDescription || "sample flow to test login flow",
-        createdAt: new Date().toISOString(),
       };
+
+      console.log("Sending payload:", payload);
+
+      // ✅ Call API
+      const result = await createWorkspace(payload);
+
+      // ✅ Update UI only if API succeeds
+      const newContainer = {
+        id: result.id || Date.now(), // use backend id if returned
+        name: result.name || containerName,
+        project: result.project || projectName,
+        description: result.description || editDescription || "sample flow to test login flow",
+        createdAt: result.createdAt || new Date().toISOString(),
+      };
+
       setContainers((prev) => [...prev, newContainer]);
+
+      // reset form
       setContainerName("");
       setProjectName("");
       setEditDescription("");
       setShowCreateModal(false);
+
+      console.log("Workspace created successfully:", newContainer);
+
+    } catch (error) {
+      console.error("Failed to create workspace:", error);
+      alert(error.message || "Failed to create workspace");
     }
-  };
+  }
+};
+
 
   const handleDeleteContainer = (id) => {
     setContainers((prev) => prev.filter((container) => container.id !== id));
