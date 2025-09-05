@@ -42,7 +42,7 @@ function Signup() {
       const data = await response.json();
       console.log("✅ Signup success:", data);
 
-      navigate("/Exploreflow");
+      navigate("/login");
     } catch (err) {
       console.error("❌ Signup error:", err.message);
       setError(err.message);

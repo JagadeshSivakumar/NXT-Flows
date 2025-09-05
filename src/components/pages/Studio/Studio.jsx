@@ -17,6 +17,8 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import "./Studio.css";
 import Navbar from "../../Navbar/Navbar";
+import { FaRobot } from "react-icons/fa";
+
 
 const CreateOption = ({ icon: Icon, title, onClick }) => (
   <button onClick={onClick} className="create-option">
@@ -263,71 +265,82 @@ const Studio = () => {
         </div>
       </div>
 
-      {showCreateModal && (
-        <div className="modal-overlay">
-          <div className="create-modal">
-            <button
-              onClick={() => setShowCreateModal(false)}
-              className="close-button"
-            >
-              <X className="icon" />
-            </button>
-            <div className="modal-left">
-              <div className="modal-header">
-                <h3>Create From Blank</h3>
-              </div>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="modal-label">Project Name</label>
-                  <input
-                    type="text"
-                    placeholder="Give your project a name"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    className="modal-input"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="modal-label">App Name</label>
-                  <input
-                    type="text"
-                    placeholder="Give your app a name"
-                    value={containerName}
-                    onChange={(e) => setContainerName(e.target.value)}
-                    className="modal-input"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="modal-label">Description</label>
-                  <textarea
-                    placeholder="Enter the description of the app"
-                    className="modal-textarea"
-                    rows={4}
-                    value={editDescription}
-                    onChange={(e) => setEditDescription(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="cancel-button"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreateContainer}
-                  className="create-button"
-                >
-                  Create
-                </button>
+ {showCreateModal && (
+  <div className="modal-overlay">
+    <div className="create-modal">
+      <button
+        onClick={() => setShowCreateModal(false)}
+        className="close-button"
+      >
+        <X className="icon" />
+      </button>
+      <div className="modal-left">
+        <div className="modal-header">
+          <h3>Create From Blank</h3>
+        </div>
+        <div className="modal-body">
+          {/* Project Name */}
+          <div className="form-group">
+            <label className="modal-label">Project Name</label>
+            <input
+              type="text"
+              placeholder="Give your project a name"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="modal-input"
+            />
+          </div>
+
+          {/* App Name & Icon */}
+          <div className="form-group">
+            <label className="modal-label">App Name & Icon</label>
+            <div className="app-input-wrapper">
+              <input
+                type="text"
+                placeholder="Give your app a name"
+                value={containerName}
+                onChange={(e) => setContainerName(e.target.value)}
+                className="modal-input app-input"
+              />
+              <div className="icon-box">
+                <FaRobot className="app-icon" />
               </div>
             </div>
-            <div className="modal-right"></div>
+          </div>
+
+          {/* Description */}
+          <div className="form-group">
+            <label className="modal-label">Description</label>
+            <textarea
+              placeholder="Enter the description of the app"
+              className="modal-textarea"
+              rows={4}
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
           </div>
         </div>
-      )}
 
+        {/* Footer */}
+        <div className="modal-footer">
+          <button
+            onClick={() => setShowCreateModal(false)}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreateContainer}
+            className="create-button"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+      <div className="modal-right"></div>
+    </div>
+  </div>
+)}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="confirm-modal">

@@ -664,3 +664,33 @@ html, body {
   
  
 }
+.app-input-wrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.app-input {
+  flex: 1;
+  border: none;
+  padding: 10px 12px;
+  background: #f6f7fb; /* light gray */
+  font-size: 14px;
+  outline: none;
+  border-radius: 8px 0 0 8px;
+}
+
+.icon-box {
+  background: #fff4ed; /* light peach like screenshot */
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 8px 8px 0;
+}
+
+.app-icon {
+  font-size: 20px;
+  color: #ff6b35; /* orange/red */
+}
