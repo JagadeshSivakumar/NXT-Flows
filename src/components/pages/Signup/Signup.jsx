@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify'; // ✅ import
+import 'react-toastify/dist/ReactToastify.css'; // ✅ import styles
 import './Signup.css';
 
 function Signup() {
@@ -34,15 +36,27 @@ function Signup() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.message || "Signup failed");
+        // if already registered
+        if (data.message && data.message.toLowerCase().includes("already")) {
+          toast.error("User already registered!", { position: "top-center" });
+        } else {
+          toast.error(data.message || "Signup failed", { position: "top-center" });
+        }
+        throw new Error(data.message || "Signup failed");
       }
 
-      const data = await response.json();
       console.log("✅ Signup success:", data);
 
-      navigate("/login");
+      toast.success("Signup successful! Please login.", { position: "top-center" });
+
+      // Redirect after success
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
     } catch (err) {
       console.error("❌ Signup error:", err.message);
       setError(err.message);
@@ -51,6 +65,9 @@ function Signup() {
 
   return (
     <div className="signup">
+      {/* Toast container */}
+      <ToastContainer />
+
       {/* Branding */}
       <div className="signup__branding">
         <div className="signup__brand-wrapper">
@@ -139,7 +156,7 @@ function Signup() {
 
             <div className="signup__bottom">
               Already a member?{' '}
-              <Link to="/login" className="signup__link">
+              <Link to="/" className="signup__link">
                 Sign In
               </Link>
             </div>
