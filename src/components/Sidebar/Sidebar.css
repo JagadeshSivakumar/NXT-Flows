@@ -6,6 +6,7 @@
   height: calc(100vh - 60px);
   background-color: #f2f4f7;
   font-family: sans-serif;
+
 }
 .sidebar-header h3 {
   font-size: 12px;
@@ -13,6 +14,7 @@
   color: #9ca3af;
   letter-spacing: 0.05em;
   margin: 0;
+  display: flex;
 }
 .flow-item {
   display: flex;
@@ -44,4 +46,19 @@
 .flow-item span {
   font-size: 14px;
   font-weight: 500;
+}
+.add-buttons {
+  width: 24px;
+  height: 24px;
+  margin-left: 60px;
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 15%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
 }

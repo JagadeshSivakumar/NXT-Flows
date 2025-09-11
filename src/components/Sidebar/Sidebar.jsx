@@ -35,8 +35,10 @@ const Sidebar = ({ onFlowSelect }) => {
     <div className="sidebar" >
       <div className="sidebar-header">
         <h3>PROJECTS</h3>
-        <div style={{marginLeft:"60px"}}>
-        <button className="add-button">+</button></div>
+
+        <div >
+          <button className="add-buttons">+</button>
+        </div>
       </div>
       
       {flows.map((flow) => (
