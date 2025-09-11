@@ -23,6 +23,7 @@
 .create-modal-container h2 {
   font-size: 20px;
   margin-bottom: 16px;
+  font-weight: 700;
 }
 
 .create-modal-form-group {
@@ -34,7 +35,8 @@
 .create-modal-form-group label {
   font-size: 14px;
   margin-bottom: 6px;
-  color: #374151;
+  color: black;
+  font-weight: 600;
 }
 
 .create-modal-form-group input,
@@ -43,6 +45,8 @@
   border-radius: 8px;
   padding: 10px;
   font-size: 14px;
+  background-color: #f2f4f7;
+  font-family: monospace;
 }
 
 .create-modal-form-group textarea {

@@ -326,7 +326,7 @@ const handleCreateContainer = async () => {
         </div>
         <div className="modal-body">
           {/* Project Name */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label className="modal-label">Project Name</label>
             <input
               type="text"
@@ -335,7 +335,7 @@ const handleCreateContainer = async () => {
               onChange={(e) => setProjectName(e.target.value)}
               className="modal-input"
             />
-          </div>
+          </div> */}
 
           {/* App Name & Icon */}
           <div className="form-group">

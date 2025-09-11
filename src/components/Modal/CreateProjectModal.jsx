@@ -9,10 +9,10 @@ const CreateProjectModal = ({ isOpen, onClose }) => {
       <div className="create-modal-container">
         <h2>Create From Blank</h2>
 
-        <div className="create-modal-form-group">
+        {/* <div className="create-modal-form-group">
           <label>Project Name</label>
           <input type="text" placeholder="Give your project a name" />
-        </div>
+        </div> */}
 
         <div className="create-modal-form-group">
           <label>App Name & Icon</label>
