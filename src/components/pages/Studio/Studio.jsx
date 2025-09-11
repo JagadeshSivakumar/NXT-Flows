@@ -34,7 +34,10 @@ export const createWorkspace = async (data) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating workspace:", error.response?.data || error.message);
+    console.error(
+      "Error creating workspace:",
+      error.response?.data || error.message
+    );
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
@@ -49,7 +52,10 @@ export const getAllWorkspaces = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching workspaces:", error.response?.data || error.message);
+    console.error(
+      "Error fetching workspaces:",
+      error.response?.data || error.message
+    );
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
@@ -124,7 +130,10 @@ const Studio = () => {
           id: result.id || Date.now(),
           name: result.name || containerName,
           project: result.project || projectName,
-          description: result.description || editDescription || "sample flow to test login flow",
+          description:
+            result.description ||
+            editDescription ||
+            "sample flow to test login flow",
           createdAt: result.createdAt || new Date().toISOString(),
         };
 
@@ -181,7 +190,9 @@ const Studio = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
+                  className={`tab-buttonn ${
+                    activeTab === tab.id ? "active" : ""
+                  }`}
                 >
                   <span className="tab-icon">{tab.icon}</span>
                   {tab.label}
@@ -192,7 +203,9 @@ const Studio = () => {
             <div className="right-section">
               <div
                 className="creator-checkbox"
-                onClick={() => setIsCreatedByMeChecked(!isCreatedByMeChecked)}
+                onClick={() =>
+                  setIsCreatedByMeChecked(!isCreatedByMeChecked)
+                }
               >
                 {isCreatedByMeChecked ? (
                   <MdCheckBox className="icon mr-2" />
@@ -209,7 +222,9 @@ const Studio = () => {
                 >
                   <Tag className="icon mr-2" />
                   All Tags
-                  <ChevronDown className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`} />
+                  <ChevronDown
+                    className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`}
+                  />
                 </button>
                 {isTagsOpen && (
                   <div className="tag-dropdown">
@@ -252,74 +267,89 @@ const Studio = () => {
                 title="Create from Blank"
                 onClick={() => setShowCreateModal(true)}
               />
-              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
-              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
+              <CreateOption
+                icon={FileText}
+                title="Create from Template"
+                onClick={() => {}}
+              />
+              <CreateOption
+                icon={Import}
+                title="Import DSL file"
+                onClick={() => {}}
+              />
             </div>
           </div>
 
           {/* Workspaces */}
-          {containers.map((container) => (
-            <div
-              key={container.id}
-              className="grid-card container-card"
-              onClick={() => navigate(`/studio/${container.id}`)}
-              onMouseLeave={() => setOpenMenuId(null)}
-              style={{ cursor: "pointer" }}
-            >
-              <div className="container-content">
-                <h3>{container.name}</h3>
-                {container.project && <p className="project-name">Project: {container.project}</p>}
-                <p>{container.description}</p>
-                <small className="created-at">
-                  Created on: {new Date(container.createdAt).toLocaleString()}
-                </small>
-              </div>
+          {containers.map((container, index) => {
+            const uniqueId = container.id ?? index; // ✅ ensures uniqueness
+            return (
               <div
-                className="container-actions"
-                onClick={(e) => e.stopPropagation()}
+                key={uniqueId}
+                className="grid-card container-card"
+                onClick={() => navigate(`/studio/${uniqueId}`)}
+                style={{ cursor: "pointer" }}
               >
-                <div className="dots-container">
-                  <button
-                    className="dots-button"
-                    onClick={() =>
-                      setOpenMenuId(openMenuId === container.id ? null : container.id)
-                    }
-                  >
-                    <HiOutlineDotsHorizontal className="dots-icon" />
-                  </button>
+                <div className="container-content">
+                  <h3>{container.name}</h3>
+                  {container.project && (
+                    <p className="project-name">Project: {container.project}</p>
+                  )}
+                  <p>{container.description}</p>
+                  <small className="created-at">
+                    Created on:{" "}
+                    {new Date(container.createdAt).toLocaleString()}
+                  </small>
                 </div>
-                {openMenuId === container.id && (
-                  <div className="dropdown-menu">
+                <div
+                  className="container-actions"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="dots-container">
                     <button
-                      className="menu-item"
-                      onClick={() => {
-                        setEditId(container.id);
-                        setEditName(container.name);
-                        setEditDescription(container.description);
-                        setShowEditModal(true);
-                        setOpenMenuId(null);
-                      }}
+                      className="dots-button"
+                      onClick={() =>
+                        setOpenMenuId(
+                          openMenuId === uniqueId ? null : uniqueId
+                        )
+                      }
                     >
-                      Edit Info
-                    </button>
-                    <button className="menu-item">Duplicate</button>
-                    <button className="menu-item">Export DSL</button>
-                    <button className="menu-item">Open in Explore</button>
-                    <button
-                      className="menu-item"
-                      onClick={() => {
-                        setDeleteId(container.id);
-                        setShowDeleteModal(true);
-                        setOpenMenuId(null);
-                      }}
-                    >
-                      Delete
+                      <HiOutlineDotsHorizontal className="dots-icon" />
                     </button>
                   </div>
-                )}
+                  {openMenuId === uniqueId && (
+                    <div className="dropdown-menu">
+                      <button
+                        className="menu-item"
+                        onClick={() => {
+                          setEditId(container.id);
+                          setEditName(container.name);
+                          setEditDescription(container.description);
+                          setShowEditModal(true);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        Edit Info
+                      </button>
+                      <button className="menu-item">Duplicate</button>
+                      <button className="menu-item">Export DSL</button>
+                      <button className="menu-item">Open in Explore</button>
+                      <button
+                        className="menu-item"
+                        onClick={() => {
+                          setDeleteId(container.id);
+                          setShowDeleteModal(true);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -375,7 +405,10 @@ const Studio = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={handleCreateContainer} className="create-button">
+                <button
+                  onClick={handleCreateContainer}
+                  className="create-button"
+                >
                   Create
                 </button>
               </div>
