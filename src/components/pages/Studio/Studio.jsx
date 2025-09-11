@@ -22,13 +22,14 @@ import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
 
+// ✅ API Services
 export const createWorkspace = async (data) => {
   try {
-    const token = localStorage.getItem("token"); // ✅ fetch token
+    const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/workspaces`, data, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ attach token
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -38,7 +39,22 @@ export const createWorkspace = async (data) => {
   }
 };
 
+export const getAllWorkspaces = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/workspaces`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workspaces:", error.response?.data || error.message);
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
 
+// ✅ Component for create options
 const CreateOption = ({ icon: Icon, title, onClick }) => (
   <button onClick={onClick} className="create-option">
     <Icon className="option-icon" />
@@ -57,69 +73,78 @@ const Studio = () => {
   const [editDescription, setEditDescription] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [containers, setContainers] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("containers");
-      return saved ? JSON.parse(saved) : [];
-    }
-    return [];
-  });
+  const [containers, setContainers] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState("");
   const [editId, setEditId] = useState(null);
-  
 
   const navigate = useNavigate();
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
 
+  // ✅ Fetch workspaces on load
   useEffect(() => {
-    localStorage.setItem("containers", JSON.stringify(containers));
-  }, [containers]);
+    const fetchWorkspaces = async () => {
+      try {
+        const result = await getAllWorkspaces();
+        console.log("Fetched workspaces:", result);
 
- 
+        const formatted = result.map((item) => ({
+          id: item.id,
+          name: item.name,
+          project: item.project,
+          description: item.description || "No description",
+          createdAt: item.createdAt,
+        }));
 
-const handleCreateContainer = async () => {
-  if (containerName.trim()) {
-    try {
-      const payload = {
-        name: containerName, // backend expects "name"
-        project: projectName,
-        description: editDescription || "sample flow to test login flow",
-      };
+        setContainers(formatted);
+      } catch (error) {
+        console.error("Failed to fetch workspaces:", error);
+      }
+    };
 
-      console.log("Sending payload:", payload);
+    fetchWorkspaces();
+  }, []);
 
-      // ✅ Call API
-      const result = await createWorkspace(payload);
+  // ✅ Create new workspace
+  const handleCreateContainer = async () => {
+    if (containerName.trim()) {
+      try {
+        const payload = {
+          name: containerName,
+          project: projectName,
+          description: editDescription || "sample flow to test login flow",
+        };
 
-      // ✅ Update UI only if API succeeds
-      const newContainer = {
-        id: result.id || Date.now(), // use backend id if returned
-        name: result.name || containerName,
-        project: result.project || projectName,
-        description: result.description || editDescription || "sample flow to test login flow",
-        createdAt: result.createdAt || new Date().toISOString(),
-      };
+        console.log("Sending payload:", payload);
 
-      setContainers((prev) => [...prev, newContainer]);
+        const result = await createWorkspace(payload);
 
-      // reset form
-      setContainerName("");
-      setProjectName("");
-      setEditDescription("");
-      setShowCreateModal(false);
+        const newContainer = {
+          id: result.id || Date.now(),
+          name: result.name || containerName,
+          project: result.project || projectName,
+          description: result.description || editDescription || "sample flow to test login flow",
+          createdAt: result.createdAt || new Date().toISOString(),
+        };
 
-      console.log("Workspace created successfully:", newContainer);
+        setContainers((prev) => [...prev, newContainer]);
 
-    } catch (error) {
-      console.error("Failed to create workspace:", error);
-      alert(error.message || "Failed to create workspace");
+        // reset form
+        setContainerName("");
+        setProjectName("");
+        setEditDescription("");
+        setShowCreateModal(false);
+
+        console.log("Workspace created successfully:", newContainer);
+      } catch (error) {
+        console.error("Failed to create workspace:", error);
+        alert(error.message || "Failed to create workspace");
+      }
     }
-  }
-};
+  };
 
-
+  // ✅ Delete from UI (later we can add API delete)
   const handleDeleteContainer = (id) => {
     setContainers((prev) => prev.filter((container) => container.id !== id));
     setShowDeleteModal(false);
@@ -156,9 +181,7 @@ const handleCreateContainer = async () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`tab-buttonn ${
-                    activeTab === tab.id ? "active" : ""
-                  }`}
+                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
                 >
                   <span className="tab-icon">{tab.icon}</span>
                   {tab.label}
@@ -186,9 +209,7 @@ const handleCreateContainer = async () => {
                 >
                   <Tag className="icon mr-2" />
                   All Tags
-                  <ChevronDown
-                    className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`}
-                  />
+                  <ChevronDown className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`} />
                 </button>
                 {isTagsOpen && (
                   <div className="tag-dropdown">
@@ -217,8 +238,10 @@ const handleCreateContainer = async () => {
         </div>
       </div>
 
+      {/* GRID */}
       <div className="content-grid-container">
         <div className="content-grid">
+          {/* Create App Card */}
           <div className="grid-card create-app-card">
             <div className="index-header">
               <h1 className="index-title">CREATE APP</h1>
@@ -229,19 +252,12 @@ const handleCreateContainer = async () => {
                 title="Create from Blank"
                 onClick={() => setShowCreateModal(true)}
               />
-              <CreateOption
-                icon={FileText}
-                title="Create from Template"
-                onClick={() => {}}
-              />
-              <CreateOption
-                icon={Import}
-                title="Import DSL file"
-                onClick={() => {}}
-              />
+              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
+              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
             </div>
           </div>
 
+          {/* Workspaces */}
           {containers.map((container) => (
             <div
               key={container.id}
@@ -252,9 +268,7 @@ const handleCreateContainer = async () => {
             >
               <div className="container-content">
                 <h3>{container.name}</h3>
-                {container.project && (
-                  <p className="project-name">Project: {container.project}</p>
-                )}
+                {container.project && <p className="project-name">Project: {container.project}</p>}
                 <p>{container.description}</p>
                 <small className="created-at">
                   Created on: {new Date(container.createdAt).toLocaleString()}
@@ -268,9 +282,7 @@ const handleCreateContainer = async () => {
                   <button
                     className="dots-button"
                     onClick={() =>
-                      setOpenMenuId(
-                        openMenuId === container.id ? null : container.id
-                      )
+                      setOpenMenuId(openMenuId === container.id ? null : container.id)
                     }
                   >
                     <HiOutlineDotsHorizontal className="dots-icon" />
@@ -311,82 +323,69 @@ const handleCreateContainer = async () => {
         </div>
       </div>
 
- {showCreateModal && (
-  <div className="modal-overlay">
-    <div className="create-modal">
-      <button
-        onClick={() => setShowCreateModal(false)}
-        className="close-button"
-      >
-        <X className="icon" />
-      </button>
-      <div className="modal-left">
-        <div className="modal-header">
-          <h3>Create From Blank</h3>
-        </div>
-        <div className="modal-body">
-          {/* Project Name */}
-          {/* <div className="form-group">
-            <label className="modal-label">Project Name</label>
-            <input
-              type="text"
-              placeholder="Give your project a name"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              className="modal-input"
-            />
-          </div> */}
+      {/* CREATE MODAL */}
+      {showCreateModal && (
+        <div className="modal-overlay">
+          <div className="create-modal">
+            <button
+              onClick={() => setShowCreateModal(false)}
+              className="close-button"
+            >
+              <X className="icon" />
+            </button>
+            <div className="modal-left">
+              <div className="modal-header">
+                <h3>Create From Blank</h3>
+              </div>
+              <div className="modal-body">
+                {/* App Name & Icon */}
+                <div className="form-group">
+                  <label className="modal-label">App Name & Icon</label>
+                  <div className="app-input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="Give your app a name"
+                      value={containerName}
+                      onChange={(e) => setContainerName(e.target.value)}
+                      className="modal-input app-input"
+                    />
+                    <div className="icon-box">
+                      <FaRobot className="app-icon" />
+                    </div>
+                  </div>
+                </div>
 
-          {/* App Name & Icon */}
-          <div className="form-group">
-            <label className="modal-label">App Name & Icon</label>
-            <div className="app-input-wrapper">
-              <input
-                type="text"
-                placeholder="Give your app a name"
-                value={containerName}
-                onChange={(e) => setContainerName(e.target.value)}
-                className="modal-input app-input"
-              />
-              <div className="icon-box">
-                <FaRobot className="app-icon" />
+                {/* Description */}
+                <div className="form-group">
+                  <label className="modal-label">Description</label>
+                  <textarea
+                    placeholder="Enter the description of the app"
+                    className="modal-textarea"
+                    rows={4}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className="cancel-button"
+                >
+                  Cancel
+                </button>
+                <button onClick={handleCreateContainer} className="create-button">
+                  Create
+                </button>
               </div>
             </div>
-          </div>
-
-          {/* Description */}
-          <div className="form-group">
-            <label className="modal-label">Description</label>
-            <textarea
-              placeholder="Enter the description of the app"
-              className="modal-textarea"
-              rows={4}
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-            />
+            <div className="modal-right"></div>
           </div>
         </div>
+      )}
 
-        {/* Footer */}
-        <div className="modal-footer">
-          <button
-            onClick={() => setShowCreateModal(false)}
-            className="cancel-button"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleCreateContainer}
-            className="create-button"
-          >
-            Create
-          </button>
-        </div>
-      </div>
-      <div className="modal-right"></div>
-    </div>
-  </div>
-)}
+      {/* DELETE MODAL */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="confirm-modal">
@@ -411,9 +410,7 @@ const handleCreateContainer = async () => {
               </button>
               <button
                 className="confirm-btn"
-                onClick={() => {
-                  handleDeleteContainer(deleteId);
-                }}
+                onClick={() => handleDeleteContainer(deleteId)}
               >
                 Confirm
               </button>
@@ -422,6 +419,7 @@ const handleCreateContainer = async () => {
         </div>
       )}
 
+      {/* EDIT MODAL */}
       {showEditModal && (
         <div className="modal-overlayy">
           <div className="edit-modal">
