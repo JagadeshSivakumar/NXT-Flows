@@ -68,6 +68,7 @@ const Studio = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState("");
   const [editId, setEditId] = useState(null);
+  
 
   const navigate = useNavigate();
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];

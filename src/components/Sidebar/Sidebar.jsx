@@ -1,30 +1,16 @@
-
 import React, { useState } from 'react';
 import './Sidebar.css';
+import CreateProjectModal from '../Modal/CreateProjectModal';  // ✅ correct import
 
 const Sidebar = ({ onFlowSelect }) => {
   const flows = [
-    {
-      id: 1,
-      name: 'sampletry',
-      icon: '🤖',
-      description: 'A sample workflow for testing and demonstration purposes. This flow processes basic data transformations.'
-    },
-    {
-      id: 2,
-      name: 'multipefry',
-      icon: '🔄',
-      description: 'A multi-step workflow that handles complex data processing with multiple validation stages.'
-    },
-    {
-      id: 3,
-      name: 'api flowstry',
-      icon: '🌐',
-      description: 'An API-focused workflow that manages external service integrations and data synchronization.'
-    }
+    { id: 1, name: 'sampletry', icon: '🤖' },
+    { id: 2, name: 'multipefry', icon: '🔄' },
+    { id: 3, name: 'api flowstry', icon: '🌐' }
   ];
 
   const [selectedFlow, setSelectedFlow] = useState(flows[0]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleFlowSelect = (flow) => {
     setSelectedFlow(flow);
@@ -32,15 +18,17 @@ const Sidebar = ({ onFlowSelect }) => {
   };
 
   return (
-    <div className="sidebar" >
+    <div className="sidebar">
       <div className="sidebar-header">
         <h3>PROJECTS</h3>
-
-        <div >
-          <button className="add-buttons">+</button>
-        </div>
+        <button
+          className="add-buttons"
+          onClick={() => setIsModalOpen(true)}
+        >
+          +
+        </button>
       </div>
-      
+
       {flows.map((flow) => (
         <div 
           key={flow.id}
@@ -51,6 +39,12 @@ const Sidebar = ({ onFlowSelect }) => {
           <span>{flow.name}</span>
         </div>
       ))}
+
+      {/* ✅ Render Modal */}
+      <CreateProjectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
