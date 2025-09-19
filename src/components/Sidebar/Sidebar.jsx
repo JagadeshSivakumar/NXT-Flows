@@ -10,17 +10,27 @@ const Sidebar = ({ onFlowSelect }) => {
   // Fetch existing projects when Sidebar loads
   useEffect(() => {
     const fetchProjects = async () => {
-  try {
-    const token = localStorage.getItem("token"); // ✅ token here
-    const res = await fetch("http://192.168.1.137:4000/projects", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      try {
+        const token = localStorage.getItem("token"); // ✅ token here
+        if (!token) {
+          alert("No token provided");
+          return;
+        }
 
-    const data = await res.json();
+        const res = await fetch("http://192.168.1.137:4000/projects", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-        // ✅ Handle single object or array
+        if (!res.ok) {
+          throw new Error(`Failed to fetch: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        // ✅ Backend returns an array (your example)
         let projectList = [];
         if (Array.isArray(data)) {
           projectList = data;
@@ -31,7 +41,12 @@ const Sidebar = ({ onFlowSelect }) => {
         }
 
         setProjects(projectList);
-        if (projectList.length > 0) setSelectedProject(projectList[0]);
+
+        // auto-select first project
+        if (projectList.length > 0) {
+          setSelectedProject(projectList[0]);
+          onFlowSelect && onFlowSelect(projectList[0]);
+        }
       } catch (error) {
         console.error("Error fetching projects:", error);
         setProjects([]); // fallback
@@ -39,17 +54,18 @@ const Sidebar = ({ onFlowSelect }) => {
     };
 
     fetchProjects();
-  }, []);
+  }, [onFlowSelect]);
 
   const handleProjectSelect = (project) => {
     setSelectedProject(project);
-    onFlowSelect(project);
+    onFlowSelect && onFlowSelect(project);
   };
 
   // ✅ When new project is created
   const handleProjectCreated = (newProject) => {
     setProjects((prev) => [...prev, newProject]);
     setSelectedProject(newProject);
+    onFlowSelect && onFlowSelect(newProject);
   };
 
   return (
@@ -61,7 +77,9 @@ const Sidebar = ({ onFlowSelect }) => {
         </button>
       </div>
 
-      {Array.isArray(projects) &&
+      {projects.length === 0 ? (
+        <p className="no-projects">No projects available</p>
+      ) : (
         projects.map((project) => (
           <div
             key={project._id || project.id}
@@ -70,10 +88,11 @@ const Sidebar = ({ onFlowSelect }) => {
             }`}
             onClick={() => handleProjectSelect(project)}
           >
-            <div className="flow-icon">📁</div>
+            <div className="flow-icon"></div>
             <span>{project.name}</span>
           </div>
-        ))}
+        ))
+      )}
 
       {/* ✅ Modal with callback */}
       <CreateProjectModal
