@@ -1485,7 +1485,7 @@ input:checked + .sliderr:before {
 
 .dropdown-arrow {
   position: absolute;
-  right: -15px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   color: #6b7280;
