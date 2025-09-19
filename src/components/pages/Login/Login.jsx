@@ -1,24 +1,44 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify"; // ✅ import
-import "react-toastify/dist/ReactToastify.css"; // ✅ import styles
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
+import { LucideEye, LucideEyeOff } from "lucide-react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE_URL = "http://192.168.1.137:4000"; // ✅ backend URL
+  const API_BASE_URL = "http://192.168.1.137:4000";
+
+  const validateEmail = (email) => {
+    // simple email regex check
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setEmailError(false);
+    setPasswordError(false);
 
-    if (!email || !password) {
-      setError("Please enter both email and password");
+    // Email validation
+    if (!email || !validateEmail(email)) {
+      setEmailError(true);
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError(true);
+      setError("Please enter your password");
       return;
     }
 
@@ -28,32 +48,35 @@ function Login() {
         password,
       });
 
-      console.log("✅ Login success:", response.data);
-
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
 
-        // ✅ Success toast
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 2000,
         });
 
-        // Navigate after short delay
         setTimeout(() => {
           navigate("/Exploreflow");
         }, 2000);
       }
     } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-
       const message =
         err.response?.data?.message ||
         "Invalid email or password. Please try again.";
-
       setError(message);
 
-      // ✅ Error toast
+      // Decide which field to highlight
+      if (message.toLowerCase().includes("email")) {
+        setEmailError(true);
+      } else if (message.toLowerCase().includes("password")) {
+        setPasswordError(true);
+      } else {
+        // default: highlight both if unsure
+        setEmailError(true);
+        setPasswordError(true);
+      }
+
       toast.error(message, {
         position: "top-center",
         autoClose: 3000,
@@ -63,10 +86,8 @@ function Login() {
 
   return (
     <div className="login-container">
-      {/* Toast container */}
       <ToastContainer />
 
-      {/* Left side - Logo and branding */}
       <div className="branding-section">
         <div className="brand-wrapper">
           <div className="brand-text">
@@ -76,15 +97,12 @@ function Login() {
         </div>
       </div>
 
-      {/* Right side - Login form */}
       <div className="form-section">
         <div className="form-container">
           <div className="form-header">
             <h1 className="form-title">Sign In</h1>
             <p className="form-subtitle">Corporate Login</p>
           </div>
-
-          {error && <div className="error-message">{error}</div>} {/* ✅ Red text */}
 
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
@@ -93,21 +111,32 @@ function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className={`form-input ${error && "input-error"}`} // ✅ highlight input on error
+                className={`form-input ${emailError ? "input-error" : ""}`}
                 required
               />
             </div>
 
-            <div className="form-group">
+            <div
+              className="form-group password-wrapper"
+              style={{ marginBottom: -10 }}
+            >
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className={`form-input ${error && "input-error"}`}
+                className={`form-input ${passwordError ? "input-error" : ""}`}
                 required
               />
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <LucideEye size={20} /> : <LucideEyeOff size={20} />}
+              </span>
             </div>
+
+            {error && <div className="error-message">{error}</div>}
 
             <div className="forgot-password-container">
               <a href="#" className="forgot-password-link">

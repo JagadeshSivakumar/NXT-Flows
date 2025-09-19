@@ -223,11 +223,30 @@ body {
 }
 .error-message {
   color: red;
-  margin-bottom: 10px;
+  margin-bottom: -10px;
+  margin-top: 0px;
   font-size: 14px;
   font-weight: 500;
 }
 
 .input-error {
   border: 1px solid red !important;
+}
+
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper .eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+.password-wrapper .eye-icon:hover {
+  color: #007bff;
 }
