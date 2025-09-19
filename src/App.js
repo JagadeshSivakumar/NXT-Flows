@@ -22,7 +22,7 @@ function App() {
         <Route path="/flows" element={<Flows />} />
         <Route path="/studio" element={<Studio />} />
        <Route path="/studio/:projectId" element={<Studio />} />
-       <Route path="/studio/:id" element={<FlowBuilder />} />
+       <Route path="/studionewblank/:id" element={<FlowBuilder />} />
 
         <Route path="/knowledge" element={<Knowledge />} />
         <Route path="/settings" element={<Settings />} />

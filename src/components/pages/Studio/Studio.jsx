@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { MdCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Studio.css";
@@ -24,7 +24,7 @@ import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
 
-// ✅ API Services
+// ✅ Workspace API Services
 export const createWorkspace = async (data) => {
   try {
     const token = localStorage.getItem("token");
@@ -41,10 +41,10 @@ export const createWorkspace = async (data) => {
   }
 };
 
-export const getAllWorkspaces = async () => {
+export const getWorkspacesByProject = async (projectId) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get(`${API_URL}/workspaces`, {
+    const response = await axios.get(`${API_URL}/workspaces?projectId=${projectId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -96,131 +96,84 @@ const CreateOption = ({ icon: Icon, title, onClick }) => (
 );
 
 const Studio = () => {
+  const { projectId } = useParams(); // ✅ Get projectId from URL
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isCreatedByMeChecked, setIsCreatedByMeChecked] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [projectName, setProjectName] = useState("");
-  const [containerName, setContainerName] = useState("");
-  const [editDescription, setEditDescription] = useState("");
+  const [workspaceName, setWorkspaceName] = useState("");
+  const [workspaceDescription, setWorkspaceDescription] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [containers, setContainers] = useState([]);
+  const [workspaces, setWorkspaces] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   const [editId, setEditId] = useState(null);
 
-  const navigate = useNavigate();
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
 
   useEffect(() => {
     fetchWorkspaces();
-  }, []);
+  }, [projectId]); // fetch whenever projectId changes
 
-  // const fetchWorkspaces = async () => {
-  //   try {
-  //     const result = await getAllWorkspaces();
-  //     const formatted = result.map((item) => ({
-  //       id: item.id,
-  //       name: item.name,
-  //       project: item.project,
-  //       description: item.description || "No description",
-  //       createdAt: item.createdAt,
-  //     }));
-  //     setContainers(formatted);
-  //   } catch (error) {
-  //     console.error("Failed to fetch workspaces:", error);
-  //     toast.error(error.message || "Failed to fetch workspaces");
-  //   }
-  // };
-const fetchWorkspaces = async () => {
-  try {
-    const result = await getAllWorkspaces();
-    const formatted = result.map((item) => ({
-      id: item._id, // Use _id from MongoDB
-      name: item.name,
-      project: item.project,
-      description: item.description || "No description",
-      createdAt: item.createdAt,
-    }));
-    setContainers(formatted);
-  } catch (error) {
-    console.error("Failed to fetch workspaces:", error);
-    toast.error(error.message || "Failed to fetch workspaces");
-  }
-};
+  const fetchWorkspaces = async () => {
+    try {
+      const result = await getWorkspacesByProject(projectId);
+      const formatted = result.map((item) => ({
+        id: item._id,
+        name: item.name,
+        description: item.description || "No description",
+        createdAt: item.createdAt,
+      }));
+      setWorkspaces(formatted);
+    } catch (error) {
+      toast.error(error.message || "Failed to fetch workspaces");
+    }
+  };
 
-  // const handleCreateContainer = async () => {
+  const handleCreateWorkspace = async () => {
+    if (!workspaceName.trim()) return;
 
-  //   if (containerName.trim()) {
-  //     try {
-  //       const payload = {
-  //         name: containerName,
-  //         project: projectName,
-  //         description: editDescription || "sample flow to test login flow",
-  //       };
-  //       const result = await createWorkspace(payload);
-  //       const newContainer = {
-  //         id: result.id || Date.now(),
-  //         name: result.name || containerName,
-  //         project: result.project || projectName,
-  //         description: result.description || editDescription || "sample flow to test login flow",
-  //         createdAt: result.createdAt || new Date().toISOString(),
-  //       };
-  //       setContainers((prev) => [...prev, newContainer]);
-  //       setContainerName("");
-  //       setProjectName("");
-  //       setEditDescription("");
-  //       setShowCreateModal(false);
-  //       toast.success("Workspace created successfully!");
-  //     } catch (error) {
-  //       console.error("Failed to create workspace:", error);
-  //       toast.error(error.message || "Failed to create workspace");
-  //     }
-  //   }
-  // };
-const handleCreateContainer = async () => {
-  if (containerName.trim()) {
     try {
       const payload = {
-        name: containerName,
-        project: projectName,
-        description: editDescription || "sample flow to test login flow",
+        name: workspaceName,
+        description: workspaceDescription || "New workspace",
+        projectId, // link workspace to current project
       };
       const result = await createWorkspace(payload);
 
-      const newContainer = {
-        id: result._id || Date.now(), // Use _id from result
-        name: result.name || containerName,
-        project: result.project || projectName,
-        description: result.description || editDescription || "sample flow to test login flow",
-        createdAt: result.createdAt || new Date().toISOString(),
-      };
+      setWorkspaces((prev) => [
+        ...prev,
+        {
+          id: result._id,
+          name: result.name,
+          description: result.description,
+          createdAt: result.createdAt,
+        },
+      ]);
 
-      setContainers((prev) => [...prev, newContainer]);
-      setContainerName("");
-      setProjectName("");
-      setEditDescription("");
+      setWorkspaceName("");
+      setWorkspaceDescription("");
       setShowCreateModal(false);
       toast.success("Workspace created successfully!");
     } catch (error) {
-      console.error("Failed to create workspace:", error);
       toast.error(error.message || "Failed to create workspace");
     }
-  }
-};
+  };
 
-  const handleDeleteContainer = async (id) => {
+  const handleDeleteWorkspace = async (id) => {
     try {
       await deleteWorkspace(id);
-      setContainers((prev) => prev.filter((container) => container.id !== id));
+      setWorkspaces((prev) => prev.filter((ws) => ws.id !== id));
       setShowDeleteModal(false);
       setDeleteId(null);
       toast.success("Workspace deleted successfully!");
     } catch (error) {
-      console.error("Failed to delete workspace:", error);
       toast.error(error.message || "Failed to delete workspace");
     }
   };
@@ -232,17 +185,14 @@ const handleCreateContainer = async () => {
         description: editDescription,
       };
       await updateWorkspace(editId, payload);
-      setContainers((prev) =>
-        prev.map((container) =>
-          container.id === editId
-            ? { ...container, name: editName, description: editDescription }
-            : container
+      setWorkspaces((prev) =>
+        prev.map((ws) =>
+          ws.id === editId ? { ...ws, name: editName, description: editDescription } : ws
         )
       );
       setShowEditModal(false);
       toast.success("Workspace updated successfully!");
     } catch (error) {
-      console.error("Failed to update workspace:", error);
       toast.error(error.message || "Failed to update workspace");
     }
   };
@@ -257,8 +207,9 @@ const handleCreateContainer = async () => {
   return (
     <div className="app">
       <Navbar onNewApp={() => setShowCreateModal(true)} />
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      
+      <ToastContainer position="top-right" autoClose={3000} />
+
+      {/* Tabs and Search */}
       <div className="studio-container">
         <div className="studio-inner">
           <div className="studio-header">
@@ -274,13 +225,18 @@ const handleCreateContainer = async () => {
                 </button>
               ))}
             </div>
-
             <div className="right-section">
-              <div className="creator-checkbox" onClick={() => setIsCreatedByMeChecked(!isCreatedByMeChecked)}>
-                {isCreatedByMeChecked ? <MdCheckBox className="icon mr-2" /> : <MdOutlineCheckBoxOutlineBlank className="icon mr-2" />}
+              <div
+                className="creator-checkbox"
+                onClick={() => setIsCreatedByMeChecked(!isCreatedByMeChecked)}
+              >
+                {isCreatedByMeChecked ? (
+                  <MdCheckBox className="icon mr-2" />
+                ) : (
+                  <MdOutlineCheckBoxOutlineBlank className="icon mr-2" />
+                )}
                 <span>Created by me</span>
               </div>
-
               <div className="tag-dropdown-wrapper">
                 <button onClick={() => setIsTagsOpen(!isTagsOpen)} className="tag-btn">
                   <Tag className="icon mr-2" />
@@ -291,12 +247,13 @@ const handleCreateContainer = async () => {
                   <div className="tag-dropdown">
                     <button className="tag-option">All Tags</button>
                     {tagOptions.map((tag) => (
-                      <button key={tag} className="tag-option">{tag}</button>
+                      <button key={tag} className="tag-option">
+                        {tag}
+                      </button>
                     ))}
                   </div>
                 )}
               </div>
-
               <div className="search-wrapper">
                 <Search className="search-icon" />
                 <input
@@ -312,11 +269,12 @@ const handleCreateContainer = async () => {
         </div>
       </div>
 
+      {/* Workspace Grid */}
       <div className="content-grid-container">
         <div className="content-grid">
           <div className="grid-card create-app-card">
             <div className="index-header">
-              <h1 className="index-title">CREATE APP</h1>
+              <h1 className="index-title">CREATE WORKSPACE</h1>
             </div>
             <div className="index-options">
               <CreateOption icon={File} title="Create from Blank" onClick={() => setShowCreateModal(true)} />
@@ -325,149 +283,181 @@ const handleCreateContainer = async () => {
             </div>
           </div>
 
-          {containers.map((container, index) => {
-            const uniqueId = container.id ?? index;
-            return (
-              <div
-                key={uniqueId}
-                className="grid-card container-card"
-                onClick={() => navigate(`/studio/${uniqueId}`)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="container-content">
-                  <h3>{container.name}</h3>
-                  {container.project && <p className="project-name">Project: {container.project}</p>}
-                  <p>{container.description}</p>
-                  <small className="created-at">Created on: {new Date(container.createdAt).toLocaleString()}</small>
+          {workspaces.map((ws) => (
+            <div
+              key={ws.id}
+              className="grid-card container-card"
+              onClick={() => navigate(`/studionewblank/${ws.id}`)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="container-content">
+                <h3>{ws.name}</h3>
+                <p>{ws.description}</p>
+                <small className="created-at">
+                  Created on: {new Date(ws.createdAt).toLocaleString()}
+                </small>
+              </div>
+              <div className="container-actions" onClick={(e) => e.stopPropagation()}>
+                <div className="dots-container">
+                  <button
+                    className="dots-button"
+                    onClick={() => setOpenMenuId(openMenuId === ws.id ? null : ws.id)}
+                  >
+                    <HiOutlineDotsHorizontal className="dots-icon" />
+                  </button>
                 </div>
-                <div className="container-actions" onClick={(e) => e.stopPropagation()}>
-                  <div className="dots-container">
-                    <button className="dots-button" onClick={() => setOpenMenuId(openMenuId === uniqueId ? null : uniqueId)}>
-                      <HiOutlineDotsHorizontal className="dots-icon" />
-                    </button>
-                  </div>
-                  {openMenuId === uniqueId && (
-                    <div className="dropdown-menu">
-                      <button className="menu-item" onClick={() => {
-                        setEditId(container.id);
-                        setEditName(container.name);
-                        setEditDescription(container.description);
+                {openMenuId === ws.id && (
+                  <div className="dropdown-menu">
+                    <button
+                      className="menu-item"
+                      onClick={() => {
+                        setEditId(ws.id);
+                        setEditName(ws.name);
+                        setEditDescription(ws.description);
                         setShowEditModal(true);
                         setOpenMenuId(null);
-                      }}>Edit Info</button>
-                      <button className="menu-item">Duplicate</button>
-                      <button className="menu-item">Export DSL</button>
-                      <button className="menu-item">Open in Explore</button>
-                      <button className="menu-item" onClick={() => {
-                        setDeleteId(container.id);
+                      }}
+                    >
+                      Edit Info
+                    </button>
+                    <button
+                      className="menu-item"
+                      onClick={() => {
+                        setDeleteId(ws.id);
                         setShowDeleteModal(true);
                         setOpenMenuId(null);
-                      }}>Delete</button>
-                    </div>
-                  )}
-                </div>
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
+      {/* Create Modal */}
       {showCreateModal && (
         <div className="modal-overlay">
           <div className="create-modal">
-            <button onClick={() => setShowCreateModal(false)} className="close-button"><X className="icon" /></button>
+            <button onClick={() => setShowCreateModal(false)} className="close-button">
+              <X className="icon" />
+            </button>
             <div className="modal-left">
-              <div className="modal-header"><h3>Create From Blank</h3></div>
+              <div className="modal-header">
+                <h3>Create New Workspace</h3>
+              </div>
               <div className="modal-body">
                 <div className="form-group">
-                  <label className="modal-label">App Name & Icon</label>
+                  <label className="modal-label">Workspace Name</label>
                   <div className="app-input-wrapper">
-                    <input type="text" placeholder="Give your app a name" value={containerName} onChange={(e) => setContainerName(e.target.value)} className="modal-input app-input" />
-                    <div className="icon-box"><FaRobot className="app-icon" /></div>
+                    <input
+                      type="text"
+                      placeholder="Give your workspace a name"
+                      value={workspaceName}
+                      onChange={(e) => setWorkspaceName(e.target.value)}
+                      className="modal-input app-input"
+                    />
+                    <div className="icon-box">
+                      <FaRobot className="app-icon" />
+                    </div>
                   </div>
                 </div>
                 <div className="form-group">
                   <label className="modal-label">Description</label>
-                  <textarea placeholder="Enter the description of the app" className="modal-textarea" rows={4} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+                  <textarea
+                    placeholder="Enter the description of the workspace"
+                    className="modal-textarea"
+                    rows={4}
+                    value={workspaceDescription}
+                    onChange={(e) => setWorkspaceDescription(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="modal-footer">
-                <button onClick={() => setShowCreateModal(false)} className="cancel-button">Cancel</button>
-                <button onClick={handleCreateContainer} className="create-button">Create</button>
+                <button onClick={() => setShowCreateModal(false)} className="cancel-button">
+                  Cancel
+                </button>
+                <button onClick={handleCreateWorkspace} className="create-button">
+                  Create
+                </button>
               </div>
             </div>
-            <div className="modal-right"></div>
           </div>
         </div>
       )}
 
+      {/* Delete Modal */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="confirm-modal">
             <div className="modal-content">
-              <h3 className="modal-title">Delete this app?</h3>
-              <p className="modal-message">
-                Deleting the app is irreversible. Users will no longer
-                <br />
-                be able to access your app, and all prompt
-                <br />
-                configurations and logs will be permanently
-                <br />
-                deleted.
-              </p>
+              <h3 className="modal-title">Delete this workspace?</h3>
+              <p className="modal-message">This action cannot be undone.</p>
             </div>
             <div className="modal-actions">
-              <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+              <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>
+                Cancel
+              </button>
               <button
-  className="confirm-btn"
-  onClick={() => {
-    if (deleteId) {
-      handleDeleteContainer(deleteId);
-    } else {
-      toast.error("Invalid workspace ID");
-    }
-  }}
->
-  Confirm
-</button>
-
+                className="confirm-btn"
+                onClick={() => {
+                  if (deleteId) handleDeleteWorkspace(deleteId);
+                  else toast.error("Invalid workspace ID");
+                }}
+              >
+                Confirm
+              </button>
             </div>
           </div>
         </div>
       )}
 
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="modal-overlayy">
           <div className="edit-modal">
             <div className="modal-header">
-              <h3>Edit App Info</h3>
-              <button onClick={() => setShowEditModal(false)} className="close-buttonn"><X className="icon" /></button>
+              <h3>Edit Workspace Info</h3>
+              <button onClick={() => setShowEditModal(false)} className="close-buttonn">
+                <X className="icon" />
+              </button>
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="modal-label">App Name</label>
-                <input type="text" className="modal-input" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                <label className="modal-label">Workspace Name</label>
+                <input
+                  type="text"
+                  className="modal-input"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label className="modal-label">Description</label>
-                <textarea className="modal-textarea" rows={4} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+                <textarea
+                  className="modal-textarea"
+                  rows={4}
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
               </div>
             </div>
             <div className="modal-footer">
-              <button onClick={() => setShowEditModal(false)} className="cancel-button">Cancel</button>
-             <button
-  onClick={() => {
-    if (editId) {
-      handleSaveEdit();
-    } else {
-      toast.error("Invalid workspace ID");
-    }
-  }}
-  className="create-button"
->
-  Save
-</button>
-
+              <button onClick={() => setShowEditModal(false)} className="cancel-button">
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (editId) handleSaveEdit();
+                  else toast.error("Invalid workspace ID");
+                }}
+                className="create-button"
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>
