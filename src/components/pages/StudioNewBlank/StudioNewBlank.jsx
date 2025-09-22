@@ -5,7 +5,11 @@ import { useParams } from "react-router-dom";
 import AuthorizationModal from "../../Modal/AuthorizationModal";
 import NoteWidget from "../Notes/NoteWidget";
 import MiniPanelButton from "../../MiniPanelButton";
-import { FiCopy as CopyIcon, FiMaximize2 as MaximizeIcon, FiMinimize2 as MinimizeIcon } from 'react-icons/fi';
+import {
+  FiCopy as CopyIcon,
+  FiMaximize2 as MaximizeIcon,
+  FiMinimize2 as MinimizeIcon,
+} from "react-icons/fi";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -23,7 +27,7 @@ import { FaPlus } from "react-icons/fa";
 import "@xyflow/react/dist/style.css";
 import { Copy } from "lucide-react";
 import { TbSquareRoundedPlus } from "react-icons/tb";
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay } from "react-icons/fa";
 import { FaSortDown } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { RiStickyNoteAddLine } from "react-icons/ri";
@@ -59,8 +63,6 @@ import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
 
-
-
 const menuItems = [
   { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
   { title: "Webhook", icon: RiWebhookLine, isActive: false },
@@ -78,7 +80,12 @@ const iconComponents = {
   MdOutlineLoop,
 };
 
-const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick }) => {
+const LeftPanel = ({
+  isCollapsed,
+  isPartialExpand,
+  toggleSidebar,
+  onOptionsClick,
+}) => {
   let sidebarClass = "project-sidebar";
   if (isCollapsed) sidebarClass += " collapsed";
   if (isPartialExpand) sidebarClass += " partial-expand";
@@ -91,17 +98,17 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
             <BsAlphabetUppercase size={20} />
           </div>
 
-          {/* Options icon placed right below the project avatar */}
           <div className="collapsed-options-icon" onClick={onOptionsClick}>
             <CgOptions size={20} />
           </div>
 
-          {/* Menu icons */}
           <div className="collapsed-menu-icons">
             {menuItems.map((item) => (
               <div
                 key={item.title}
-                className={`collapsed-menu-icon ${item.isActive ? "active" : ""}`}
+                className={`collapsed-menu-icon ${
+                  item.isActive ? "active" : ""
+                }`}
                 title={item.title}
               >
                 <item.icon size={20} />
@@ -109,7 +116,6 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
             ))}
           </div>
 
-          {/* Expand icon at the bottom */}
           <div className="collapsed-expand-icon" onClick={toggleSidebar}>
             <VscLayoutMenubar size={20} />
           </div>
@@ -145,7 +151,6 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
               </div>
             ))}
           </div>
-          {/* Expand/collapse icon at the bottom in non-collapsed state */}
           <div className="expand-icon" onClick={toggleSidebar}>
             <VscLayoutMenubar size={20} />
           </div>
@@ -154,14 +159,16 @@ const LeftPanel = ({ isCollapsed, isPartialExpand, toggleSidebar, onOptionsClick
     </div>
   );
 };
+
 const CustomNode = ({ data, selected }) => {
   const IconComponent = iconComponents[data.icon];
   const isSpecialNode = data.label === "Start" || data.label === "End";
 
   return (
     <div
-      className={`rectangleNode ${selected ? "selected" : ""} ${isSpecialNode ? "special-node inline-node" : ""
-        }`}
+      className={`rectangleNode ${selected ? "selected" : ""} ${
+        isSpecialNode ? "special-node inline-node" : ""
+      }`}
     >
       <Handle type="target" position={Position.Left} className="customHandle" />
       {isSpecialNode ? (
@@ -216,7 +223,7 @@ const HeadersTable = ({ headers, onHeadersChange }) => {
   };
 
   const addNewRow = () => {
-    const newHeaders = [...headers, { key: '', value: '' }];
+    const newHeaders = [...headers, { key: "", value: "" }];
     onHeadersChange(newHeaders);
   };
 
@@ -246,7 +253,7 @@ const HeadersTable = ({ headers, onHeadersChange }) => {
                 type="text"
                 placeholder="type '/' to insert variable"
                 value={header.key}
-                onChange={(e) => updateHeader(index, 'key', e.target.value)}
+                onChange={(e) => updateHeader(index, "key", e.target.value)}
                 onClick={() => handleInputClick(index)}
               />
             </div>
@@ -255,7 +262,7 @@ const HeadersTable = ({ headers, onHeadersChange }) => {
                 type="text"
                 placeholder="type '/' to insert variable"
                 value={header.value}
-                onChange={(e) => updateHeader(index, 'value', e.target.value)}
+                onChange={(e) => updateHeader(index, "value", e.target.value)}
                 onClick={() => handleInputClick(index)}
               />
               {headers.length > 1 && (
@@ -283,7 +290,7 @@ const ParamsTable = ({ params, onParamsChange }) => {
   };
 
   const addNewRow = () => {
-    const newParams = [...params, { key: '', value: '' }];
+    const newParams = [...params, { key: "", value: "" }];
     onParamsChange(newParams);
   };
 
@@ -313,7 +320,7 @@ const ParamsTable = ({ params, onParamsChange }) => {
                 type="text"
                 placeholder="type '/' to insert variable"
                 value={param.key}
-                onChange={(e) => updateParam(index, 'key', e.target.value)}
+                onChange={(e) => updateParam(index, "key", e.target.value)}
                 onClick={() => handleInputClick(index)}
               />
             </div>
@@ -322,7 +329,7 @@ const ParamsTable = ({ params, onParamsChange }) => {
                 type="text"
                 placeholder="type '/' to insert variable"
                 value={param.value}
-                onChange={(e) => updateParam(index, 'value', e.target.value)}
+                onChange={(e) => updateParam(index, "value", e.target.value)}
                 onClick={() => handleInputClick(index)}
               />
               {params.length > 1 && (
@@ -342,21 +349,16 @@ const ParamsTable = ({ params, onParamsChange }) => {
   );
 };
 
-
-
 const WorkflowConfig = ({ onAddNextStep }) => {
   const [parallelMode, setParallelMode] = useState(true);
   const [maxParallelism, setMaxParallelism] = useState(10);
-  const [errorMethod, setErrorMethod] = useState('Terminated');
+  const [errorMethod, setErrorMethod] = useState("Terminated");
   const [maximumParallelsim, setMaximumParallelsim] = useState(100);
-
-  // Input section state
   const [showInputSearch, setShowInputSearch] = useState(false);
-  const [inputVariable, setInputVariable] = useState('');
-
-  // Output section state
+  const [inputVariable, setInputVariable] = useState("");
   const [showOutputSearch, setShowOutputSearch] = useState(false);
-  const [outputVariable, setOutputVariable] = useState('');
+  const [outputVariable, setOutputVariable] = useState("");
+  
   const handleInputClick = () => {
     setShowOutputSearch(false);
     setShowInputSearch(!showInputSearch);
@@ -366,6 +368,7 @@ const WorkflowConfig = ({ onAddNextStep }) => {
     setShowInputSearch(false);
     setShowOutputSearch(!showOutputSearch);
   };
+  
   const dropdownRef = useRef();
 
   useEffect(() => {
@@ -375,32 +378,39 @@ const WorkflowConfig = ({ onAddNextStep }) => {
         setShowOutputSearch(false);
       }
     };
-    document.addEventListener('mousedown', closeDropdowns);
-    return () => document.removeEventListener('mousedown', closeDropdowns);
+    document.addEventListener("mousedown", closeDropdowns);
+    return () => document.removeEventListener("mousedown", closeDropdowns);
   }, []);
+
   return (
     <div className="workflow-config">
-      {/* INPUT Section */}
-      <div className="config-section" style={{ position: 'relative' }}>
+      <div className="config-section" style={{ position: "relative" }}>
         <div className="section-header">
-          <span className="section-title">INPUT <span className="required">*</span></span>
+          <span className="section-title">
+            INPUT <span className="required">*</span>
+          </span>
           <span className="array-label">Array</span>
         </div>
 
-        {/* Main input field */}
-        <div className="input-field" ref={dropdownRef} onClick={handleInputClick}>
+        <div
+          className="input-field"
+          ref={dropdownRef}
+          onClick={handleInputClick}
+        >
           <span className="placeholder-text">Set variable</span>
         </div>
 
-        {/* Search dropdown with absolute positioning */}
         {showInputSearch && (
-          <div className="search-dropdown" style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            zIndex: 100,
-            width: '100%'
-          }}>
+          <div
+            className="search-dropdown"
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              zIndex: 100,
+              width: "100%",
+            }}
+          >
             <div className="search-input-container">
               <input
                 type="text"
@@ -419,28 +429,34 @@ const WorkflowConfig = ({ onAddNextStep }) => {
         )}
       </div>
 
-      {/* OUTPUT VARIABLES Section */}
-      <div className="config-section" style={{ position: 'relative' }}>
+      <div className="config-section" style={{ position: "relative" }}>
         <div className="section-header">
-          <span className="section-title">OUTPUT VARIABLES <span className="required">*</span></span>
+          <span className="section-title">
+            OUTPUT VARIABLES <span className="required">*</span>
+          </span>
           <span className="array-label">Array</span>
         </div>
 
-        {/* Main output field */}
-        <div className="input-field" ref={dropdownRef} onClick={handleOutputClick}>
+        <div
+          className="input-field"
+          ref={dropdownRef}
+          onClick={handleOutputClick}
+        >
           <span className="x-icon"></span>
           <span className="placeholder-text">Set variable</span>
         </div>
 
-        {/* Search dropdown for output */}
         {showOutputSearch && (
-          <div className="search-dropdown" style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            zIndex: 100,
-            width: '100%'
-          }}>
+          <div
+            className="search-dropdown"
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              zIndex: 100,
+              width: "100%",
+            }}
+          >
             <div className="search-input-container">
               <input
                 type="text"
@@ -459,7 +475,6 @@ const WorkflowConfig = ({ onAddNextStep }) => {
         )}
       </div>
 
-      {/* PARALLEL MODE Section */}
       <div className="config-section">
         <div className="section-header">
           <span className="section-title">PARALLEL MODE</span>
@@ -476,11 +491,9 @@ const WorkflowConfig = ({ onAddNextStep }) => {
         </div>
       </div>
 
-      {/* MAXIMUM PARALLELISM Section */}
       <div className="config-section">
         <div className="section-header">
           <span className="section-title">MAXIMUM PARALLELISM</span>
-          {/* <span className="infoo-icon">ⓘ</span> */}
         </div>
         <div className="parallelism-controls">
           <input
@@ -504,7 +517,9 @@ const WorkflowConfig = ({ onAddNextStep }) => {
                 min="0"
                 max="1000"
                 value={maximumParallelsim}
-                onChange={(e) => setMaximumParallelsim(parseInt(e.target.value))}
+                onChange={(e) =>
+                  setMaximumParallelsim(parseInt(e.target.value))
+                }
                 className="interval-slider"
               />
               <div className="value-display">
@@ -516,7 +531,6 @@ const WorkflowConfig = ({ onAddNextStep }) => {
         </div>
       </div>
 
-      {/* ERROR RESPONSE METHOD Section */}
       <div className="config-section">
         <div className="section-header">
           <span className="section-title">ERROR RESPONSE METHOD</span>
@@ -527,9 +541,15 @@ const WorkflowConfig = ({ onAddNextStep }) => {
             onChange={(e) => setErrorMethod(e.target.value)}
             className="dropdownn-select"
           >
-            <option className="dropdown-item" value="Terminated">Terminated</option>
-            <option className="dropdown-item" value="Continue">Continue</option>
-            <option className="dropdown-item" value="Retry">Retry</option>
+            <option className="dropdown-item" value="Terminated">
+              Terminated
+            </option>
+            <option className="dropdown-item" value="Continue">
+              Continue
+            </option>
+            <option className="dropdown-item" value="Retry">
+              Retry
+            </option>
           </select>
         </div>
       </div>
@@ -539,16 +559,17 @@ const WorkflowConfig = ({ onAddNextStep }) => {
     </div>
   );
 };
+
 const NextStepSection = ({ onAddNextStep }) => {
   return (
     <div className="next-step-section">
       <h3 className="next-step-title">NEXT STEP</h3>
-      <p className="next-step-description">Add the next step in this workflow</p>
+      <p className="next-step-description">
+        Add the next step in this workflow
+      </p>
 
       <div className="add-step-row">
-        <div className="workflow-icon">
-          WF
-        </div>
+        <div className="workflow-icon">WF</div>
         <button className="add-btn">
           <Plus size={16} />
         </button>
@@ -564,40 +585,42 @@ const NextStepSection = ({ onAddNextStep }) => {
       </div>
     </div>
   );
-}
+};
 
 const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   const { method, url, headers, params } = requestData;
-  const setMethod = (value) => updateRequestData('method', value);
-  const setUrl = (value) => updateRequestData('url', value);
-  const setHeaders = (value) => updateRequestData('headers', value);
-  const setParams = (value) => updateRequestData('params', value);
-  const [bodyType, setBodyType] = useState('none');
-  const [formData, setFormData] = useState([{ key: '', type: 'text', value: '' }]);
-  const [urlEncodedData, setUrlEncodedData] = useState([{ key: '', value: '' }]);
-  const [jsonBody, setJsonBody] = useState('');
+  const setMethod = (value) => updateRequestData("method", value);
+  const setUrl = (value) => updateRequestData("url", value);
+  const setHeaders = (value) => updateRequestData("headers", value);
+  const setParams = (value) => updateRequestData("params", value);
+  const [bodyType, setBodyType] = useState("none");
+  const [formData, setFormData] = useState([
+    { key: "", type: "text", value: "" },
+  ]);
+  const [urlEncodedData, setUrlEncodedData] = useState([
+    { key: "", value: "" },
+  ]);
+  const [jsonBody, setJsonBody] = useState("");
   const [isMaximized, setIsMaximized] = useState(false);
-  const [rawBody, setRawBody] = useState('');
+  const [rawBody, setRawBody] = useState("");
   const [sslVerify, setSslVerify] = useState(true);
   const [retryOnFailure, setRetryOnFailure] = useState(true);
   const [maxRetries, setMaxRetries] = useState(2);
   const [retryInterval, setRetryInterval] = useState(100);
-  const [errorHandling, setErrorHandling] = useState('None');
+  const [errorHandling, setErrorHandling] = useState("None");
   const [showTimeoutInput, setShowTimeoutInput] = useState(false);
   const [showOutputVariable, setShowOutputVariable] = useState(false);
   const [showAuthorizationModal, setShowAuthorizationModal] = useState(false);
   const [showImportCurlModal, setShowImportCurlModal] = useState(false);
-
-
-
 
   const toggleTimeoutInput = () => {
     setShowTimeoutInput(!showTimeoutInput);
   };
 
   const toggleOutputVariable = () => {
-    setShowOutputVariable(prev => !prev);
+    setShowOutputVariable((prev) => !prev);
   };
+  
   const updateFormData = (index, field, value) => {
     const newFormData = [...formData];
     newFormData[index][field] = value;
@@ -605,9 +628,8 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   };
 
   const addFormDataRow = () => {
-    setFormData([...formData, { key: '', type: 'text', value: '' }]);
+    setFormData([...formData, { key: "", type: "text", value: "" }]);
   };
-
 
   const removeFormDataRow = (index) => {
     if (formData.length > 1) {
@@ -615,6 +637,7 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
       setFormData(newFormData);
     }
   };
+  
   const updateUrlEncodedData = (index, field, value) => {
     const newData = [...urlEncodedData];
     newData[index][field] = value;
@@ -622,7 +645,7 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   };
 
   const addUrlEncodedRow = () => {
-    setUrlEncodedData([...urlEncodedData, { key: '', value: '' }]);
+    setUrlEncodedData([...urlEncodedData, { key: "", value: "" }]);
   };
 
   const removeUrlEncodedRow = (index) => {
@@ -632,10 +655,8 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
     }
   };
 
-
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef(null);
-
 
   const [isRawEditing, setIsRawEditing] = useState(false);
   const rawEditorRef = useRef(null);
@@ -643,9 +664,8 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
-    setIsExpanded(prev => !prev);
+    setIsExpanded((prev) => !prev);
   };
-
 
   return (
     <div className="http-request-container">
@@ -654,16 +674,26 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
           <div className="section-header">
             <label className="section-label">API *</label>
             <div className="api-config">
-              <span className="auth-info" onClick={() => setShowAuthorizationModal(true)}>
+              <span
+                className="auth-info"
+                onClick={() => setShowAuthorizationModal(true)}
+              >
                 🔒 Authorization
               </span>
-              <span className="import-curl" onClick={() => setShowImportCurlModal(true)}>
+              <span
+                className="import-curl"
+                onClick={() => setShowImportCurlModal(true)}
+              >
                 📥 Import from cURL
               </span>
             </div>
           </div>
           <div className="api-input-row">
-            <select className="method-select" value={method} onChange={(e) => setMethod(e.target.value)}>
+            <select
+              className="method-select"
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+            >
               <option value="GET">GET</option>
               <option value="POST">POST</option>
               <option value="PUT">PUT</option>
@@ -693,7 +723,7 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
           <label className="section-label">BODY *</label>
           <div className="body-options">
             <div className="radio-row">
-              {['none', 'form-data', 'x-www-form-urlencoded'].map((type) => (
+              {["none", "form-data", "x-www-form-urlencoded"].map((type) => (
                 <label key={type} className="radio-option">
                   <input
                     type="radio"
@@ -707,7 +737,7 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
               ))}
             </div>
             <div className="radio-row">
-              {['JSON', 'raw', 'binary'].map((type) => (
+              {["JSON", "raw", "binary"].map((type) => (
                 <label key={type} className="radio-option">
                   <input
                     type="radio"
@@ -721,8 +751,8 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
               ))}
             </div>
           </div>
-          {/* Add this form-data table */}
-          {bodyType === 'form-data' && (
+          
+          {bodyType === "form-data" && (
             <div className="form-data-table-container">
               <div className="form-data-grid">
                 <div className="form-data-header">KEY</div>
@@ -736,13 +766,17 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
                         type="text"
                         placeholder="type '/' to insert variable"
                         value={row.key}
-                        onChange={(e) => updateFormData(index, 'key', e.target.value)}
+                        onChange={(e) =>
+                          updateFormData(index, "key", e.target.value)
+                        }
                       />
                     </div>
                     <div className="form-data-type-select">
                       <select
                         value={row.type}
-                        onChange={(e) => updateFormData(index, 'type', e.target.value)}
+                        onChange={(e) =>
+                          updateFormData(index, "type", e.target.value)
+                        }
                       >
                         <option value="text">Text</option>
                         <option value="file">File</option>
@@ -750,12 +784,17 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
                     </div>
                     <div className="form-data-value-input">
                       <input
-                        type={row.type === 'file' ? 'file' : 'text'}
-                        placeholder={row.type === 'file' ? '' : "type '/' to insert variable"}
-                        value={row.type === 'file' ? '' : row.value}
-                        onChange={(e) => updateFormData(index, 'value', e.target.value)}
+                        type={row.type === "file" ? "file" : "text"}
+                        placeholder={
+                          row.type === "file"
+                            ? ""
+                            : "type '/' to insert variable"
+                        }
+                        value={row.type === "file" ? "" : row.value}
+                        onChange={(e) =>
+                          updateFormData(index, "value", e.target.value)
+                        }
                         onClick={(e) => {
-                          // Add new row if this is the last row's value input
                           if (index === formData.length - 1) {
                             addFormDataRow();
                           }
@@ -775,35 +814,37 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
             </div>
           )}
 
-          {bodyType === 'x-www-form-urlencoded' && (
+          {bodyType === "x-www-form-urlencoded" && (
             <div className="form-data-table-container">
-              <div className="form-data-grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
-                {/* Headers - only KEY and VALUE */}
+              <div
+                className="form-data-grid"
+                style={{ gridTemplateColumns: "1fr 2fr" }}
+              >
                 <div className="form-data-header">KEY</div>
                 <div className="form-data-header">VALUE</div>
 
-                {/* Rows */}
                 {urlEncodedData.map((row, index) => (
                   <React.Fragment key={index}>
-                    {/* Key input */}
                     <div className="form-data-key-input">
                       <input
                         type="text"
                         placeholder="type '/' to insert variable"
                         value={row.key}
-                        onChange={(e) => updateUrlEncodedData(index, 'key', e.target.value)}
+                        onChange={(e) =>
+                          updateUrlEncodedData(index, "key", e.target.value)
+                        }
                       />
                     </div>
 
-                    {/* Value input */}
                     <div className="form-data-value-input">
                       <input
                         type="text"
                         placeholder="type '/' to insert variable"
                         value={row.value}
-                        onChange={(e) => updateUrlEncodedData(index, 'value', e.target.value)}
+                        onChange={(e) =>
+                          updateUrlEncodedData(index, "value", e.target.value)
+                        }
                         onClick={(e) => {
-                          // Add new row if this is the last row's value input
                           if (index === urlEncodedData.length - 1) {
                             addUrlEncodedRow();
                           }
@@ -823,9 +864,12 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
             </div>
           )}
 
-
-          {bodyType === 'JSON' && (
-            <div className={`json-editor-container ${isMaximized ? 'maximized' : ''}`}>
+          {bodyType === "JSON" && (
+            <div
+              className={`json-editor-container ${
+                isMaximized ? "maximized" : ""
+              }`}
+            >
               <div className="json-editor-header">
                 <div className="json-editor-label">JSON</div>
                 <div className="json-editor-actions">
@@ -841,46 +885,55 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
                     onClick={() => setIsMaximized(!isMaximized)}
                     title={isMaximized ? "Minimize" : "Maximize"}
                   >
-                    {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
+                    {isMaximized ? (
+                      <MinimizeIcon size={16} />
+                    ) : (
+                      <MaximizeIcon size={16} />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div
                 ref={editorRef}
-                className={`json-editor-hint ${!jsonBody ? 'placeholder' : ''}`}
+                className={`json-editor-hint ${!jsonBody ? "placeholder" : ""}`}
                 contentEditable
                 suppressContentEditableWarning
                 onInput={(e) => {
-                  const text = e.currentTarget.textContent || '';
+                  const text = e.currentTarget.textContent || "";
                   setJsonBody(text);
-                  e.currentTarget.classList.toggle('placeholder', !text);
+                  e.currentTarget.classList.toggle("placeholder", !text);
                 }}
                 onFocus={(e) => {
-                  if (e.currentTarget.textContent === 'Write your prompt word here') {
-                    e.currentTarget.textContent = '';
-                    e.currentTarget.classList.remove('placeholder');
-                    setJsonBody('');
+                  if (
+                    e.currentTarget.textContent ===
+                    "Write your prompt word here"
+                  ) {
+                    e.currentTarget.textContent = "";
+                    e.currentTarget.classList.remove("placeholder");
+                    setJsonBody("");
                   }
                 }}
                 onBlur={(e) => {
                   if (!e.currentTarget.textContent.trim()) {
-                    e.currentTarget.textContent = 'Write your prompt word here';
-                    e.currentTarget.classList.add('placeholder');
-                    setJsonBody('');
+                    e.currentTarget.textContent = "Write your prompt word here";
+                    e.currentTarget.classList.add("placeholder");
+                    setJsonBody("");
                   }
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) e.preventDefault();
+                  if (e.key === "Enter" && !e.shiftKey) e.preventDefault();
                 }}
               />
             </div>
           )}
 
-
-
-          {bodyType === 'raw' && (
-            <div className={`raw-editor-container ${isMaximized ? 'maximized' : ''}`}>
+          {bodyType === "raw" && (
+            <div
+              className={`raw-editor-container ${
+                isMaximized ? "maximized" : ""
+              }`}
+            >
               <div className="raw-editor-header">
                 <div className="raw-editor-label">RAW</div>
                 <div className="raw-editor-actions">
@@ -894,39 +947,46 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
                   <button
                     className="raw-action-btn"
                     onClick={() => setIsMaximized(!isMaximized)}
-                    title={isMaximized ? 'Minimize' : 'Maximize'}
+                    title={isMaximized ? "Minimize" : "Maximize"}
                   >
-                    {isMaximized ? <MinimizeIcon size={16} /> : <MaximizeIcon size={16} />}
+                    {isMaximized ? (
+                      <MinimizeIcon size={16} />
+                    ) : (
+                      <MaximizeIcon size={16} />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div
                 ref={rawEditorRef}
-                className={`raw-editor-hint ${!rawBody ? 'placeholder' : ''}`}
+                className={`raw-editor-hint ${!rawBody ? "placeholder" : ""}`}
                 contentEditable
                 suppressContentEditableWarning
                 onInput={(e) => {
-                  const text = e.currentTarget.textContent || '';
+                  const text = e.currentTarget.textContent || "";
                   setRawBody(text);
-                  e.currentTarget.classList.toggle('placeholder', !text);
+                  e.currentTarget.classList.toggle("placeholder", !text);
                 }}
                 onFocus={(e) => {
-                  if (e.currentTarget.textContent === 'Write your prompt word here') {
-                    e.currentTarget.textContent = '';
-                    e.currentTarget.classList.remove('placeholder');
-                    setRawBody('');
+                  if (
+                    e.currentTarget.textContent ===
+                    "Write your prompt word here"
+                  ) {
+                    e.currentTarget.textContent = "";
+                    e.currentTarget.classList.remove("placeholder");
+                    setRawBody("");
                   }
                 }}
                 onBlur={(e) => {
                   if (!e.currentTarget.textContent.trim()) {
-                    e.currentTarget.textContent = 'Write your prompt word here';
-                    e.currentTarget.classList.add('placeholder');
-                    setRawBody('');
+                    e.currentTarget.textContent = "Write your prompt word here";
+                    e.currentTarget.classList.add("placeholder");
+                    setRawBody("");
                   }
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
+                  if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                   }
                 }}
@@ -934,16 +994,10 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
             </div>
           )}
 
-
-          {bodyType === 'binary' && (
+          {bodyType === "binary" && (
             <div className="binary-editor-container">
               <div className="binary-editor-header">
-
-                <span className="binary-editor-hint">
-                  Set Variable
-                </span>
-
-
+                <span className="binary-editor-hint">Set Variable</span>
               </div>
             </div>
           )}
@@ -951,9 +1005,15 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
 
         <div className="section">
           <div className="toggle-row">
-            <label className="section-label">VERIFY SSL CERTIFICATE <GoQuestion size={15} /></label>
+            <label className="section-label">
+              VERIFY SSL CERTIFICATE <GoQuestion size={15} />
+            </label>
             <label className="toggle-switch">
-              <input type="checkbox" checked={sslVerify} onChange={(e) => setSslVerify(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={sslVerify}
+                onChange={(e) => setSslVerify(e.target.checked)}
+              />
               <span className="slider"></span>
             </label>
           </div>
@@ -961,19 +1021,52 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
 
         <div className="section">
           <label className="section-label" onClick={toggleTimeoutInput}>
-            TIMEOUT{' '}
-            <span className={`toggle-icon ${showTimeoutInput ? 'rotated' : ''}`}>
-              {showTimeoutInput ? <FaSortDown size={17} /> : <FaPlay size={8} />}
+            TIMEOUT{" "}
+            <span
+              className={`toggle-icon ${showTimeoutInput ? "rotated" : ""}`}
+            >
+              {showTimeoutInput ? (
+                <FaSortDown size={17} />
+              ) : (
+                <FaPlay size={8} />
+              )}
             </span>
           </label>
           {showTimeoutInput && (
             <div className="timeout-input-container">
-              <label>Connection Timeout <span className="timeout-span">Enter connection timeout in seconds</span></label>
-              <input type="number" className="timeout-input" placeholder="Enter timeout" />
-              <label>Read Timeout <span className="timeout-span">Enter read timeout in seconds</span></label>
-              <input type="number" className="timeout-input" placeholder="Enter timeout" />
-              <label>Write Timeout <span className="timeout-span">Enter write timeout in seconds</span></label>
-              <input type="number" className="timeout-input" placeholder="Enter timeout" />
+              <label>
+                Connection Timeout{" "}
+                <span className="timeout-span">
+                  Enter connection timeout in seconds
+                </span>
+              </label>
+              <input
+                type="number"
+                className="timeout-input"
+                placeholder="Enter timeout"
+              />
+              <label>
+                Read Timeout{" "}
+                <span className="timeout-span">
+                  Enter read timeout in seconds
+                </span>
+              </label>
+              <input
+                type="number"
+                className="timeout-input"
+                placeholder="Enter timeout"
+              />
+              <label>
+                Write Timeout{" "}
+                <span className="timeout-span">
+                  Enter write timeout in seconds
+                </span>
+              </label>
+              <input
+                type="number"
+                className="timeout-input"
+                placeholder="Enter timeout"
+              />
             </div>
           )}
         </div>
@@ -981,23 +1074,35 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
         <div className="section">
           <label className="section-label" onClick={toggleOutputVariable}>
             OUTPUT VARIABLES
-            <span className={`toggle-icon ${showOutputVariable ? 'rotated' : ''}`}>
-              {showOutputVariable ? <FaSortDown size={17} /> : <FaPlay size={8} />}
+            <span
+              className={`toggle-icon ${showOutputVariable ? "rotated" : ""}`}
+            >
+              {showOutputVariable ? (
+                <FaSortDown size={17} />
+              ) : (
+                <FaPlay size={8} />
+              )}
             </span>
           </label>
 
           {showOutputVariable && (
             <div className="output-variables-container">
               <div className="output-variable">
-                <label>body <span className="timeout-span">string</span></label>
+                <label>
+                  body <span className="timeout-span">string</span>
+                </label>
                 <div className="response-content">Response Content</div>
               </div>
               <div className="output-variable">
-                <label>body <span className="timeout-span">string</span></label>
+                <label>
+                  body <span className="timeout-span">string</span>
+                </label>
                 <div className="response-content">Response Content</div>
               </div>
               <div className="output-variable">
-                <label>body <span className="timeout-span">string</span></label>
+                <label>
+                  body <span className="timeout-span">string</span>
+                </label>
                 <div className="response-content">Response Content</div>
               </div>
             </div>
@@ -1077,7 +1182,6 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
 
           <NextStepSection onAddNextStep={onAddNextStep} />
         </div>
-
       </div>
 
       <AuthorizationModal
@@ -1085,7 +1189,6 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
         onClose={() => setShowAuthorizationModal(false)}
         onSave={(data) => {
           console.log("Authorization saved:", data);
-          // You can also update request headers here, if needed
         }}
       />
       {showImportCurlModal && (
@@ -1093,17 +1196,12 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
           isOpen={showImportCurlModal}
           onClose={() => setShowImportCurlModal(false)}
           onSave={(curlData) => {
-            // Handle the imported cURL data
             console.log("Imported cURL:", curlData);
             setShowImportCurlModal(false);
           }}
         />
       )}
-
-
     </div>
-
-
   );
 };
 
@@ -1118,11 +1216,10 @@ const StudioNewBlank = ({
   menuPosition,
   setMenuPosition,
   showConditionMenu,
-  setShowConditionMenu
+  setShowConditionMenu,
 }) => {
   const [showPublish, setShowPublish] = useState(false);
   const [open, setOpen] = useState(false);
-
 
   const { id } = useParams();
   const [app, setApp] = useState(null);
@@ -1130,19 +1227,16 @@ const StudioNewBlank = ({
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showNoteWidget, setShowNoteWidget] = useState(false);
-  const [noteWidgetPosition, setNoteWidgetPosition] = useState({ x: 100, y: 100 });
+  const [noteWidgetPosition, setNoteWidgetPosition] = useState({
+    x: 100,
+    y: 100,
+  });
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
   const [showFlowContainer, setShowFlowContainer] = useState(null);
 
-
   const [showRunHistory, setShowRunHistory] = useState(false);
   const [showChecklist, setShowChecklist] = useState(false);
-
-
-
-
-
 
   const runHistoryRef = useRef(null);
   const checklistRef = useRef(null);
@@ -1155,10 +1249,18 @@ const StudioNewBlank = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showRunHistory && runHistoryRef.current && !runHistoryRef.current.contains(event.target)) {
+      if (
+        showRunHistory &&
+        runHistoryRef.current &&
+        !runHistoryRef.current.contains(event.target)
+      ) {
         setShowRunHistory(false);
       }
-      if (showChecklist && checklistRef.current && !checklistRef.current.contains(event.target)) {
+      if (
+        showChecklist &&
+        checklistRef.current &&
+        !checklistRef.current.contains(event.target)
+      ) {
         setShowChecklist(false);
       }
     };
@@ -1169,18 +1271,15 @@ const StudioNewBlank = ({
     };
   }, [showRunHistory, showChecklist]);
 
-
-
-
-
-
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+  
   const handleNoteIconClick = () => {
     setShowNoteWidget(!showNoteWidget);
   };
+  
   const onNodeClick = useCallback(
     (_, node) => {
       if (!["Start", "End"].includes(node.data.label)) setSelectedNode(node);
@@ -1219,31 +1318,40 @@ const StudioNewBlank = ({
     [screenToFlowPosition, setNodes]
   );
 
+  // Initialize with default workspace data if none found
   useEffect(() => {
-    const stored = localStorage.getItem("containers");
-    const parsed = stored ? JSON.parse(stored) : [];
-    const found = parsed.find((c) => c.id.toString() === id.toString());
-    setApp(found);
+    if (id) {
+      // Create a default workspace structure
+      const defaultWorkspace = {
+        id: id,
+        name: `Workspace ${id}`,
+        description: "Default workspace",
+        createdAt: new Date().toISOString()
+      };
+      setApp(defaultWorkspace);
+    }
   }, [id]);
-
 
   const addConditionNode = (type) => {
     const position = screenToFlowPosition({ x: 250, y: 300 });
     const newNode = {
       id: `condition-${Date.now()}`,
-      type: ["If/Else", "Iteration", "Loop", "Code", "HTTP Request"].includes(type)
+      type: ["If/Else", "Iteration", "Loop", "Code", "HTTP Request"].includes(
+        type
+      )
         ? "condition"
         : "custom",
       position,
       data: {
         label: type,
-        icon: type === "Start"
-          ? "LuGitPullRequest"
-          : type === "End"
+        icon:
+          type === "Start"
+            ? "LuGitPullRequest"
+            : type === "End"
             ? "MdOutlineCode"
             : type === "HTTP Request"
-              ? "RiWebhookLine"
-              : "MdOutlineLoop",
+            ? "RiWebhookLine"
+            : "MdOutlineLoop",
         condition: type === "If/Else" ? "Add condition..." : "",
       },
       deletable: type !== "Start" && type !== "End",
@@ -1254,53 +1362,62 @@ const StudioNewBlank = ({
 
   return (
     <div
-      className={`flowDiagramWrapper ${isSidebarCollapsed ? "sidebar-hidden" : ""
-        }`}
+      className={`flowDiagramWrapper ${
+        isSidebarCollapsed ? "sidebar-hidden" : ""
+      }`}
     >
-
-
-
-
       <div className="flowHeader">
         <div className="flowHeaderLeft">
-          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Conversation Variables")}>
+          <button
+            className="flowHeaderButton"
+            onClick={() => setShowFlowContainer("Conversation Variables")}
+          >
             <FaPlusCircle size={16} />
           </button>
-          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Environment Variables")}>
+          <button
+            className="flowHeaderButton"
+            onClick={() => setShowFlowContainer("Environment Variables")}
+          >
             <FaArrowPointer size={16} />
           </button>
           <button className="flowHeaderButton">
-            <span className="blueIcon"><CiPlay1 size={16} /></span>
+            <span className="blueIcon">
+              <CiPlay1 size={16} />
+            </span>
             <span className="blueText">Run</span>
             <IoIosTimer size={16} onClick={() => setShowRunHistory(true)} />
             <FaArrowPointer size={16} onClick={() => setShowChecklist(true)} />
           </button>
-          <button className="flowHeaderButton" onClick={() => setShowFlowContainer("Features Variables")}>
+          <button
+            className="flowHeaderButton"
+            onClick={() => setShowFlowContainer("Features Variables")}
+          >
             <MdScheduleSend size={16} />
             <span>Schedule</span>
           </button>
           <div className="publishContainer">
-            <button className="flowHeaderButton publishButton" onClick={() => setShowPublish(true)}>
+            <button
+              className="flowHeaderButton publishButton"
+              onClick={() => setShowPublish(true)}
+            >
               Publish <IoIosArrowDown />
             </button>
-
           </div>
-          <button className="flowHeaderButton" onClick={() => setOpen(true)} >
+          <button className="flowHeaderButton" onClick={() => setOpen(true)}>
             <IoIosTimer size={16} />
           </button>
         </div>
-        {open && (
-          <TimerPopup onClose={() => setOpen(false)} />
-        )}
-        {showPublish && (
-          <PublishPopup onClose={() => setShowPublish(false)} />
-        )}
+        {open && <TimerPopup onClose={() => setOpen(false)} />}
+        {showPublish && <PublishPopup onClose={() => setShowPublish(false)} />}
 
         {showRunHistory && (
           <div ref={runHistoryRef} className="run-history-popup">
             <div className="run-history-header">
               <h4>Run History</h4>
-              <button className="close-btn" onClick={() => setShowRunHistory(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setShowRunHistory(false)}
+              >
                 <IoMdClose size={16} />
               </button>
             </div>
@@ -1317,7 +1434,10 @@ const StudioNewBlank = ({
           <div ref={checklistRef} className="checklist-popup">
             <div className="checklist-header">
               <h4>Checklist (3)</h4>
-              <button className="close-btn" onClick={() => setShowChecklist(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setShowChecklist(false)}
+              >
                 <IoMdClose size={16} />
               </button>
             </div>
@@ -1336,10 +1456,8 @@ const StudioNewBlank = ({
                 <li>⚠ API is required</li>
               </ul>
             </div>
-            {/* other items ... */}
           </div>
         )}
-
 
         {showFlowContainer && (
           <FlowContainer
@@ -1372,25 +1490,26 @@ const StudioNewBlank = ({
         </ReactFlow>
 
         <div className="flowSideMiniPanel">
-          <MiniPanelButton icon={FaPlusCircle} label="Add Node" onClick={handleIconClick}/>
+          <MiniPanelButton
+            icon={FaPlusCircle}
+            label="Add Node"
+            onClick={handleIconClick}
+          />
 
-
-          <MiniPanelButton icon={RiStickyNoteAddLine} label="Add Note" onClick={handleNoteIconClick} />
+          <MiniPanelButton
+            icon={RiStickyNoteAddLine}
+            label="Add Note"
+            onClick={handleNoteIconClick}
+          />
           <MiniPanelButton icon={FaArrowPointer} label="Pointer Mode" />
-          <MiniPanelButton icon={FaRegHand} label="Hand Mode"  />
+          <MiniPanelButton icon={FaRegHand} label="Hand Mode" />
           <MiniPanelButton icon={RiExportLine} label="Export Image" />
           <MiniPanelButton icon={SlOrganization} label="Organize Nodes" />
           <MiniPanelButton
             icon={LuMaximize}
             label="Maximize Canvas"
             onClick={toggleSidebar}
-            rotation={
-              isSidebarCollapsed
-                ? 0
-                : isPartialExpand
-                  ? 90
-                  : 180
-            }
+            rotation={isSidebarCollapsed ? 0 : isPartialExpand ? 90 : 180}
           />
         </div>
 
@@ -1471,7 +1590,7 @@ const StudioNewBlank = ({
           <NoteWidget
             onClose={() => setShowNoteWidget(false)}
             position={{ x: 100, y: 100 }}
-            onPositionChange={() => { }}
+            onPositionChange={() => {}}
           />
         )}
       </div>
@@ -1486,51 +1605,55 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
     name: "",
     type: "string",
     defaultValue: "",
-    description: ""
+    description: "",
   });
   const [showEnvModal, setShowEnvModal] = useState(false);
   const [newEnvVar, setNewEnvVar] = useState({
     type: "string",
     name: "",
     value: "",
-    description: ""
+    description: "",
   });
 
-
-
   return (
-    <div className={`flow-container-overlay ${rightPanelOpen ? "shifted-left" : ""}`}>
+    <div
+      className={`flow-container-overlay ${
+        rightPanelOpen ? "shifted-left" : ""
+      }`}
+    >
       <div className="flow-container">
         <div className="flow-container-header">
           <h3>
             {type === "Conversation Variables" && "Conversation Variables"}
             {type === "Environment Variables" && "Environment Variables"}
           </h3>
-          <button
-            className="close-flow-container"
-            onClick={onClose}
-          >
+          <button className="close-flow-container" onClick={onClose}>
             <IoMdClose size={20} />
           </button>
         </div>
         <div className="flow-container-content">
           {type === "Conversation Variables" && (
             <div className="conversation-variables">
-              {/* Tips Section */}
               <div className="tips-box">
                 <span className="tips-badge">TIPS</span>
                 <p className="tips-text">
-                  Conversation Variables are used to store interactive information that
-                  LLM needs to remember, including conversation history, uploaded files,
-                  user preferences. They are read-write.{" "}
+                  Conversation Variables are used to store interactive
+                  information that LLM needs to remember, including conversation
+                  history, uploaded files, user preferences. They are
+                  read-write.{" "}
                   <a href="#" className="tips-link">
                     Visit our docs to learn more.
                   </a>
                 </p>
                 <br></br>
-                {/* Variable Card */}
-                <div className="variable-carde" style={{ display: "flex", alignItems: "center" }}>
-                  <div className="variable-card" style={{ marginRight: "20px" }}>
+                <div
+                  className="variable-carde"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <div
+                    className="variable-card"
+                    style={{ marginRight: "20px" }}
+                  >
                     <div className="variable-icon">🔄</div>
                     <div className="variable-content">
                       <h4 className="variable-name">conversation_var</h4>
@@ -1544,10 +1667,10 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                 </div>
               </div>
 
-
-
-              {/* Add Variable Button */}
-              <button className="add-variable" onClick={() => setShowAddModal(true)}>
+              <button
+                className="add-variable"
+                onClick={() => setShowAddModal(true)}
+              >
                 <FaPlus size={14} /> Add Variable
               </button>
             </div>
@@ -1563,13 +1686,18 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                   type="text"
                   placeholder="Variable name"
                   value={newVariable.name}
-                  onChange={(e) => setNewVariable({ ...newVariable, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewVariable({ ...newVariable, name: e.target.value })
+                  }
                 />
 
                 <label>Type</label>
-                <select style={{color:"#757575"}}
+                <select
+                  style={{ color: "#757575" }}
                   value={newVariable.type}
-                  onChange={(e) => setNewVariable({ ...newVariable, type: e.target.value })}
+                  onChange={(e) =>
+                    setNewVariable({ ...newVariable, type: e.target.value })
+                  }
                 >
                   <option value="string">string</option>
                   <option value="number">number</option>
@@ -1581,15 +1709,26 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                   type="text"
                   placeholder="Default value, leave blank to not set"
                   value={newVariable.defaultValue}
-                  onChange={(e) => setNewVariable({ ...newVariable, defaultValue: e.target.value })}
+                  onChange={(e) =>
+                    setNewVariable({
+                      ...newVariable,
+                      defaultValue: e.target.value,
+                    })
+                  }
                 />
 
                 <label>Description</label>
                 <input
-                type="text" style={{height:"80px"}}
+                  type="text"
+                  style={{ height: "80px" }}
                   placeholder="Describe the variable"
                   value={newVariable.description}
-                  onChange={(e) => setNewVariable({ ...newVariable, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewVariable({
+                      ...newVariable,
+                      description: e.target.value,
+                    })
+                  }
                 />
 
                 <div className="modal-actions">
@@ -1597,139 +1736,124 @@ const FlowContainer = ({ type, onClose, rightPanelOpen }) => {
                   <button
                     onClick={() => {
                       setVariables([...variables, newVariable]);
-                      setNewVariable({ name: "", type: "string", defaultValue: "", description: "" });
+                      setNewVariable({
+                        name: "",
+                        type: "string",
+                        defaultValue: "",
+                        description: "",
+                      });
                       setShowAddModal(false);
                     }}
                   >
                     Save
                   </button>
                 </div>
-
               </div>
             </div>
           )}
-          
 
+          {type === "Environment Variables" && (
+            <div>
+              <p>
+                Environment variables can be used to store private information
+                and credentials. They are read-only and can be separated from
+                the DSL file during export.
+              </p>
+              <br />
 
-
-  {type === "Environment Variables" && (
-  <div>
-    <p>
-      Environment variables can be used to store private information and credentials.
-      They are read-only and can be separated from the DSL file during export.
-    </p>
-    <br />
-
-    <button className="add-variable" onClick={() => setShowEnvModal(true)}>
-      <FaPlus size={14} /> Add Variable
-    </button>
-
-   
-  </div>
-)}
- 
-
-  {/* Modal inside FlowContainer */}
-    {showEnvModal && (
-      <div className="env-modal-overlay">
-        <div className="env-modal">
-          <h3 className="env-modal-title">Add Environment Variable</h3>
-
-          <label className="env-label">Type</label>
-          <div className="env-type-buttons">
-            {["string", "number", "secret"].map((t) => (
               <button
-                key={t}
-                className={`env-type-btn ${newEnvVar.type === t ? "active" : ""}`}
-                onClick={() => setNewEnvVar({ ...newEnvVar, type: t })}
+                className="add-variable"
+                onClick={() => setShowEnvModal(true)}
               >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+                <FaPlus size={14} /> Add Variable
               </button>
-            ))}
-          </div>
+            </div>
+          )}
 
-          <label className="env-label">Name</label>
-          <input
-            type="text"
-            placeholder="env name"
-            className="env-input"
-            value={newEnvVar.name}
-            onChange={(e) =>
-              setNewEnvVar({ ...newEnvVar, name: e.target.value })
-            }
-          />
+          {showEnvModal && (
+            <div className="env-modal-overlay">
+              <div className="env-modal">
+                <h3 className="env-modal-title">Add Environment Variable</h3>
 
-          <label className="env-label">Value</label>
-          <input
-            type="text"
-            placeholder="env value"
-            className="env-input"
-            value={newEnvVar.value}
-            onChange={(e) =>
-              setNewEnvVar({ ...newEnvVar, value: e.target.value })
-            }
-          />
+                <label className="env-label">Type</label>
+                <div className="env-type-buttons">
+                  {["string", "number", "secret"].map((t) => (
+                    <button
+                      key={t}
+                      className={`env-type-btn ${
+                        newEnvVar.type === t ? "active" : ""
+                      }`}
+                      onClick={() => setNewEnvVar({ ...newEnvVar, type: t })}
+                    >
+                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                    </button>
+                  ))}
+                </div>
 
-          <label className="env-label">Description</label>
-          <input
-          type="text"
-            placeholder="Describe the variable"
-            className="env-textarea"
-            value={newEnvVar.description}
-            onChange={(e) =>
-              setNewEnvVar({ ...newEnvVar, description: e.target.value })
-            }
-          />
+                <label className="env-label">Name</label>
+                <input
+                  type="text"
+                  placeholder="env name"
+                  className="env-input"
+                  value={newEnvVar.name}
+                  onChange={(e) =>
+                    setNewEnvVar({ ...newEnvVar, name: e.target.value })
+                  }
+                />
 
-          <div className="env-modal-actions">
-            <button
-              className="env-btn-cancel"
-              onClick={() => setShowEnvModal(false)}
-            >
-              Cancel
-            </button>
-            <button
-              className="env-btn-save"
-              onClick={() => {
-                console.log("Saved Env Var:", newEnvVar);
-                setShowEnvModal(false);
-              }}
-            >
-              Save
-            </button>
-          </div>
+                <label className="env-label">Value</label>
+                <input
+                  type="text"
+                  placeholder="env value"
+                  className="env-input"
+                  value={newEnvVar.value}
+                  onChange={(e) =>
+                    setNewEnvVar({ ...newEnvVar, value: e.target.value })
+                  }
+                />
+
+                <label className="env-label">Description</label>
+                <input
+                  type="text"
+                  placeholder="Describe the variable"
+                  className="env-textarea"
+                  value={newEnvVar.description}
+                  onChange={(e) =>
+                    setNewEnvVar({ ...newEnvVar, description: e.target.value })
+                  }
+                />
+
+                <div className="env-modal-actions">
+                  <button
+                    className="env-btn-cancel"
+                    onClick={() => setShowEnvModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="env-btn-save"
+                    onClick={() => {
+                      console.log("Saved Env Var:", newEnvVar);
+                      setShowEnvModal(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    )}
-
-        </div>
-        
-    
-
-
-      </div>
-
-
     </div>
-
-    
-
-
-
-
   );
-  
 };
 
-
-
-
 const IfElseForm = ({ onAddNextStep }) => {
-  const [showVariableDropdown, setShowVariableDropdown] = useState(null); // store index of open dropdown
+  const [showVariableDropdown, setShowVariableDropdown] = useState(null);
   const [blocks, setBlocks] = useState([{ type: "IF", conditions: [] }]);
   const dropdownRef = useRef(null);
 
-  // Handle clicking outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -1748,11 +1872,11 @@ const IfElseForm = ({ onAddNextStep }) => {
     if (variable !== "NO VARIABLE") {
       setBlocks((prev) => {
         const updated = [...prev];
-        updated[index].conditions.push(variable); // store only variable name
+        updated[index].conditions.push(variable);
         return updated;
       });
     }
-    setShowVariableDropdown(null); // Close dropdown in all cases
+    setShowVariableDropdown(null);
   };
 
   const handleAddBlock = (type) => {
@@ -1767,7 +1891,6 @@ const IfElseForm = ({ onAddNextStep }) => {
 
   return (
     <div className="ifelse-wrapper">
-      {/* IF / ELIF Sections */}
       <div>
         {blocks.map((block, index) => (
           <div
@@ -1782,7 +1905,6 @@ const IfElseForm = ({ onAddNextStep }) => {
               </div>
             </div>
 
-            {/* Add Condition Button */}
             <button
               type="button"
               className="add-condition-btn"
@@ -1791,7 +1913,6 @@ const IfElseForm = ({ onAddNextStep }) => {
               + Add Condition
             </button>
 
-            {/* Show dropdown if this block's dropdown is open */}
             {showVariableDropdown === index && (
               <div
                 className="variable-dropdown"
@@ -1818,14 +1939,12 @@ const IfElseForm = ({ onAddNextStep }) => {
               </div>
             )}
 
-            {/* Show conditions */}
             {block.conditions.map((c, i) => (
               <div key={i} className="condition-item">
                 {c}
               </div>
             ))}
 
-            {/* Remove Button (shown if more than one block exists) */}
             {blocks.length > 1 && (
               <span
                 type="button"
@@ -1840,17 +1959,12 @@ const IfElseForm = ({ onAddNextStep }) => {
         ))}
       </div>
 
-      {/* ELIF Button */}
       <div className="section">
-        <button
-          className="elif-btn"
-          onClick={() => handleAddBlock("ELIF")}
-        >
+        <button className="elif-btn" onClick={() => handleAddBlock("ELIF")}>
           + ELIF
         </button>
       </div>
 
-      {/* ELSE Section */}
       <div className="section1">
         <div className="section-title">ELSE</div>
         <div className="section-desc">
@@ -1859,7 +1973,6 @@ const IfElseForm = ({ onAddNextStep }) => {
         </div>
       </div>
 
-      {/* NEXT STEP Section */}
       <div className="section2">
         <div className="section-title">NEXT STEP</div>
         <div className="section-desc">Add the next step in this workflow</div>
@@ -1886,22 +1999,17 @@ const IfElseForm = ({ onAddNextStep }) => {
   );
 };
 
-
-
-
-
-
 const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   const isHttpRequestNode = selectedNode?.data?.label === "HTTP Request";
   const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const nodeTitle = selectedNode?.data?.label || "Node Settings";
-  const [activeTab, setActiveTab] = useState('SETTINGS');
+  const [activeTab, setActiveTab] = useState("SETTINGS");
   const [responseData, setResponseData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  // for right panel 3-dots menu
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef(null);
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
@@ -1912,48 +2020,41 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuRef, setShowMoreMenu]);
 
-
   const isIterationNode = selectedNode?.data?.label === "Iteration";
-  // const isIfElseNode = selectedNode?.data?.label === "If/Else";
   const [requestData, setRequestData] = useState({
-    method: 'GET',
-    url: '',
-    headers: [{ key: '', value: '' }],
-    params: [{ key: '', value: '' }]
+    method: "GET",
+    url: "",
+    headers: [{ key: "", value: "" }],
+    params: [{ key: "", value: "" }],
   });
 
   const handleCopy = (text) => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard
+      .writeText(text)
       .then(() => {
-        console.log('Copied to clipboard');
+        console.log("Copied to clipboard");
       })
       .catch((err) => {
-        console.error('Failed to copy: ', err);
+        console.error("Failed to copy: ", err);
       });
   };
 
   const handleRunRequest = async () => {
-    // if (!requestData.url) {
-    //   setError('Please enter a URL');
-    //   return;
-    // }
-
     setIsLoading(true);
-    //setError(null);
 
     try {
       const headersObj = {};
-      requestData.headers.forEach(header => {
+      requestData.headers.forEach((header) => {
         if (header.key) headersObj[header.key] = header.value;
       });
 
       let urlWithParams = requestData.url;
       const paramsObj = {};
-      requestData.params.forEach(param => {
+      requestData.params.forEach((param) => {
         if (param.key) paramsObj[param.key] = param.value;
       });
 
-      if (requestData.method === 'GET' && Object.keys(paramsObj).length > 0) {
+      if (requestData.method === "GET" && Object.keys(paramsObj).length > 0) {
         const queryString = new URLSearchParams(paramsObj).toString();
         urlWithParams = `${requestData.url}?${queryString}`;
       }
@@ -1969,14 +2070,12 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
         statusText: response.statusText,
         headers: Object.fromEntries(response.headers.entries()),
         data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      setActiveTab('LAST RUN');
+      setActiveTab("LAST RUN");
     } catch (err) {
-
       setResponseData({
-
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } finally {
       setIsLoading(false);
@@ -1984,21 +2083,11 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
   };
 
   const updateRequestData = (field, value) => {
-    setRequestData(prev => ({
+    setRequestData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
-
-
-
-
-
-
-
-
-
-
 
   return (
     <div className="rightPanel">
@@ -2007,7 +2096,9 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
           <div className="header-left">
             <div className="iconn">
               {selectedNode?.data?.icon &&
-                React.createElement(iconComponents[selectedNode.data.icon], { size: 18 })}
+                React.createElement(iconComponents[selectedNode.data.icon], {
+                  size: 18,
+                })}
             </div>
             <span className="title">{nodeTitle}</span>
           </div>
@@ -2017,10 +2108,17 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
               onClick={handleRunRequest}
               disabled={isLoading}
             >
-              {isLoading ? '...' : <CiPlay1 size={20} />}
+              {isLoading ? "..." : <CiPlay1 size={20} />}
             </button>
-            <button className="action-btn"><TbSquareRoundedPlus size={20} /></button>
-            <button className="action-btn"><BsThreeDots size={20} onClick={() => setShowMoreMenu(!showMoreMenu)} /></button>
+            <button className="action-btn">
+              <TbSquareRoundedPlus size={20} />
+            </button>
+            <button className="action-btn">
+              <BsThreeDots
+                size={20}
+                onClick={() => setShowMoreMenu(!showMoreMenu)}
+              />
+            </button>
             {showMoreMenu && (
               <div className="more-menu" ref={moreMenuRef}>
                 <div className="menu-item">Run this step</div>
@@ -2039,7 +2137,8 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                 <div className="menu-section">
                   <div className="menu-label">ABOUT</div>
                   <p className="menu-desc">
-                    Allows you to split the workflow into two branches based on if/else conditions
+                    Allows you to split the workflow into two branches based on
+                    if/else conditions
                   </p>
                   <p className="menu-meta">Created by Dify</p>
                 </div>
@@ -2061,14 +2160,14 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
         </div>
         <div className="tabs">
           <button
-            className={`tab ${activeTab === 'SETTINGS' ? 'active' : ''}`}
-            onClick={() => setActiveTab('SETTINGS')}
+            className={`tab ${activeTab === "SETTINGS" ? "active" : ""}`}
+            onClick={() => setActiveTab("SETTINGS")}
           >
             SETTINGS
           </button>
           <button
-            className={`tab ${activeTab === 'LAST RUN' ? 'active' : ''}`}
-            onClick={() => setActiveTab('LAST RUN')}
+            className={`tab ${activeTab === "LAST RUN" ? "active" : ""}`}
+            onClick={() => setActiveTab("LAST RUN")}
           >
             LAST RUN
           </button>
@@ -2077,9 +2176,8 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
       <div className="panelContent">
         <div className="scrollabe-content">
           <div className="detail-content-renamed">
-            {/* SETTINGS TAB CONTENT */}
-            {activeTab === 'SETTINGS' && (
-              isHttpRequestNode ? (
+            {activeTab === "SETTINGS" &&
+              (isHttpRequestNode ? (
                 <HttpRequestForm
                   onAddNextStep={handleTextClick}
                   requestData={requestData}
@@ -2088,9 +2186,7 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
               ) : isIfElseNode ? (
                 <IfElseForm onAddNextStep={handleTextClick} />
               ) : isIterationNode ? (
-                <WorkflowConfig
-                  onAddNextStep={handleTextClick}
-                />
+                <WorkflowConfig onAddNextStep={handleTextClick} />
               ) : (
                 <>
                   <label className="label-renamed">Name</label>
@@ -2101,37 +2197,41 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                     readOnly
                   />
                 </>
-              )(
-                <>
-                  <label className="label-renamed">Name</label>
-                  <input
-                    type="text"
-                    value={selectedNode?.data?.label || ""}
-                    className="textInput-renamed"
-                    readOnly
-                  />
-                </>
-              )
-            )}
+              ))}
 
-            {/* LAST RUN TAB CONTENT */}
-            {activeTab === 'LAST RUN' && (
+            {activeTab === "LAST RUN" && (
               <>
                 {responseData ? (
                   <>
-                    {/* Status Card */}
-                    <div className={`status-card-renamed ${responseData.status >= 200 && responseData.status < 300 ? 'success-bg' : 'error-bg'
-                      }`}>
+                    <div
+                      className={`status-card-renamed ${
+                        responseData.status >= 200 && responseData.status < 300
+                          ? "success-bg"
+                          : "error-bg"
+                      }`}
+                    >
                       <div className="status-item-renamed">
                         <div className="status-label-renamed">Status</div>
-                        <div className={`status-value-renamed ${responseData.status >= 200 && responseData.status < 300 ? 'success' : 'error'
-                          }`}>
-                          ● {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
+                        <div
+                          className={`status-value-renamed ${
+                            responseData.status >= 200 &&
+                            responseData.status < 300
+                              ? "success"
+                              : "error"
+                          }`}
+                        >
+                          ●{" "}
+                          {responseData.status >= 200 &&
+                          responseData.status < 300
+                            ? "SUCCESS"
+                            : "ERROR"}
                         </div>
                       </div>
                       <div className="status-item-renamed">
                         <div className="status-label-renamed">Status Code</div>
-                        <div className="status-value-renamed">{responseData.status}</div>
+                        <div className="status-value-renamed">
+                          {responseData.status}
+                        </div>
                       </div>
                       <div className="status-item-renamed">
                         <div className="status-label-renamed">Timestamp</div>
@@ -2141,14 +2241,15 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                       </div>
                     </div>
 
-                    {/* Request Section */}
                     <div className="workflow-card-renamed">
                       <div className="workflow-headerr-renamed">
                         <span className="workflow-title-renamed">Input</span>
                         <div className="workflow-actions-renamed">
                           <button
                             className="workflow-action-btn-renamed"
-                            onClick={() => handleCopy(JSON.stringify(requestData, null, 2))}
+                            onClick={() =>
+                              handleCopy(JSON.stringify(requestData, null, 2))
+                            }
                           >
                             <Copy className="Icon-Copy" size={15} />
                           </button>
@@ -2163,14 +2264,17 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                       </div>
                     </div>
 
-                    {/* Response Section */}
                     <div className="workflow-card-renamed">
                       <div className="workflow-headerr-renamed">
                         <span className="workflow-title-renamed">RESPONSE</span>
                         <div className="workflow-actions-renamed">
                           <button
                             className="workflow-action-btn-renamed"
-                            onClick={() => handleCopy(JSON.stringify(responseData.data, null, 2))}
+                            onClick={() =>
+                              handleCopy(
+                                JSON.stringify(responseData.data, null, 2)
+                              )
+                            }
                           >
                             <Copy className="Icon-Copy" size={15} />
                           </button>
@@ -2179,13 +2283,14 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                       <div className="workflow-content-renamed">
                         <div className="workflow-code-renamed workflow-output-content-renamed">
                           <div className="workflow-code-container-renamed">
-                            <pre>{JSON.stringify(responseData.data, null, 2)}</pre>
+                            <pre>
+                              {JSON.stringify(responseData.data, null, 2)}
+                            </pre>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Metadata Section */}
                     <div className="workfloww-card-renamed">
                       <div className="workflow-headerr-renamed">
                         <span className="workflow-title-renamed">METADATA</span>
@@ -2194,7 +2299,10 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                         <div className="metadata-row">
                           <span className="metadata-label">Status</span>
                           <span className="metadata-value success">
-                            {responseData.status >= 200 && responseData.status < 300 ? 'SUCCESS' : 'ERROR'}
+                            {responseData.status >= 200 &&
+                            responseData.status < 300
+                              ? "SUCCESS"
+                              : "ERROR"}
                           </span>
                         </div>
                         <div className="metadata-row">
@@ -2204,12 +2312,14 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                         <div className="metadata-row">
                           <span className="metadata-label">Start Time</span>
                           <span className="metadata-value">
-                            {new Date(responseData.timestamp).toLocaleDateString('en-US', {
-                              month: '2-digit',
-                              day: '2-digit',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
+                            {new Date(
+                              responseData.timestamp
+                            ).toLocaleDateString("en-US", {
+                              month: "2-digit",
+                              day: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </span>
                         </div>
@@ -2225,15 +2335,14 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
                     </div>
                   </>
                 ) : (
-                  <div className="no-data-renamed">No request has been made yet</div>
+                  <div className="no-data-renamed">
+                    No request has been made yet
+                  </div>
                 )}
               </>
             )}
 
-            {/* Loading and Error States */}
-            {isLoading && (
-              <div className="loading-renamed">Loading...</div>
-            )}
+            {isLoading && <div className="loading-renamed">Loading...</div>}
 
             {error && (
               <div className="error-message-renamed">Error: {error}</div>
@@ -2244,7 +2353,6 @@ const RightPanel = ({ selectedNode, onClose, handleTextClick }) => {
     </div>
   );
 };
-
 
 const OptionsPanel = ({ onClose }) => {
   return (
@@ -2268,11 +2376,12 @@ const FlowBuilder = () => {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const { id } = useParams();
   const [currentApp, setCurrentApp] = useState(null);
+  
   const handleIconClick = (event) => {
     const rect = event.target.getBoundingClientRect();
     setMenuPosition({
       x: rect.left,
-      y: rect.top - 150
+      y: rect.top - 150,
     });
     setShowConditionMenu(true);
   };
@@ -2282,15 +2391,22 @@ const FlowBuilder = () => {
     const rect = target.getBoundingClientRect();
     setMenuPosition({
       x: rect.left + rect.width / 2 - 100,
-      y: rect.top - 400
+      y: rect.top - 400,
     });
     setShowConditionMenu(true);
   };
+  
+  // Initialize the current app data immediately when id is available
   useEffect(() => {
-    const stored = localStorage.getItem("containers");
-    const parsed = stored ? JSON.parse(stored) : [];
-    const found = parsed.find((c) => c.id.toString() === id.toString());
-    setCurrentApp(found);
+    if (id) {
+      const mockApp = {
+        id: id,
+        name: `Workspace ${id}`,
+        description: "Flow workspace",
+        createdAt: new Date().toISOString()
+      };
+      setCurrentApp(mockApp);
+    }
   }, [id]);
 
   const toggleSidebar = () => {
@@ -2307,8 +2423,6 @@ const FlowBuilder = () => {
   };
 
   const handleAddNextStep = (event) => {
-    // You can implement the logic for adding next step here
-    // For now, we'll just log the event
     console.log("Add next step clicked", event);
   };
 
@@ -2323,9 +2437,11 @@ const FlowBuilder = () => {
             onOptionsClick={() => setShowOptionsPanel(true)}
             isPartialExpand={isPartialExpand}
           />
-          {currentApp && (
+          
+          {/* Always render StudioNewBlank when we have an id */}
+          {id && (
             <StudioNewBlank
-              key={currentApp.id}
+              key={id}
               selectedNode={selectedNode}
               setSelectedNode={setSelectedNode}
               isSidebarCollapsed={isSidebarCollapsed}
@@ -2337,9 +2453,9 @@ const FlowBuilder = () => {
               setMenuPosition={setMenuPosition}
               showConditionMenu={showConditionMenu}
               setShowConditionMenu={setShowConditionMenu}
-
             />
           )}
+          
           {selectedNode && (
             <RightPanel
               selectedNode={selectedNode}
@@ -2357,4 +2473,3 @@ const FlowBuilder = () => {
 };
 
 export default FlowBuilder;
-
