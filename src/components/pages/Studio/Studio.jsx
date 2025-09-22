@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { MdCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Studio.css";
@@ -81,6 +81,14 @@ const CreateOption = ({ icon: Icon, title, onClick }) => (
 );
 
 const Studio = () => {
+  const { projectId } = useParams();
+  const [searchParams] = useSearchParams();
+  const workspaceIdFromQuery = searchParams.get("workspaceId");
+  const projectIdFromQuery = searchParams.get("projectId");
+  
+  // Priority: URL param > workspaceId query > projectId query
+  const finalWorkspaceId = projectId || workspaceIdFromQuery || projectIdFromQuery;
+  
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("all");
@@ -98,28 +106,61 @@ const Studio = () => {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editId, setEditId] = useState(null);
+  const [currentWorkspace, setCurrentWorkspace] = useState(null);
 
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
 
-  // Fetch all projects
+  // Fetch current workspace details
+  useEffect(() => {
+    const fetchCurrentWorkspace = async () => {
+      if (finalWorkspaceId) {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(`${API_URL}/workspaces/${finalWorkspaceId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setCurrentWorkspace(response.data);
+        } catch (error) {
+          console.error("Failed to fetch current workspace:", error);
+        }
+      } else {
+        setCurrentWorkspace(null);
+      }
+    };
+
+    fetchCurrentWorkspace();
+  }, [finalWorkspaceId]);
+
+  // Fetch projects for the selected workspace
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [finalWorkspaceId]);
 
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/projects`, {
+      let url = `${API_URL}/projects`;
+      
+      // If we have a workspace selected, fetch projects for that workspace
+      if (finalWorkspaceId) {
+        url += `?workspaceId=${finalWorkspaceId}`;
+      }
+
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      // Format the response data
       const formatted = response.data.map((item) => ({
         id: item._id,
         name: item.name,
         description: item.description || "No description",
         createdAt: item.createdAt,
+        workspaceId: item.workspaceId,
       }));
 
       setProjects(formatted);
@@ -136,6 +177,7 @@ const Studio = () => {
       const payload = {
         name: projectName,
         description: projectDescription || "New project",
+        workspaceId: finalWorkspaceId, // Associate with current workspace if available
       };
       const result = await createProject(payload);
 
@@ -146,6 +188,7 @@ const Studio = () => {
           name: result.name,
           description: result.description,
           createdAt: result.createdAt,
+          workspaceId: result.workspaceId,
         },
       ]);
 
@@ -161,7 +204,7 @@ const Studio = () => {
   const handleDeleteProject = async (id) => {
     try {
       await deleteProject(id);
-      setProjects((prev) => prev.filter((p) => p.id !== id));
+      setProjects((prev) => prev.filter((project) => project.id !== id));
       setShowDeleteModal(false);
       setDeleteId(null);
       toast.success("Project deleted successfully!");
@@ -172,11 +215,14 @@ const Studio = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const payload = { name: editName, description: editDescription };
+      const payload = {
+        name: editName,
+        description: editDescription,
+      };
       await updateProject(editId, payload);
       setProjects((prev) =>
-        prev.map((p) =>
-          p.id === editId ? { ...p, name: editName, description: editDescription } : p
+        prev.map((project) =>
+          project.id === editId ? { ...project, name: editName, description: editDescription } : project
         )
       );
       setShowEditModal(false);
@@ -187,11 +233,13 @@ const Studio = () => {
   };
 
   const handleProjectClick = (project) => {
+    // Navigate to the project page
     navigate(`/studionewblank/${project.id}`);
   };
 
-  const filteredProjects = projects.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter projects based on search query
+  const filteredProjects = projects.filter((project) =>
+    project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const tabs = [
@@ -203,7 +251,10 @@ const Studio = () => {
 
   return (
     <div className="app">
-      <Navbar onNewApp={() => setShowCreateModal(true)} onCreateProject={createProject} />
+      <Navbar 
+        onNewApp={() => setShowCreateModal(true)} 
+        onCreateProject={createProject}
+      />
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Tabs and Search */}
@@ -274,43 +325,55 @@ const Studio = () => {
               <h1 className="index-title">CREATE PROJECT</h1>
             </div>
             <div className="index-options">
-              <CreateOption icon={File} title="Create from Blank" onClick={() => setShowCreateModal(true)} />
-              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
-              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
+              <CreateOption 
+                icon={File} 
+                title="Create from Blank" 
+                onClick={() => setShowCreateModal(true)} 
+              />
+              <CreateOption 
+                icon={FileText} 
+                title="Create from Template" 
+                onClick={() => {}} 
+              />
+              <CreateOption 
+                icon={Import} 
+                title="Import DSL file" 
+                onClick={() => {}} 
+              />
             </div>
           </div>
 
-          {filteredProjects.map((p) => (
+          {filteredProjects.map((project) => (
             <div
-              key={p.id}
+              key={project.id}
               className="grid-card container-card"
-              onClick={() => handleProjectClick(p)}
+              onClick={() => handleProjectClick(project)}
               style={{ cursor: "pointer" }}
             >
               <div className="container-content">
-                <h3>{p.name}</h3>
-                <p>{p.description}</p>
+                <h3>{project.name}</h3>
+                <p>{project.description}</p>
                 <small className="created-at">
-                  Created on: {new Date(p.createdAt).toLocaleString()}
+                  Created on: {new Date(project.createdAt).toLocaleString()}
                 </small>
               </div>
               <div className="container-actions" onClick={(e) => e.stopPropagation()}>
                 <div className="dots-container">
                   <button
                     className="dots-button"
-                    onClick={() => setOpenMenuId(openMenuId === p.id ? null : p.id)}
+                    onClick={() => setOpenMenuId(openMenuId === project.id ? null : project.id)}
                   >
                     <HiOutlineDotsHorizontal className="dots-icon" />
                   </button>
                 </div>
-                {openMenuId === p.id && (
+                {openMenuId === project.id && (
                   <div className="dropdown-menu">
                     <button
                       className="menu-item"
                       onClick={() => {
-                        setEditId(p.id);
-                        setEditName(p.name);
-                        setEditDescription(p.description);
+                        setEditId(project.id);
+                        setEditName(project.name);
+                        setEditDescription(project.description);
                         setShowEditModal(true);
                         setOpenMenuId(null);
                       }}
@@ -320,7 +383,7 @@ const Studio = () => {
                     <button
                       className="menu-item"
                       onClick={() => {
-                        setDeleteId(p.id);
+                        setDeleteId(project.id);
                         setShowDeleteModal(true);
                         setOpenMenuId(null);
                       }}
@@ -335,7 +398,7 @@ const Studio = () => {
         </div>
       </div>
 
-      {/* Create Modal */}
+      {/* Create Project Modal */}
       {showCreateModal && (
         <div className="modal-overlay">
           <div className="create-modal">
@@ -378,7 +441,7 @@ const Studio = () => {
                   Cancel
                 </button>
                 <button onClick={handleCreateProject} className="create-button">
-                  Create
+                  Create Project
                 </button>
               </div>
             </div>
@@ -386,7 +449,7 @@ const Studio = () => {
         </div>
       )}
 
-      {/* Delete Modal */}
+      {/* Delete Project Modal */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="confirm-modal">
@@ -412,7 +475,7 @@ const Studio = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* Edit Project Modal */}
       {showEditModal && (
         <div className="modal-overlay">
           <div className="edit-modal">
