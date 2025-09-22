@@ -295,14 +295,14 @@ html, body {
 }
 .create-modal {
   display: flex;
-  width: 90%;
-  height: 95%;
+  width: 102%;
+  height: 105%;
   background-color: #fff;
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
-  margin-right: 480px;
+  margin-left: -530px;
 }
 .modal-left {
   
