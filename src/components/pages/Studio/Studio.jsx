@@ -238,10 +238,12 @@ const Studio = () => {
   };
 
   // Filter workspaces based on search query
-  const filteredWorkspaces = workspaces.filter((ws) =>
-    ws.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ws.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+// Filter workspaces based on search query (only by project name)
+const filteredprojects = workspaces.filter((ws) =>
+  ws.name.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+    
 
   const tabs = [
     { id: "all", label: "All", icon: <LayoutGrid className="icon" /> },
@@ -350,7 +352,7 @@ const Studio = () => {
             </div>
           </div>
 
-          {filteredWorkspaces.map((ws) => (
+          {filteredprojects.map((ws) => (
             <div
               key={ws.id}
               className="grid-card container-card"
