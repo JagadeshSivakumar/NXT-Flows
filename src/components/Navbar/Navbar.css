@@ -406,11 +406,3 @@
 .plus-icon {
   margin-right: 6px;
 }
-.tab-buttonn .icon {
-  color: #6b7280; /* default gray */
-  transition: color 0.2s;
-}
-
-.tab-buttonn.active .icon {
-  color: #3b82f6; /* ensures active tab icon is blue */
-}
