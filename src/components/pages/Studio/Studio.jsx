@@ -24,7 +24,7 @@ import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
 
-// ✅ Project API Services
+// Project API Services
 export const createProject = async (data) => {
   try {
     const token = localStorage.getItem("token");
@@ -72,7 +72,7 @@ export const deleteProject = async (id) => {
   }
 };
 
-// ✅ Create option component
+// Create option component
 const CreateOption = ({ icon: Icon, title, onClick }) => (
   <button onClick={onClick} className="create-option">
     <Icon className="option-icon" />
@@ -85,27 +85,38 @@ const Studio = () => {
   const [searchParams] = useSearchParams();
   const workspaceIdFromQuery = searchParams.get("workspaceId");
   const projectIdFromQuery = searchParams.get("projectId");
-  
+
   // Priority: URL param > workspaceId query > projectId query
   const finalWorkspaceId = projectId || workspaceIdFromQuery || projectIdFromQuery;
-  
+
   const navigate = useNavigate();
 
+  // Tabs & Filters
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isCreatedByMeChecked, setIsCreatedByMeChecked] = useState(false);
+
+  // Modals
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  // Projects
   const [projects, setProjects] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [editId, setEditId] = useState(null);
+
+  // Workspace & Project Input Fields
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [workspaceName, setWorkspaceName] = useState("");
+  const [workspaceDescription, setWorkspaceDescription] = useState("");
+
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
 
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
@@ -117,9 +128,7 @@ const Studio = () => {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(`${API_URL}/workspaces/${finalWorkspaceId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           });
           setCurrentWorkspace(response.data);
         } catch (error) {
@@ -129,7 +138,6 @@ const Studio = () => {
         setCurrentWorkspace(null);
       }
     };
-
     fetchCurrentWorkspace();
   }, [finalWorkspaceId]);
 
@@ -142,19 +150,12 @@ const Studio = () => {
     try {
       const token = localStorage.getItem("token");
       let url = `${API_URL}/projects`;
-      
-      // If we have a workspace selected, fetch projects for that workspace
-      if (finalWorkspaceId) {
-        url += `?workspaceId=${finalWorkspaceId}`;
-      }
+      if (finalWorkspaceId) url += `?workspaceId=${finalWorkspaceId}`;
 
       const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Format the response data
       const formatted = response.data.map((item) => ({
         id: item._id,
         name: item.name,
@@ -170,14 +171,14 @@ const Studio = () => {
     }
   };
 
+  // Handlers
   const handleCreateProject = async () => {
     if (!projectName.trim()) return;
-
     try {
       const payload = {
         name: projectName,
         description: projectDescription || "New project",
-        workspaceId: finalWorkspaceId, // Associate with current workspace if available
+        workspaceId: finalWorkspaceId,
       };
       const result = await createProject(payload);
 
@@ -204,7 +205,7 @@ const Studio = () => {
   const handleDeleteProject = async (id) => {
     try {
       await deleteProject(id);
-      setProjects((prev) => prev.filter((project) => project.id !== id));
+      setProjects((prev) => prev.filter((p) => p.id !== id));
       setShowDeleteModal(false);
       setDeleteId(null);
       toast.success("Project deleted successfully!");
@@ -215,14 +216,10 @@ const Studio = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const payload = {
-        name: editName,
-        description: editDescription,
-      };
-      await updateProject(editId, payload);
+      await updateProject(editId, { name: editName, description: editDescription });
       setProjects((prev) =>
-        prev.map((project) =>
-          project.id === editId ? { ...project, name: editName, description: editDescription } : project
+        prev.map((p) =>
+          p.id === editId ? { ...p, name: editName, description: editDescription } : p
         )
       );
       setShowEditModal(false);
@@ -233,11 +230,9 @@ const Studio = () => {
   };
 
   const handleProjectClick = (project) => {
-    // Navigate to the project page
     navigate(`/studionewblank/${project.id}`);
   };
 
-  // Filter projects based on search query
   const filteredProjects = projects.filter((project) =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -251,13 +246,13 @@ const Studio = () => {
 
   return (
     <div className="app">
-      <Navbar 
-        onNewApp={() => setShowCreateModal(true)} 
+      <Navbar
+        onNewApp={() => setShowCreateWorkspaceModal(true)}
         onCreateProject={createProject}
       />
       <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* Tabs and Search */}
+      {/* Tabs & Search */}
       <div className="studio-container">
         <div className="studio-inner">
           <div className="studio-header">
@@ -325,21 +320,13 @@ const Studio = () => {
               <h1 className="index-title">CREATE PROJECT</h1>
             </div>
             <div className="index-options">
-              <CreateOption 
-                icon={File} 
-                title="Create from Blank" 
-                onClick={() => setShowCreateModal(true)} 
+              <CreateOption
+                icon={File}
+                title="Create from Blank"
+                onClick={() => setShowCreateModal(true)}
               />
-              <CreateOption 
-                icon={FileText} 
-                title="Create from Template" 
-                onClick={() => {}} 
-              />
-              <CreateOption 
-                icon={Import} 
-                title="Import DSL file" 
-                onClick={() => {}} 
-              />
+              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
+              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
             </div>
           </div>
 
@@ -398,6 +385,70 @@ const Studio = () => {
         </div>
       </div>
 
+      {/* Create Workspace Modal */}
+      {showCreateWorkspaceModal && (
+        <div className="modal-overlay">
+          <div className="create-modal">
+            <button
+              onClick={() => setShowCreateWorkspaceModal(false)}
+              className="close-button"
+            >
+              <X className="icon" />
+            </button>
+            <div className="modal-left">
+              <div className="modal-header">
+                <h3>Create New Workspace</h3>
+              </div>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="modal-label">Workspace Name</label>
+                  <div className="app-input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="Give your workspace a name"
+                      value={workspaceName}
+                      onChange={(e) => setWorkspaceName(e.target.value)}
+                      className="modal-input app-input"
+                    />
+                    <div className="icon-box">
+                      <FaRobot className="app-icon" />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="modal-label">Description</label>
+                  <textarea
+                    placeholder="Enter the description of the workspace"
+                    className="modal-textarea"
+                    rows={4}
+                    value={workspaceDescription}
+                    onChange={(e) => setWorkspaceDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  onClick={() => setShowCreateWorkspaceModal(false)}
+                  className="cancel-button"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log("Workspace Name:", workspaceName);
+                    setShowCreateWorkspaceModal(false);
+                    toast.success("Workspace created!");
+                  }}
+                  className="create-button"
+                >
+                  Create Workspace
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Create Project Modal */}
       {showCreateModal && (
         <div className="modal-overlay">
@@ -449,7 +500,7 @@ const Studio = () => {
         </div>
       )}
 
-      {/* Delete Project Modal */}
+      {/* Delete & Edit Modals */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="confirm-modal">
@@ -463,10 +514,7 @@ const Studio = () => {
               </button>
               <button
                 className="confirm-btn"
-                onClick={() => {
-                  if (deleteId) handleDeleteProject(deleteId);
-                  else toast.error("Invalid ID");
-                }}
+                onClick={() => deleteId && handleDeleteProject(deleteId)}
               >
                 Confirm
               </button>
@@ -475,7 +523,6 @@ const Studio = () => {
         </div>
       )}
 
-      {/* Edit Project Modal */}
       {showEditModal && (
         <div className="modal-overlay">
           <div className="edit-modal">
@@ -509,13 +556,7 @@ const Studio = () => {
               <button onClick={() => setShowEditModal(false)} className="cancel-button">
                 Cancel
               </button>
-              <button
-                onClick={() => {
-                  if (editId) handleSaveEdit();
-                  else toast.error("Invalid ID");
-                }}
-                className="create-button"
-              >
+              <button onClick={handleSaveEdit} className="create-button">
                 Save
               </button>
             </div>
