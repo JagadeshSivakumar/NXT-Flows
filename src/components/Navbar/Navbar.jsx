@@ -1,29 +1,131 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Settings, Square, Layers, BookOpen, Plus } from "lucide-react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaChevronDown } from "react-icons/fa";
 import "./Navbar.css";
-import CreateWorkspaceModal from "../Modal/CreateWorkspaceModal"; // ✅ import modal
+import CreateWorkspaceModal from "../Modal/CreateWorkspaceModal";
+import axios from "axios";
 
-const Navbar = ({
-  onNewApp,
-  workspaces = [],
-  currentWorkspace,
-  handleWorkspaceSelect,
-  onCreateWorkspace,
-}) => {
+const API_URL = "http://192.168.1.137:4000";
+
+// Workspace API Services - Updated to use correct endpoints
+const getWorkspaces = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/workspaces`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workspaces:", error.response?.data || error.message);
+    return [];
+  }
+};
+
+const getProjects = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/projects`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching projects:", error.response?.data || error.message);
+    return [];
+  }
+};
+
+const getWorkspaceById = async (workspaceId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/workspaces/${workspaceId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workspace:", error.response?.data || error.message);
+    return null;
+  }
+};
+
+const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState("Flows");
+  const [workspaces, setWorkspaces] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [currentWorkspace, setCurrentWorkspace] = useState(null);
   const [containers, setContainers] = useState([]);
   const [currentApp, setCurrentApp] = useState(null);
   const [showStudioDropdown, setShowStudioDropdown] = useState(false);
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
   const [isHoveringStudio, setIsHoveringStudio] = useState(false);
-  const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false); // 🔹 modal state
+  const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
 
+  // Load all workspaces for navbar dropdown
+  useEffect(() => {
+    const loadWorkspaces = async () => {
+      const result = await getWorkspaces();
+      const formatted = result.map((item) => ({
+        id: item._id,
+        name: item.name,
+        initial: item.name.charAt(0).toUpperCase(),
+      }));
+      setWorkspaces(formatted);
+    };
+    
+    const loadProjects = async () => {
+      const result = await getProjects();
+      const formatted = result.map((item) => ({
+        id: item._id,
+        name: item.name,
+        initial: item.name.charAt(0).toUpperCase(),
+      }));
+      setProjects(formatted);
+    };
+    
+    loadWorkspaces();
+    loadProjects();
+  }, []);
+
+  // Detect current workspace from URL
+  useEffect(() => {
+    const path = location.pathname;
+    const workspaceIdFromParams = searchParams.get("workspaceId");
+    let workspaceId = null;
+
+    if (path.startsWith("/studionewblank/") || path.startsWith("/studio/")) {
+      workspaceId = path.split("/")[2];
+    } else if (workspaceIdFromParams) {
+      workspaceId = workspaceIdFromParams;
+    }
+
+    if (workspaceId) {
+      const workspace = workspaces.find(
+        (ws) => ws.id === workspaceId || ws._id === workspaceId
+      );
+      if (workspace) {
+        setCurrentWorkspace(workspace);
+      } else {
+        getWorkspaceById(workspaceId).then((res) => {
+          if (res) {
+            setCurrentWorkspace({
+              id: res._id,
+              name: res.name,
+              initial: res.name.charAt(0).toUpperCase(),
+            });
+          }
+        });
+      }
+    } else {
+      setCurrentWorkspace(null);
+    }
+  }, [location.pathname, searchParams, workspaces]);
+
+  // Detect current app
   useEffect(() => {
     const stored = localStorage.getItem("containers");
     const parsed = stored ? JSON.parse(stored) : [];
@@ -32,23 +134,32 @@ const Navbar = ({
     if (location.pathname.startsWith("/studio/")) {
       const appId = location.pathname.split("/")[2];
       const foundApp = parsed.find((app) => app.id.toString() === appId);
-      if (foundApp) setCurrentApp(foundApp);
+      setCurrentApp(foundApp || null);
+    } else {
+      setCurrentApp(null);
     }
   }, [location.pathname]);
 
+  // Active tab
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith("/studio")) setActiveTab("Studio");
-    else if (path.startsWith("/Exploreflow")) setActiveTab("Flows");
-    else if (path.startsWith("/knowledge")) setActiveTab("Knowledge");
-    else if (path.startsWith("/settings")) setActiveTab("Settings");
-    else setActiveTab("Flows");
+    if (path.startsWith("/studio") || path.startsWith("/studionewblank")) {
+      setActiveTab("Studio");
+    } else if (path.startsWith("/Exploreflow")) {
+      setActiveTab("Flows");
+    } else if (path.startsWith("/knowledge")) {
+      setActiveTab("Knowledge");
+    } else if (path.startsWith("/settings")) {
+      setActiveTab("Settings");
+    } else {
+      setActiveTab("Flows");
+    }
   }, [location.pathname]);
 
   const handleAppSelect = (app) => {
     setCurrentApp(app);
     setShowStudioDropdown(false);
-    navigate(`/studio/${app.id}`, { replace: true });
+    navigate(`/studio/${app.id}`);
   };
 
   const handleNewApp = () => {
@@ -56,13 +167,44 @@ const Navbar = ({
     onNewApp?.();
   };
 
+  // Updated to navigate to studio with workspaceId parameter
+  const handleWorkspaceSelect = (workspace) => {
+    setCurrentWorkspace(workspace);
+    setShowWorkspaceDropdown(false);
+    navigate(`/studio?workspaceId=${workspace.id}`);
+  };
+
+  const handleStudioWorkspaceSelect = (workspace) => {
+    setCurrentWorkspace(workspace);
+    setShowStudioDropdown(false);
+    navigate(`/studionewblank/${workspace.id}`);
+  };
+
   const handleStudioClick = () => {
-    if (isHoveringStudio && currentApp) {
-      navigate(-1);
+    if (isHoveringStudio && (currentApp || currentWorkspace)) {
+      navigate("/studio");
       setCurrentApp(null);
     } else {
       setActiveTab("Studio");
-      navigate(currentApp ? `/studio/${currentApp.id}` : "/studio");
+      if (currentApp) navigate(`/studio/${currentApp.id}`);
+      else if (currentWorkspace) navigate(`/studio?workspaceId=${currentWorkspace.id}`);
+      else navigate("/studio");
+    }
+  };
+
+  const handleCreateWorkspace = async (data) => {
+    try {
+      if (onCreateWorkspace) await onCreateWorkspace(data);
+      const result = await getWorkspaces();
+      const formatted = result.map((item) => ({
+        id: item._id,
+        name: item.name,
+        initial: item.name.charAt(0).toUpperCase(),
+      }));
+      setWorkspaces(formatted);
+      setIsWorkspaceModalOpen(false);
+    } catch (error) {
+      console.error("Failed to create workspace:", error);
     }
   };
 
@@ -82,60 +224,32 @@ const Navbar = ({
             <div className="workspace-avatar">
               {currentWorkspace?.initial || "W"}
             </div>
-            <span className="workspace-name">
-              {currentWorkspace?.name || "Workspace"}
-            </span>
-            <svg className="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12">
-              <path
-                d="M3 4.5L6 7.5L9 4.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                fill="none"
-              />
-            </svg>
+            <span className="workspace-name">{currentWorkspace?.name || "Workspace"}</span>
+            <FaChevronDown size={12} />
           </div>
 
           {showWorkspaceDropdown && (
             <div className="workspace-dropdown">
-              {/* Create Workspace */}
               <div
                 className="dropdown-item new-workspace"
                 onClick={() => {
                   setShowWorkspaceDropdown(false);
                   setIsWorkspaceModalOpen(true);
                 }}
-                style={{ fontSize: "13px" }}
               >
-                Create Workspace
-                <button className="add-buttons">+</button>
+                Create Workspace <button className="add-buttons">+</button>
               </div>
-
               <div className="dropdown-divider" />
-
-              {/* Existing Workspaces */}
-              {workspaces.length > 0 ? (
-                workspaces.map((workspace) => (
-                  <div
-                    key={workspace.id}
-                    className={`dropdown-item ${
-                      currentWorkspace?.id === workspace.id ? "active" : ""
-                    }`}
-                    onClick={() => {
-                      handleWorkspaceSelect(workspace);
-                      setShowWorkspaceDropdown(false);
-                    }}
-                  >
-                    <div className="workspace-avatar" style={{ fontSize: "13px" }}>
-                      {workspace.initial}
-                    </div>
-                    <span>{workspace.name}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="dropdown-item empty" style={{ fontSize: "13px" }}>
-                  No workspaces found
+              {workspaces.map((workspace) => (
+                <div
+                  key={workspace.id}
+                  className="dropdown-item"
+                  onClick={() => handleWorkspaceSelect(workspace)}
+                >
+                  <div className="workspace-avatar">{workspace.initial}</div>
+                  <span>{workspace.name}</span>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>
@@ -145,10 +259,7 @@ const Navbar = ({
       <div className="navbar-center">
         <div
           className={`nav-item ${activeTab === "Flows" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("Flows");
-            navigate("/Exploreflow");
-          }}
+          onClick={() => navigate("/Exploreflow")}
         >
           <Square size={16} />
           <span>Explore</span>
@@ -160,17 +271,17 @@ const Navbar = ({
           onMouseEnter={() => setIsHoveringStudio(true)}
           onMouseLeave={() => setIsHoveringStudio(false)}
         >
-          {isHoveringStudio && currentApp ? (
+          {isHoveringStudio && (currentApp || currentWorkspace) ? (
             <FaArrowLeftLong size={16} />
           ) : (
             <Layers size={16} />
           )}
           <span>Studio</span>
+          {currentWorkspace && <span className="slash">/</span>}
+          {currentWorkspace && <span className="app-name">{currentWorkspace.name}</span>}
           {currentApp && <span className="slash">/</span>}
           {currentApp && <span className="app-name">{currentApp.name}</span>}
-
           <FaChevronDown
-            className="dropdown-toggle-icon"
             size={14}
             onClick={(e) => {
               e.stopPropagation();
@@ -178,44 +289,40 @@ const Navbar = ({
             }}
             style={{ cursor: "pointer", marginLeft: "4px" }}
           />
-
           {showStudioDropdown && (
             <div className="studio-dropdown">
-              <div
-                className="dropdown-item new-app"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNewApp();
-                }}
-              >
-                <Plus size={14} className="plus-icon" />
-                Create from Blank
+              <div className="dropdown-item new-app" onClick={handleNewApp}>
+                <Plus size={14} /> Create from Blank
               </div>
-
-              <div className="dropdown-divider" />
-
-              {containers.map((container) => (
-                <div
-                  key={container.id}
-                  className={`dropdown-item ${
-                    currentApp?.id === container.id ? "active" : ""
-                  }`}
-                  onClick={() => handleAppSelect(container)}
-                >
-                  <Layers size={16} className="app-icon" />
-                  <span>{container.name}</span>
-                </div>
-              ))}
+           
+              
+              {projects.length > 0 && (
+                <>
+                  <div className="dropdown-divider" />
+                  <div className="dropdown-section-header">Projects</div>
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="dropdown-item"
+                      onClick={() => handleAppSelect(project)}
+                    >
+                      <Layers size={16} />
+                      <span>{project.name}</span>
+                    </div>
+                  ))}
+                </>
+              )}
+            
+              {workspaces.length === 0 && projects.length === 0 && containers.length === 0 && (
+                <div className="dropdown-item empty">No workspaces, projects, or apps found</div>
+              )}
             </div>
           )}
         </div>
 
         <div
           className={`nav-item ${activeTab === "Knowledge" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("Knowledge");
-            navigate("/knowledge");
-          }}
+          onClick={() => navigate("/knowledge")}
         >
           <BookOpen size={16} />
           <span>Knowledge</span>
@@ -223,10 +330,7 @@ const Navbar = ({
 
         <div
           className={`nav-item ${activeTab === "Settings" ? "active" : ""}`}
-          onClick={() => {
-            setActiveTab("Settings");
-            navigate("/settings");
-          }}
+          onClick={() => navigate("/settings")}
         >
           <Settings size={16} />
           <span>Tools</span>
@@ -238,14 +342,11 @@ const Navbar = ({
         <div className="user-avatar">U</div>
       </div>
 
-      {/* 🔹 Use CreateWorkspaceModal */}
+      {/* Create Workspace Modal */}
       <CreateWorkspaceModal
         isOpen={isWorkspaceModalOpen}
         onClose={() => setIsWorkspaceModalOpen(false)}
-        onCreate={(data) => {
-          onCreateWorkspace?.(data);
-          setIsWorkspaceModalOpen(false);
-        }}
+        onCreate={handleCreateWorkspace}
       />
     </nav>
   );
