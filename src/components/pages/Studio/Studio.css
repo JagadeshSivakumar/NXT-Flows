@@ -411,15 +411,12 @@ html, body {
   
 }
 
-/* Grid layout for the content */
 .content-grid {
   display: grid;
   gap: 1.5rem;
   padding: 1rem;
-  min-height: min-content;
-  
-  /* Mobile first approach */
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  align-items: start; /* This ensures items align at the top */
 }
 
 .grid-card {
@@ -430,6 +427,8 @@ html, body {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  height: 100%; /* Make all cards take full height of their grid area */
+  min-height: 180px; /* Set a minimum height for consistency */
 }
 .create-app-card {
   background-color: #f8fafc;
@@ -567,18 +566,20 @@ html, body {
 }
 
 /* For screens larger than 1920px (5 columns) */
-@media (min-width: 2560px) { /* 2K/QHD screens and larger */
+@media (min-width: 2560px) {
   .content-grid {
     grid-template-columns: repeat(5, 1fr);
   }
 }
 .container-card {
-  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Ensure it takes full height */
 }
+
 .container-content {
-  flex-grow: 1;
+  flex-grow: 1; /* Allow content to grow and push actions to bottom */
 }
 .container-actions {
   display: flex;
