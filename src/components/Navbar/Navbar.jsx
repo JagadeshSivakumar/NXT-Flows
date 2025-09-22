@@ -244,14 +244,15 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
           {showWorkspaceDropdown && (
             <div className="workspace-dropdown">
               <div
-                className="dropdown-item new-workspace"
-                onClick={() => {
-                  setShowWorkspaceDropdown(false);
-                  setIsWorkspaceModalOpen(true);
-                }}
-              >
-                Create Workspace <button className="add-buttons">+</button>
-              </div>
+  className="dropdown-item new-workspace"
+  onClick={() => {
+    setShowWorkspaceDropdown(false);
+    onNewApp?.(); // Trigger Studio's create modal
+  }}
+>
+  Create Workspace <button className="add-buttons">+</button>
+</div>
+
               <div className="dropdown-divider" />
               {workspaces.map((workspace) => (
                 <div
