@@ -57,8 +57,37 @@ html, body {
   margin-left: auto;
   font-size: 13px;
   font-weight: 500;
-  margin-right: -95px;
-  transform: translateX(40rem);
+  
+  /* Default position for mobile */
+  margin-right: 10px;
+}
+
+/* For tablets */
+@media (min-width: 768px) {
+  .right-section {
+    margin-right: 30px; /* Move further right on tablets */
+  }
+}
+
+/* For desktop */
+@media (min-width: 1024px) {
+  .right-section {
+    margin-right: 50px; /* Move even more right on desktop */
+  }
+}
+
+/* For large screens */
+@media (min-width: 1280px) {
+  .right-section {
+    margin-right: -100px; /* Maximum right position on large screens */
+  }
+}
+
+/* For extra large screens */
+@media (min-width: 1536px) {
+  .right-section {
+    margin-right: -730px; /* Adjust as needed for very large screens */
+  }
 }
 .tab-buttonn {
   display: inline-flex;
