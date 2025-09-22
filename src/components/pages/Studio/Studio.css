@@ -261,16 +261,19 @@ html, body {
   align-items: center;
   z-index: 1000;
   padding: 2rem;
+  
+  
 }
 .create-modal {
   display: flex;
-  width: 95%;
+  width: 90%;
   height: 95%;
   background-color: #fff;
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
+  margin-right: 480px;
 }
 .modal-left {
   

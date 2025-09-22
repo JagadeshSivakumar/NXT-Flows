@@ -250,6 +250,8 @@ const Studio = () => {
     { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon" /> },
   ];
 
+  
+
   return (
     <div className="app">
       <Navbar 
@@ -269,7 +271,7 @@ const Studio = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
+                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
                 >
                   <span className="tab-icon">{tab.icon}</span>
                   {tab.label}
