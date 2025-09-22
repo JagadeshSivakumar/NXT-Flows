@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { MdCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Studio.css";
@@ -24,8 +24,8 @@ import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
 
-// ✅ Workspace API Services
-export const createWorkspace = async (data) => {
+// ✅ Project API Services
+export const createProject = async (data) => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/projects`, data, {
@@ -36,15 +36,15 @@ export const createWorkspace = async (data) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating workspace:", error.response?.data || error.message);
+    console.error("Error creating project:", error.response?.data || error.message);
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
 
-export const updateWorkspace = async (id, data) => {
+export const updateProject = async (id, data) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.put(`${API_URL}/workspaces/${id}`, data, {
+    const response = await axios.put(`${API_URL}/projects/${id}`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -52,22 +52,22 @@ export const updateWorkspace = async (id, data) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating workspace:", error.response?.data || error.message);
+    console.error("Error updating project:", error.response?.data || error.message);
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
 
-export const deleteWorkspace = async (id) => {
+export const deleteProject = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.delete(`${API_URL}/workspaces/${id}`, {
+    const response = await axios.delete(`${API_URL}/projects/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error deleting workspace:", error.response?.data || error.message);
+    console.error("Error deleting project:", error.response?.data || error.message);
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
@@ -81,14 +81,6 @@ const CreateOption = ({ icon: Icon, title, onClick }) => (
 );
 
 const Studio = () => {
-  const { projectId } = useParams();
-  const [searchParams] = useSearchParams();
-  const workspaceIdFromQuery = searchParams.get("workspaceId");
-  const projectIdFromQuery = searchParams.get("projectId");
-  
-  // Priority: URL param > workspaceId query > projectId query
-  const finalWorkspaceId = projectId || workspaceIdFromQuery || projectIdFromQuery;
-  
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("all");
@@ -96,104 +88,69 @@ const Studio = () => {
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const [isCreatedByMeChecked, setIsCreatedByMeChecked] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [workspaceName, setWorkspaceName] = useState("");
-  const [workspaceDescription, setWorkspaceDescription] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [workspaces, setWorkspaces] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editId, setEditId] = useState(null);
-  const [currentWorkspace, setCurrentWorkspace] = useState(null);
 
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
 
-  // Fetch current workspace details
-  useEffect(() => {
-    const fetchCurrentWorkspace = async () => {
-      if (finalWorkspaceId) {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(`${API_URL}/workspaces/${finalWorkspaceId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setCurrentWorkspace(response.data);
-        } catch (error) {
-          console.error("Failed to fetch current workspace:", error);
-        }
-      } else {
-        setCurrentWorkspace(null);
-      }
-    };
-
-    fetchCurrentWorkspace();
-  }, [finalWorkspaceId]);
-
-  // Fetch projects for the selected workspace
+  // Fetch all projects
   useEffect(() => {
     fetchProjects();
-  }, [finalWorkspaceId]);
+  }, []);
 
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem("token");
-      let url = `${API_URL}/projects`;
-      
-      // If we have a workspace selected, fetch projects for that workspace
-      if (finalWorkspaceId) {
-        url += `?workspaceId=${finalWorkspaceId}`;
-      }
-
-      const response = await axios.get(url, {
+      const response = await axios.get(`${API_URL}/projects`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // Format the response data
       const formatted = response.data.map((item) => ({
         id: item._id,
         name: item.name,
         description: item.description || "No description",
         createdAt: item.createdAt,
-        workspaceId: item.workspaceId,
       }));
 
-      setWorkspaces(formatted);
+      setProjects(formatted);
     } catch (error) {
       console.error("Failed to fetch projects:", error);
       toast.error(error.message || "Failed to fetch projects");
     }
   };
 
-  const handleCreateWorkspace = async () => {
-    if (!workspaceName.trim()) return;
+  const handleCreateProject = async () => {
+    if (!projectName.trim()) return;
 
     try {
       const payload = {
-        name: workspaceName,
-        description: workspaceDescription || "New workspace",
-        workspaceId: finalWorkspaceId, // Associate with current workspace if available
+        name: projectName,
+        description: projectDescription || "New project",
       };
-      const result = await createWorkspace(payload);
+      const result = await createProject(payload);
 
-      setWorkspaces((prev) => [
+      setProjects((prev) => [
         ...prev,
         {
           id: result._id,
           name: result.name,
           description: result.description,
           createdAt: result.createdAt,
-          workspaceId: result.workspaceId,
         },
       ]);
 
-      setWorkspaceName("");
-      setWorkspaceDescription("");
+      setProjectName("");
+      setProjectDescription("");
       setShowCreateModal(false);
       toast.success("Project created successfully!");
     } catch (error) {
@@ -201,10 +158,10 @@ const Studio = () => {
     }
   };
 
-  const handleDeleteWorkspace = async (id) => {
+  const handleDeleteProject = async (id) => {
     try {
-      await deleteWorkspace(id);
-      setWorkspaces((prev) => prev.filter((ws) => ws.id !== id));
+      await deleteProject(id);
+      setProjects((prev) => prev.filter((p) => p.id !== id));
       setShowDeleteModal(false);
       setDeleteId(null);
       toast.success("Project deleted successfully!");
@@ -215,14 +172,11 @@ const Studio = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const payload = {
-        name: editName,
-        description: editDescription,
-      };
-      await updateWorkspace(editId, payload);
-      setWorkspaces((prev) =>
-        prev.map((ws) =>
-          ws.id === editId ? { ...ws, name: editName, description: editDescription } : ws
+      const payload = { name: editName, description: editDescription };
+      await updateProject(editId, payload);
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === editId ? { ...p, name: editName, description: editDescription } : p
         )
       );
       setShowEditModal(false);
@@ -232,18 +186,13 @@ const Studio = () => {
     }
   };
 
-  const handleWorkspaceClick = (workspace) => {
-    // Navigate to the workspace page
-    navigate(`/studionewblank/${workspace.id}`);
+  const handleProjectClick = (project) => {
+    navigate(`/studionewblank/${project.id}`);
   };
 
-  // Filter workspaces based on search query
-// Filter workspaces based on search query (only by project name)
-const filteredprojects = workspaces.filter((ws) =>
-  ws.name.toLowerCase().includes(searchQuery.toLowerCase())
-);
-
-    
+  const filteredProjects = projects.filter((p) =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const tabs = [
     { id: "all", label: "All", icon: <LayoutGrid className="icon" /> },
@@ -252,17 +201,10 @@ const filteredprojects = workspaces.filter((ws) =>
     { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon" /> },
   ];
 
-  
-
   return (
     <div className="app">
-      <Navbar 
-        onNewApp={() => setShowCreateModal(true)} 
-        onCreateWorkspace={createWorkspace}
-      />
+      <Navbar onNewApp={() => setShowCreateModal(true)} onCreateProject={createProject} />
       <ToastContainer position="top-right" autoClose={3000} />
-
-    
 
       {/* Tabs and Search */}
       <div className="studio-container">
@@ -324,65 +266,51 @@ const filteredprojects = workspaces.filter((ws) =>
         </div>
       </div>
 
-      {/* Workspace Grid */}
+      {/* Project Grid */}
       <div className="content-grid-container">
         <div className="content-grid">
           <div className="grid-card create-app-card">
             <div className="index-header">
-              <h1 className="index-title">
-                {finalWorkspaceId ? "CREATE PROJECT" : "CREATE WORKSPACE"}
-              </h1>
+              <h1 className="index-title">CREATE PROJECT</h1>
             </div>
             <div className="index-options">
-              <CreateOption 
-                icon={File} 
-                title="Create from Blank" 
-                onClick={() => setShowCreateModal(true)} 
-              />
-              <CreateOption 
-                icon={FileText} 
-                title="Create from Template" 
-                onClick={() => {}} 
-              />
-              <CreateOption 
-                icon={Import} 
-                title="Import DSL file" 
-                onClick={() => {}} 
-              />
+              <CreateOption icon={File} title="Create from Blank" onClick={() => setShowCreateModal(true)} />
+              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
+              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
             </div>
           </div>
 
-          {filteredprojects.map((ws) => (
+          {filteredProjects.map((p) => (
             <div
-              key={ws.id}
+              key={p.id}
               className="grid-card container-card"
-              onClick={() => handleWorkspaceClick(ws)}
+              onClick={() => handleProjectClick(p)}
               style={{ cursor: "pointer" }}
             >
               <div className="container-content">
-                <h3>{ws.name}</h3>
-                <p>{ws.description}</p>
+                <h3>{p.name}</h3>
+                <p>{p.description}</p>
                 <small className="created-at">
-                  Created on: {new Date(ws.createdAt).toLocaleString()}
+                  Created on: {new Date(p.createdAt).toLocaleString()}
                 </small>
               </div>
               <div className="container-actions" onClick={(e) => e.stopPropagation()}>
                 <div className="dots-container">
                   <button
                     className="dots-button"
-                    onClick={() => setOpenMenuId(openMenuId === ws.id ? null : ws.id)}
+                    onClick={() => setOpenMenuId(openMenuId === p.id ? null : p.id)}
                   >
                     <HiOutlineDotsHorizontal className="dots-icon" />
                   </button>
                 </div>
-                {openMenuId === ws.id && (
+                {openMenuId === p.id && (
                   <div className="dropdown-menu">
                     <button
                       className="menu-item"
                       onClick={() => {
-                        setEditId(ws.id);
-                        setEditName(ws.name);
-                        setEditDescription(ws.description);
+                        setEditId(p.id);
+                        setEditName(p.name);
+                        setEditDescription(p.description);
                         setShowEditModal(true);
                         setOpenMenuId(null);
                       }}
@@ -392,7 +320,7 @@ const filteredprojects = workspaces.filter((ws) =>
                     <button
                       className="menu-item"
                       onClick={() => {
-                        setDeleteId(ws.id);
+                        setDeleteId(p.id);
                         setShowDeleteModal(true);
                         setOpenMenuId(null);
                       }}
@@ -416,23 +344,17 @@ const filteredprojects = workspaces.filter((ws) =>
             </button>
             <div className="modal-left">
               <div className="modal-header">
-                <h3>{finalWorkspaceId ? "Create New Project" : "Create New Workspace"}</h3>
+                <h3>Create New Project</h3>
               </div>
               <div className="modal-body">
                 <div className="form-group">
-                  <label className="modal-label">
-                    {finalWorkspaceId ? "Project Name" : "Workspace Name"}
-                  </label>
+                  <label className="modal-label">Project Name</label>
                   <div className="app-input-wrapper">
                     <input
                       type="text"
-                      placeholder={
-                        finalWorkspaceId 
-                          ? "Give your project a name" 
-                          : "Give your workspace a name"
-                      }
-                      value={workspaceName}
-                      onChange={(e) => setWorkspaceName(e.target.value)}
+                      placeholder="Give your project a name"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
                       className="modal-input app-input"
                     />
                     <div className="icon-box">
@@ -443,15 +365,11 @@ const filteredprojects = workspaces.filter((ws) =>
                 <div className="form-group">
                   <label className="modal-label">Description</label>
                   <textarea
-                    placeholder={
-                      finalWorkspaceId
-                        ? "Enter the description of the project"
-                        : "Enter the description of the workspace"
-                    }
+                    placeholder="Enter the description of the project"
                     className="modal-textarea"
                     rows={4}
-                    value={workspaceDescription}
-                    onChange={(e) => setWorkspaceDescription(e.target.value)}
+                    value={projectDescription}
+                    onChange={(e) => setProjectDescription(e.target.value)}
                   />
                 </div>
               </div>
@@ -459,7 +377,7 @@ const filteredprojects = workspaces.filter((ws) =>
                 <button onClick={() => setShowCreateModal(false)} className="cancel-button">
                   Cancel
                 </button>
-                <button onClick={handleCreateWorkspace} className="create-button">
+                <button onClick={handleCreateProject} className="create-button">
                   Create
                 </button>
               </div>
@@ -473,9 +391,7 @@ const filteredprojects = workspaces.filter((ws) =>
         <div className="modal-overlay">
           <div className="confirm-modal">
             <div className="modal-content">
-              <h3 className="modal-title">
-                Delete this {finalWorkspaceId ? "project" : "workspace"}?
-              </h3>
+              <h3 className="modal-title">Delete this project?</h3>
               <p className="modal-message">This action cannot be undone.</p>
             </div>
             <div className="modal-actions">
@@ -485,7 +401,7 @@ const filteredprojects = workspaces.filter((ws) =>
               <button
                 className="confirm-btn"
                 onClick={() => {
-                  if (deleteId) handleDeleteWorkspace(deleteId);
+                  if (deleteId) handleDeleteProject(deleteId);
                   else toast.error("Invalid ID");
                 }}
               >
@@ -501,16 +417,14 @@ const filteredprojects = workspaces.filter((ws) =>
         <div className="modal-overlay">
           <div className="edit-modal">
             <div className="modal-header">
-              <h3>Edit {finalWorkspaceId ? "Project" : "Workspace"} Info</h3>
+              <h3>Edit Project Info</h3>
               <button onClick={() => setShowEditModal(false)} className="close-button">
                 <X className="icon" />
               </button>
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="modal-label">
-                  {finalWorkspaceId ? "Project Name" : "Workspace Name"}
-                </label>
+                <label className="modal-label">Project Name</label>
                 <input
                   type="text"
                   className="modal-input"
