@@ -60,10 +60,14 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
   const [containers, setContainers] = useState([]);
   const [currentApp, setCurrentApp] = useState(null);
+  const [currentProject, setCurrentProject] = useState(null);
   const [showStudioDropdown, setShowStudioDropdown] = useState(false);
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
   const [isHoveringStudio, setIsHoveringStudio] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
+
+  // Check if we're on the studionewblank page
+  const isStudioNewBlankPage = location.pathname.startsWith("/studionewblank/");
 
   // Load all workspaces for navbar dropdown
   useEffect(() => {
@@ -125,7 +129,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
     }
   }, [location.pathname, searchParams, workspaces]);
 
-  // Detect current app
+  // Detect current app and project
   useEffect(() => {
     const stored = localStorage.getItem("containers");
     const parsed = stored ? JSON.parse(stored) : [];
@@ -135,10 +139,18 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       const appId = location.pathname.split("/")[2];
       const foundApp = parsed.find((app) => app.id.toString() === appId);
       setCurrentApp(foundApp || null);
+      setCurrentProject(null);
+    } else if (location.pathname.startsWith("/studionewblank/")) {
+      const workspaceId = location.pathname.split("/")[2];
+      // Try to find project by workspace ID
+      const foundProject = projects.find((project) => project.id === workspaceId);
+      setCurrentProject(foundProject || null);
+      setCurrentApp(null);
     } else {
       setCurrentApp(null);
+      setCurrentProject(null);
     }
-  }, [location.pathname]);
+  }, [location.pathname, projects]);
 
   // Active tab
   useEffect(() => {
@@ -181,9 +193,10 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   };
 
   const handleStudioClick = () => {
-    if (isHoveringStudio && (currentApp || currentWorkspace)) {
+    if (isHoveringStudio && (currentApp || currentWorkspace || currentProject)) {
       navigate("/studio");
       setCurrentApp(null);
+      setCurrentProject(null);
     } else {
       setActiveTab("Studio");
       if (currentApp) navigate(`/studio/${currentApp.id}`);
@@ -271,16 +284,29 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
           onMouseEnter={() => setIsHoveringStudio(true)}
           onMouseLeave={() => setIsHoveringStudio(false)}
         >
-          {isHoveringStudio && (currentApp || currentWorkspace) ? (
+          {isHoveringStudio && (currentApp || currentWorkspace || currentProject) ? (
             <FaArrowLeftLong size={16} />
           ) : (
             <Layers size={16} />
           )}
           <span>Studio</span>
-          {currentWorkspace && <span className="slash">/</span>}
-          {currentWorkspace && <span className="app-name">{currentWorkspace.name}</span>}
-          {currentApp && <span className="slash">/</span>}
-          {currentApp && <span className="app-name">{currentApp.name}</span>}
+          
+          {/* Only show project name when on studionewblank page */}
+          {isStudioNewBlankPage && currentProject && (
+            <>
+              <span className="slash">/</span>
+              <span className="app-name">{currentProject.name}</span>
+            </>
+          )}
+          
+          {/* Show app name when on studio page */}
+          {!isStudioNewBlankPage && currentApp && (
+            <>
+              <span className="slash">/</span>
+              <span className="app-name">{currentApp.name}</span>
+            </>
+          )}
+          
           <FaChevronDown
             size={14}
             onClick={(e) => {
@@ -304,7 +330,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
                     <div
                       key={project.id}
                       className="dropdown-item"
-                      onClick={() => handleAppSelect(project)}
+                      onClick={() => handleStudioWorkspaceSelect(project)}
                     >
                       <Layers size={16} />
                       <span>{project.name}</span>
