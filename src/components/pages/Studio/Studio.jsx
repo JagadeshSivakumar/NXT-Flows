@@ -24,6 +24,23 @@ import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
 
+// Workspace API
+export const createWorkspace = async (data) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(`${API_URL}/workspaces`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating workspace:", error.response?.data || error.message);
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
+
 // Project API Services
 export const createProject = async (data) => {
   try {
@@ -244,6 +261,8 @@ const Studio = () => {
     { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon" /> },
   ];
 
+  
+
   return (
     <div className="app">
       <Navbar
@@ -434,15 +453,33 @@ const Studio = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    console.log("Workspace Name:", workspaceName);
-                    setShowCreateWorkspaceModal(false);
-                    toast.success("Workspace created!");
-                  }}
-                  className="create-button"
-                >
-                  Create Workspace
-                </button>
+  onClick={async () => {
+    if (!workspaceName.trim()) return toast.error("Workspace name is required");
+
+    try {
+      const payload = {
+        name: workspaceName,
+        description: workspaceDescription || "New workspace",
+      };
+
+      const result = await createWorkspace(payload);
+
+      setWorkspaceName("");
+      setWorkspaceDescription("");
+      setShowCreateWorkspaceModal(false);
+      toast.success("Workspace created successfully!");
+      console.log("Created Workspace:", result);
+
+      // Optional: navigate(`/studionewblank?workspaceId=${result._id}`);
+    } catch (error) {
+      toast.error(error.message || "Failed to create workspace");
+    }
+  }}
+  className="create-button"
+>
+  Create Workspace
+</button>
+
               </div>
             </div>
           </div>
