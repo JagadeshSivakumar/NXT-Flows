@@ -3341,13 +3341,13 @@ input:checked + .sliderr:before {
 }
 
 .modal-actions button:last-child {
-  background: #2563eb; /* blue */
+  background: #d92d21; /* blue */
   color: white;
   font-weight: 500;
 }
 
 .modal-actions button:last-child:hover {
-  background: #1e40af; /* darker blue */
+  background: #d92d21 /*#1e40af; /* darker blue */
 }
 .env-section { margin-top: 12px; }
 

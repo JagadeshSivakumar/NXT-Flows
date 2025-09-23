@@ -284,14 +284,16 @@ html, body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: #f2f4f7;
+  /* //background-color: #f2f4f7; */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: 2rem;
-  
-  
+   background-color: rgba(0, 0, 0, 0.9); /* dark blur background */
+  backdrop-filter: blur(6px); /* blur effect */
+margin-left: auto;
+
 }
 .create-modal {
   display: flex;
@@ -302,7 +304,7 @@ html, body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
-  margin-left: -530px;
+  margin-left: -10px;
 }
 .modal-left {
   
@@ -353,10 +355,12 @@ html, body {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.2;
+  
 }
 
 .modal-body {
   padding: 1rem;
+  
 }
 .modal-input {
   width: 100%;
@@ -533,7 +537,7 @@ html, body {
   background: #f5f5f5;
 }
 .confirm-btn {
-  background: #e53e3e;
+  background: #d92d21;
   color: #fff;
   border: none;
 }
@@ -637,6 +641,10 @@ html, body {
   border-radius: 1.5rem;
   position: relative;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  
 }
 .modal-label {
   font-weight: 500;
@@ -646,6 +654,7 @@ html, body {
   display: block;
   margin-bottom: 6px;
   margin-top: 5px;
+ 
 }
 .modal-input {
   width: 100%;
@@ -660,6 +669,7 @@ html, body {
   box-sizing: border-box;
   padding-top: 7px;
   padding-bottom: 7px;
+  
 }
 .modal-textarea {
   width: 100%;
