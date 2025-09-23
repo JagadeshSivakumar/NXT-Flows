@@ -42,21 +42,29 @@ export const createWorkspace = async (data) => {
 };
 
 // Project API Services
-export const createProject = async (data) => {
+export const createProject = async (workspaceId, data) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.post(`${API_URL}/projects`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.post(
+      `${API_URL}/workspaces/${workspaceId}/projects`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error("Error creating project:", error.response?.data || error.message);
+    console.error(
+      "Error creating project:",
+      error.response?.data || error.message
+    );
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
+
 
 export const updateProject = async (id, data) => {
   try {
@@ -189,35 +197,36 @@ const Studio = () => {
   };
 
   // Handlers
-  const handleCreateProject = async () => {
-    if (!projectName.trim()) return;
-    try {
-      const payload = {
-        name: projectName,
-        description: projectDescription || "New project",
-        workspaceId: finalWorkspaceId,
-      };
-      const result = await createProject(payload);
+ const handleCreateProject = async () => {
+  if (!projectName.trim()) return;
+  try {
+    const payload = {
+      name: projectName,
+      description: projectDescription || "New project",
+    };
 
-      setProjects((prev) => [
-        ...prev,
-        {
-          id: result._id,
-          name: result.name,
-          description: result.description,
-          createdAt: result.createdAt,
-          workspaceId: result.workspaceId,
-        },
-      ]);
+    const result = await createProject(finalWorkspaceId, payload);
 
-      setProjectName("");
-      setProjectDescription("");
-      setShowCreateModal(false);
-      toast.success("Project created successfully!");
-    } catch (error) {
-      toast.error(error.message || "Failed to create project");
-    }
-  };
+    setProjects((prev) => [
+      ...prev,
+      {
+        id: result._id,
+        name: result.name,
+        description: result.description,
+        createdAt: result.createdAt,
+        workspaceId: result.workspaceId,
+      },
+    ]);
+
+    setProjectName("");
+    setProjectDescription("");
+    setShowCreateModal(false);
+    toast.success("Project created successfully!");
+  } catch (error) {
+    toast.error(error.message || "Failed to create project");
+  }
+};
+
 
   const handleDeleteProject = async (id) => {
     try {
