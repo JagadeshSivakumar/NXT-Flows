@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Settings, Square, Layers, BookOpen, Plus } from "lucide-react";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -18,10 +18,7 @@ const getWorkspaces = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error(
-      "Error fetching workspaces:",
-      error.response?.data || error.message
-    );
+    console.error("Error fetching workspaces:", error.response?.data || error.message);
     return [];
   }
 };
@@ -34,10 +31,7 @@ const getProjects = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error(
-      "Error fetching projects:",
-      error.response?.data || error.message
-    );
+    console.error("Error fetching projects:", error.response?.data || error.message);
     return [];
   }
 };
@@ -50,10 +44,7 @@ const getWorkspaceById = async (workspaceId) => {
     });
     return response.data;
   } catch (error) {
-    console.error(
-      "Error fetching workspace:",
-      error.response?.data || error.message
-    );
+    console.error("Error fetching workspace:", error.response?.data || error.message);
     return null;
   }
 };
@@ -75,8 +66,40 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   const [isHoveringStudio, setIsHoveringStudio] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
 
+  // Refs for click outside detection
+  const workspaceDropdownRef = useRef(null);
+  const studioDropdownRef = useRef(null);
+
   // Check if we're on the studionewblank page
   const isStudioNewBlankPage = location.pathname.startsWith("/studionewblank/");
+
+  // Click outside handler for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close workspace dropdown if clicked outside
+      if (
+        showWorkspaceDropdown &&
+        workspaceDropdownRef.current &&
+        !workspaceDropdownRef.current.contains(event.target)
+      ) {
+        setShowWorkspaceDropdown(false);
+      }
+
+      // Close studio dropdown if clicked outside
+      if (
+        showStudioDropdown &&
+        studioDropdownRef.current &&
+        !studioDropdownRef.current.contains(event.target)
+      ) {
+        setShowStudioDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showWorkspaceDropdown, showStudioDropdown]);
 
   // Load all workspaces for navbar dropdown
   useEffect(() => {
@@ -89,7 +112,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       }));
       setWorkspaces(formatted);
     };
-
+   
     const loadProjects = async () => {
       const result = await getProjects();
       const formatted = result.map((item) => ({
@@ -99,7 +122,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       }));
       setProjects(formatted);
     };
-
+   
     loadWorkspaces();
     loadProjects();
   }, []);
@@ -152,9 +175,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
     } else if (location.pathname.startsWith("/studionewblank/")) {
       const workspaceId = location.pathname.split("/")[2];
       // Try to find project by workspace ID
-      const foundProject = projects.find(
-        (project) => project.id === workspaceId
-      );
+      const foundProject = projects.find((project) => project.id === workspaceId);
       setCurrentProject(foundProject || null);
       setCurrentApp(null);
     } else {
@@ -204,18 +225,14 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   };
 
   const handleStudioClick = () => {
-    if (
-      isHoveringStudio &&
-      (currentApp || currentWorkspace || currentProject)
-    ) {
+    if (isHoveringStudio && (currentApp || currentWorkspace || currentProject)) {
       navigate("/studio");
       setCurrentApp(null);
       setCurrentProject(null);
     } else {
       setActiveTab("Studio");
       if (currentApp) navigate(`/studio/${currentApp.id}`);
-      else if (currentWorkspace)
-        navigate(`/studio?workspaceId=${currentWorkspace.id}`);
+      else if (currentWorkspace) navigate(`/studio?workspaceId=${currentWorkspace.id}`);
       else navigate("/studio");
     }
   };
@@ -244,19 +261,15 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
         <div className="separator">/</div>
 
         {/* Workspace Selector */}
-        <div className="workspace-selector-container">
+        <div className="workspace-selector-container" ref={workspaceDropdownRef}>
           <div
             className="workspace-selector"
             onClick={() => setShowWorkspaceDropdown(!showWorkspaceDropdown)}
-             onBlur={() => setShowWorkspaceDropdown(false)}
-             tabIndex={0}
           >
             <div className="workspace-avatar">
               {currentWorkspace?.initial || "W"}
             </div>
-            <span className="workspace-name">
-              {currentWorkspace?.name || "Workspace"}
-            </span>
+            <span className="workspace-name">{currentWorkspace?.name || "Workspace"}</span>
             <FaChevronDown size={12} />
           </div>
 
@@ -289,85 +302,100 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       </div>
 
       {/* Center Section */}
-     <div className="navbar-center">
-  { (location.pathname.startsWith("/studio/") ||
-     location.pathname.startsWith("/studionewblank/")) && (
-    <div
-      className={`nav-item studio-tab ${
-        activeTab === "Studio" ? "active" : ""
-      }`}
-      onClick={handleStudioClick}
-      onMouseEnter={() => setIsHoveringStudio(true)}
-      onMouseLeave={() => setIsHoveringStudio(false)}
-    >
-      {isHoveringStudio &&
-      (currentApp || currentWorkspace || currentProject) ? (
-        <FaArrowLeftLong size={16} />
-      ) : (
-        <Layers size={16} />
-      )}
-      <span>Studio</span>
+      <div className="navbar-center">
+        <div
+          className={`nav-item ${activeTab === "Flows" ? "active" : ""}`}
+          onClick={() => navigate("/Exploreflow")}
+        >
+          <Square size={16} />
+          <span>Explore</span>
+        </div>
 
-      {/* Show project name when on studionewblank */}
-      {isStudioNewBlankPage && currentProject && (
-        <>
-          <span className="slash">/</span>
-          <span className="app-name">{currentProject.name}</span>
-        </>
-      )}
-
-      {/* Show app name when on studio page */}
-      {!isStudioNewBlankPage && currentApp && (
-        <>
-          <span className="slash">/</span>
-          <span className="app-name">{currentApp.name}</span>
-        </>
-      )}
-
-      {/* <FaChevronDown
-        size={14}
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowStudioDropdown(!showStudioDropdown);
-        }}
-        style={{ cursor: "pointer", marginLeft: "4px" }}
-      /> */}
-      {/* {showStudioDropdown && (
-        <div className="studio-dropdown">
-          <div className="dropdown-item new-app" onClick={handleNewApp}>
-            <Plus size={14} /> Create from Blank
-          </div>
-
-          {projects.length > 0 && (
+        <div
+          className={`nav-item studio-tab ${activeTab === "Studio" ? "active" : ""}`}
+          onClick={handleStudioClick}
+          onMouseEnter={() => setIsHoveringStudio(true)}
+          onMouseLeave={() => setIsHoveringStudio(false)}
+          ref={studioDropdownRef}
+        >
+          {isHoveringStudio && (currentApp || currentWorkspace || currentProject) ? (
+            <FaArrowLeftLong size={16} />
+          ) : (
+            <Layers size={16} />
+          )}
+          <span>Studio</span>
+         
+          {/* Only show project name when on studionewblank page */}
+          {isStudioNewBlankPage && currentProject && (
             <>
-              <div className="dropdown-divider" />
-              <div className="dropdown-section-header">Projects</div>
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="dropdown-item"
-                  onClick={() => handleStudioWorkspaceSelect(project)}
-                >
-                  <Layers size={16} />
-                  <span>{project.name}</span>
-                </div>
-              ))}
+              <span className="slash">/</span>
+              <span className="app-name">{currentProject.name}</span>
             </>
           )}
-
-          {workspaces.length === 0 &&
-            projects.length === 0 &&
-            containers.length === 0 && (
-              <div className="dropdown-item empty">
-                No workspaces, projects, or apps found
+         
+          {/* Show app name when on studio page */}
+          {!isStudioNewBlankPage && currentApp && (
+            <>
+              <span className="slash">/</span>
+              <span className="app-name">{currentApp.name}</span>
+            </>
+          )}
+         
+          <FaChevronDown
+            size={14}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowStudioDropdown(!showStudioDropdown);
+            }}
+            style={{ cursor: "pointer", marginLeft: "4px" }}
+          />
+          {showStudioDropdown && (
+            <div className="studio-dropdown">
+              <div className="dropdown-item new-app" onClick={handleNewApp}>
+                <Plus size={14} /> Create from Blank
               </div>
-            )}
+           
+             
+              {projects.length > 0 && (
+                <>
+                  <div className="dropdown-divider" />
+                  <div className="dropdown-section-header">Projects</div>
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="dropdown-item"
+                      onClick={() => handleStudioWorkspaceSelect(project)}
+                    >
+                      <Layers size={16} />
+                      <span>{project.name}</span>
+                    </div>
+                  ))}
+                </>
+              )}
+           
+              {workspaces.length === 0 && projects.length === 0 && containers.length === 0 && (
+                <div className="dropdown-item empty">No workspaces, projects, or apps found</div>
+              )}
+            </div>
+          )}
         </div>
-      )} */}
-    </div>
-  )}
-</div>
 
+        <div
+          className={`nav-item ${activeTab === "Knowledge" ? "active" : ""}`}
+          onClick={() => navigate("/knowledge")}
+        >
+          <BookOpen size={16} />
+          <span>Knowledge</span>
+        </div>
+
+        <div
+          className={`nav-item ${activeTab === "Settings" ? "active" : ""}`}
+          onClick={() => navigate("/settings")}
+        >
+          <Settings size={16} />
+          <span>Tools</span>
+        </div>
+      </div>
 
       {/* Right Section */}
       <div className="navbar-right">
