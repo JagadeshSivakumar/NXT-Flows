@@ -116,9 +116,11 @@ html, body {
 }
 .tab-icon {
   margin-right: 0.5rem;
-
-  background-color: white;
+  display: flex;
+  align-items: center;
 }
+
+
 .tag-dropdown-wrapper {
   position: relative;
 }

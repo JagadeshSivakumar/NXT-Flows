@@ -364,16 +364,20 @@ const Studio = () => {
         <div className="studio-inner">
           <div className="studio-header">
             <div className="left-section">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
-                >
-                  <span className="tab-icon">{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
+               {tabs.map((tab) => (
+  <button
+    key={tab.id}
+    onClick={() => setActiveTab(tab.id)}
+    className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
+  >
+    <span className="tab-icon">
+      {React.cloneElement(tab.icon, {
+        color: activeTab === tab.id ? "#1d4ed8" : "#000",
+      })}
+    </span>
+    {tab.label}
+  </button>
+))}
             </div>
             <div className="right-section">
               <div

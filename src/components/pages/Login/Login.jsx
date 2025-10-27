@@ -57,7 +57,7 @@ function Login() {
         });
 
         setTimeout(() => {
-          navigate("/Exploreflow");
+          navigate("/Studio");
         }, 2000);
       }
     } catch (err) {

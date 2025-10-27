@@ -63,10 +63,11 @@ import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
 import DataTable from "../../Datatable/Datatable";
-
+import { RxLapTimer } from "react-icons/rx";
 const menuItems = [
-  { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
+ { title: "Studio", icon: LuGitPullRequest, isActive: true },
   { title: "Webhook", icon: RiWebhookLine, isActive: false },
+  { title: "Monitoring", icon: RxLapTimer , isActive: false },
 ];
 
 const iconComponents = {
@@ -74,6 +75,7 @@ const iconComponents = {
   MdOutlineCode,
   TbTimelineEventText,
   GrTrigger,
+  RxLapTimer,
   RiWebhookLine,
   GoDatabase,
   MdOutlineDataSaverOff,
