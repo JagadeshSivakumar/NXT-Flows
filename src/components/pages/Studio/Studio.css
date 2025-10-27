@@ -292,8 +292,9 @@ html, body {
   align-items: center;
   z-index: 1000;
   padding: 2rem;
-   background-color: rgba(0, 0, 0, 0.-0.1); /* dark blur background */
-  backdrop-filter: blur(6px); /* blur effect */
+  background-color: rgba(211, 211, 211, 0.4); /* light gray with transparency */
+backdrop-filter: blur(8px); /* soft blur effect */
+
 margin-left: auto;
 
 }
