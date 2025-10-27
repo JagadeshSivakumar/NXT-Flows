@@ -17,7 +17,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./Studio.css";
+import './Apppage.css'
 import Navbar from "../../Navbar/Navbar";
 import { FaRobot } from "react-icons/fa";
 import axios from "axios";
@@ -104,7 +104,7 @@ const CreateOption = ({ icon: Icon, title, onClick }) => (
   </button>
 );
 
-const Studio = () => {
+const Apppage = () => {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
   const workspaceIdFromQuery = searchParams.get("workspaceId");
@@ -326,7 +326,7 @@ const Studio = () => {
   };
 
   const handleProjectClick = (project) => {
-    navigate(`/Apppage/${project.id}`);
+    navigate(`/studionewblank/${project.id}`);
   };
 
   const filteredProjects = projects.filter((project) =>
@@ -364,20 +364,16 @@ const Studio = () => {
         <div className="studio-inner">
           <div className="studio-header">
             <div className="left-section">
-               {tabs.map((tab) => (
-  <button
-    key={tab.id}
-    onClick={() => setActiveTab(tab.id)}
-    className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
-  >
-    <span className="tab-icon">
-      {React.cloneElement(tab.icon, {
-        color: activeTab === tab.id ? "#1d4ed8" : "#000",
-      })}
-    </span>
-    {tab.label}
-  </button>
-))}
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
+                >
+                  <span className="tab-icon">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
             </div>
             <div className="right-section">
               <div
@@ -391,7 +387,7 @@ const Studio = () => {
                 )}
                 <span>Created by me</span>
               </div>
-              {/* <div className="tag-dropdown-wrapper">
+              <div className="tag-dropdown-wrapper">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -413,7 +409,7 @@ const Studio = () => {
                     ))}
                   </div>
                 )}
-              </div> */}
+              </div>
               <div className="search-wrapper">
                 <Search className="search-icon" />
                 <input
@@ -434,7 +430,7 @@ const Studio = () => {
         <div className="content-grid">
           <div className="grid-card create-app-card">
             <div className="index-header">
-              <h1 className="index-title">CREATE PROJECT</h1>
+              <h1 className="index-title">CREATE APP</h1>
             </div>
             <div className="index-options">
               <CreateOption
@@ -710,4 +706,4 @@ const Studio = () => {
   );
 };
 
-export default Studio;
+export default Apppage;

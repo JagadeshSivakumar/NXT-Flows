@@ -9,6 +9,7 @@ import Settings from "./components/pages/Settings/Settings";
 import FlowBuilder from "./components/pages/StudioNewBlank/StudioNewBlank";
 import Signup from"./components/pages/Signup/Signup";
 import "./App.css";
+import Apppage from "./components/pages/Apppage/Apppage";
 
 
 function App() {
@@ -21,7 +22,9 @@ function App() {
        <Route path="/Exploreflow" element={<Exploreflow />} />
         <Route path="/flows" element={<Flows />} />
         <Route path="/studio" element={<Studio />} />
-       <Route path="/studio/:projectId" element={<Studio />} />
+       {/* <Route path="/studio/:projectId" element={<Studio />} /> */}
+       <Route path="/studio/:projectId" element={<Apppage />} />
+       <Route path="/Apppage/:id" element={<Apppage />} />
        <Route path="/studionewblank/:id" element={<FlowBuilder />} />
 
         <Route path="/knowledge" element={<Knowledge />} />

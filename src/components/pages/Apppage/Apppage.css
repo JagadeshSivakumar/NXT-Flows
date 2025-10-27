@@ -116,11 +116,9 @@ html, body {
 }
 .tab-icon {
   margin-right: 0.5rem;
-  display: flex;
-  align-items: center;
+
+  background-color: white;
 }
-
-
 .tag-dropdown-wrapper {
   position: relative;
 }
@@ -292,7 +290,7 @@ html, body {
   align-items: center;
   z-index: 1000;
   padding: 2rem;
-   background-color: rgba(0, 0, 0, 0.-0.1); /* dark blur background */
+   background-color: rgba(0, 0, 0, 0.9); /* dark blur background */
   backdrop-filter: blur(6px); /* blur effect */
 margin-left: auto;
 
