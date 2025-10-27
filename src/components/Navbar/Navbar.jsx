@@ -4,7 +4,7 @@ import { Settings, Square, Layers, BookOpen, Plus } from "lucide-react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaChevronDown } from "react-icons/fa";
 import "./Navbar.css";
-import CreateWorkspaceModal from "../Modal/CreateWorkspaceModal";
+
 import axios from "axios";
 
 const API_URL = "http://192.168.1.137:4000";
@@ -386,11 +386,7 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       </div>
 
       {/* Create Workspace Modal */}
-      <CreateWorkspaceModal
-        isOpen={isWorkspaceModalOpen}
-        onClose={() => setIsWorkspaceModalOpen(false)}
-        onCreate={handleCreateWorkspace}
-      />
+      
     </nav>
   );
 };

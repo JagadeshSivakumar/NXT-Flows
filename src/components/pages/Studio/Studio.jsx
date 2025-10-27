@@ -505,7 +505,89 @@ const Studio = () => {
         </div>
       </div>
 
-    
+      {/* Create Workspace Modal */}
+      {showCreateWorkspaceModal && (
+        <div className="modal-overlay">
+          <div className="create-modal">
+            <button
+              onClick={() => setShowCreateWorkspaceModal(false)}
+              className="close-button"
+            >
+              <X className="icon" />
+            </button>
+            <div className="modal-left">
+              <div className="modal-header">
+                <h3>Create New Workspace</h3>
+              </div>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="modal-label">Workspace Name</label>
+                  <div className="app-input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="Give your workspace a name"
+                      value={workspaceName}
+                      onChange={(e) => setWorkspaceName(e.target.value)}
+                      className="modal-input app-input"
+                    />
+                    <div className="icon-box">
+                      <FaRobot className="app-icon" />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="modal-label">Description</label>
+                  <textarea
+                    placeholder="Enter the description of the workspace"
+                    className="modal-textarea"
+                    rows={4}
+                    value={workspaceDescription}
+                    onChange={(e) => setWorkspaceDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  onClick={() => setShowCreateWorkspaceModal(false)}
+                  className="cancel-button"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    if (!workspaceName.trim()) {
+                      toast.error("Workspace name is required");
+                      return;
+                    }
+
+                    try {
+                      const payload = {
+                        name: workspaceName,
+                        description: workspaceDescription || "New workspace",
+                      };
+
+                      const result = await createWorkspace(payload);
+
+                      setWorkspaceName("");
+                      setWorkspaceDescription("");
+                      setShowCreateWorkspaceModal(false);
+                      toast.success("Workspace created successfully!");
+                      
+                      // Optionally navigate to the new workspace
+                      navigate(`/studio?workspaceId=${result._id}`);
+                    } catch (error) {
+                      toast.error(error.message || "Failed to create workspace");
+                    }
+                  }}
+                  className="create-button"
+                >
+                  Create Workspace
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create Project Modal */}
       {showCreateModal && (
