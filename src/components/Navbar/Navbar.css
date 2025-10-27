@@ -116,7 +116,7 @@
   background: #eff6ff;
 }
 
-.add-button {
+.add-buttons {
   width: 32px;
   height: 32px;
   background: #3b82f6;
@@ -129,7 +129,7 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: 500;
-  margin-left: 4px;
+  margin-left: 40px;
 }
 
 .add-button:hover {
@@ -195,6 +195,50 @@
   justify-content: center;
   font-weight: 600;
   cursor: pointer;
+  position: relative;
+}
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 160px;
+  z-index: 1000;
+  padding: 8px 0;
+}
+
+.user-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #374151;
+  font-size: 14px;
+}
+
+.user-dropdown .dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.user-dropdown .dropdown-item.logout {
+  color: #ef4444;
+}
+
+.user-dropdown .dropdown-item.logout:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.user-dropdown .dropdown-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 4px 0;
 }
 
 /* Responsive additions only (no design changes) */

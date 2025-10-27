@@ -20,86 +20,56 @@ import "react-toastify/dist/ReactToastify.css";
 import './Apppage.css'
 import Navbar from "../../Navbar/Navbar";
 import { FaRobot } from "react-icons/fa";
-import axios from "axios";
 
-const API_URL = "http://192.168.1.137:4000";
+// Hardcoded data
+const HARDCODED_WORKSPACES = [
+  { _id: "ws1", name: "Development Team", description: "Main development workspace" },
+  { _id: "ws2", name: "Design Projects", description: "All design related work" },
+  { _id: "ws3", name: "Marketing", description: "Marketing campaigns and projects" }
+];
 
-// Workspace API
-export const createWorkspace = async (data) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(`${API_URL}/workspaces`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error creating workspace:", error.response?.data || error.message);
-    throw error.response?.data || { message: "Something went wrong" };
+const HARDCODED_PROJECTS = [
+  {
+    id: "proj1",
+    name: "E-commerce Website",
+    description: "Build online shopping platform",
+    createdAt: "2024-01-15T10:30:00Z",
+    workspaceId: "ws1"
+  },
+  {
+    id: "proj2", 
+    name: "Mobile App UI",
+    description: "Design mobile application interface",
+    createdAt: "2024-01-20T14:45:00Z",
+    workspaceId: "ws2"
+  },
+  {
+    id: "proj3",
+    name: "Social Media Campaign",
+    description: "Q2 marketing campaign planning",
+    createdAt: "2024-02-01T09:15:00Z", 
+    workspaceId: "ws3"
+  },
+  {
+    id: "proj4",
+    name: "API Integration",
+    description: "Third-party API integration project",
+    createdAt: "2024-02-05T11:20:00Z",
+    workspaceId: "ws1"
+  },
+  {
+    id: "proj5",
+    name: "Brand Identity",
+    description: "Company branding and logo design",
+    createdAt: "2024-02-10T16:00:00Z",
+    workspaceId: "ws2"
   }
-};
-
-// Project API Services
-export const createProject = async (workspaceId, data) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${API_URL}/workspaces/${workspaceId}/projects`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error creating project:",
-      error.response?.data || error.message
-    );
-    throw error.response?.data || { message: "Something went wrong" };
-  }
-};
-
-export const updateProject = async (id, data) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.put(`${API_URL}/projects/${id}`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error updating project:", error.response?.data || error.message);
-    throw error.response?.data || { message: "Something went wrong" };
-  }
-};
-
-export const deleteProject = async (id) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.delete(`${API_URL}/projects/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error deleting project:", error.response?.data || error.message);
-    throw error.response?.data || { message: "Something went wrong" };
-  }
-};
+];
 
 // Create option component
-const CreateOption = ({ icon: Icon, title, onClick }) => (
-  <button onClick={onClick} className="create-option">
-    <Icon className="option-icon" />
+const CreateOptionModified = ({ icon: Icon, title, onClick }) => (
+  <button onClick={onClick} className="create-option-mod">
+    <Icon className="option-icon-mod" />
     <span>{title}</span>
   </button>
 );
@@ -110,314 +80,179 @@ const Apppage = () => {
   const workspaceIdFromQuery = searchParams.get("workspaceId");
   const projectIdFromQuery = searchParams.get("projectId");
 
-  // Priority: workspaceId query > projectId query > URL param
   const finalWorkspaceId = workspaceIdFromQuery || projectIdFromQuery || projectId;
 
   const navigate = useNavigate();
 
   // Tabs & Filters
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isTagsOpen, setIsTagsOpen] = useState(false);
-  const [isCreatedByMeChecked, setIsCreatedByMeChecked] = useState(false);
+  const [activeTabMod, setActiveTabMod] = useState("all");
+  const [searchQueryMod, setSearchQueryMod] = useState("");
+  const [isTagsOpenMod, setIsTagsOpenMod] = useState(false);
+  const [isCreatedByMeCheckedMod, setIsCreatedByMeCheckedMod] = useState(false);
 
   // Modals
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showCreateModalMod, setShowCreateModalMod] = useState(false);
+  const [showCreateWorkspaceModalMod, setShowCreateWorkspaceModalMod] = useState(false);
+  const [showDeleteModalMod, setShowDeleteModalMod] = useState(false);
+  const [showEditModalMod, setShowEditModalMod] = useState(false);
 
   // Projects
-  const [projects, setProjects] = useState([]);
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [deleteId, setDeleteId] = useState(null);
-  const [editId, setEditId] = useState(null);
-  const [editName, setEditName] = useState("");
-  const [editDescription, setEditDescription] = useState("");
+  const [projectsMod, setProjectsMod] = useState(HARDCODED_PROJECTS);
+  const [openMenuIdMod, setOpenMenuIdMod] = useState(null);
+  const [deleteIdMod, setDeleteIdMod] = useState(null);
+  const [editIdMod, setEditIdMod] = useState(null);
+  const [editNameMod, setEditNameMod] = useState("");
+  const [editDescriptionMod, setEditDescriptionMod] = useState("");
 
   // Workspace & Project Input Fields
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-  const [workspaceName, setWorkspaceName] = useState("");
-  const [workspaceDescription, setWorkspaceDescription] = useState("");
+  const [projectNameMod, setProjectNameMod] = useState("");
+  const [projectDescriptionMod, setProjectDescriptionMod] = useState("");
+  const [workspaceNameMod, setWorkspaceNameMod] = useState("");
+  const [workspaceDescriptionMod, setWorkspaceDescriptionMod] = useState("");
 
-  const [currentWorkspace, setCurrentWorkspace] = useState(null);
-  const [availableWorkspaces, setAvailableWorkspaces] = useState([]);
+  const [currentWorkspaceMod, setCurrentWorkspaceMod] = useState(HARDCODED_WORKSPACES[0]);
+  const [availableWorkspacesMod, setAvailableWorkspacesMod] = useState(HARDCODED_WORKSPACES);
 
-  const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
+  const tagOptionsMod = ["Design", "Development", "Marketing", "Research", "Planning"];
 
-  // Fetch available workspaces
-  useEffect(() => {
-    const fetchWorkspaces = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/workspaces`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAvailableWorkspaces(response.data);
-      } catch (error) {
-        console.error("Failed to fetch workspaces:", error);
-      }
-    };
-    fetchWorkspaces();
-  }, []);
-
-  // Fetch current workspace details - ONLY if finalWorkspaceId exists
-  useEffect(() => {
-    const fetchCurrentWorkspace = async () => {
-      if (finalWorkspaceId) {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(`${API_URL}/workspaces/${finalWorkspaceId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setCurrentWorkspace(response.data);
-        } catch (error) {
-          console.error("Failed to fetch current workspace:", error);
-        }
-      } else {
-        setCurrentWorkspace(null);
-      }
-    };
-    fetchCurrentWorkspace();
-  }, [finalWorkspaceId]);
-
-  // Fetch projects for the selected workspace - ONLY if finalWorkspaceId exists
-  useEffect(() => {
-    if (finalWorkspaceId) {
-      fetchProjects();
-    } else {
-      // If no workspace ID, clear projects or fetch all projects without workspace filter
-      fetchAllProjects();
-    }
-  }, [finalWorkspaceId]);
-
-  const fetchProjects = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const url = `${API_URL}/projects?workspaceId=${finalWorkspaceId}`;
-
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const formatted = response.data.map((item) => ({
-        id: item._id,
-        name: item.name,
-        description: item.description || "No description",
-        createdAt: item.createdAt,
-        workspaceId: item.workspaceId,
-      }));
-
-      setProjects(formatted);
-    } catch (error) {
-      console.error("Failed to fetch projects:", error);
-      // Don't show toast for workspace not found errors on page load
-      if (error.response?.status !== 400) {
-        toast.error(error.response?.data?.message || "Failed to fetch projects");
-      }
-    }
-  };
-
-  const fetchAllProjects = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const url = `${API_URL}/projects`;
-
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const formatted = response.data.map((item) => ({
-        id: item._id,
-        name: item.name,
-        description: item.description || "No description",
-        createdAt: item.createdAt,
-        workspaceId: item.workspaceId,
-      }));
-
-      setProjects(formatted);
-    } catch (error) {
-      console.error("Failed to fetch all projects:", error);
-    }
-  };
-
-  // Handlers - FIXED: Added workspace validation
-  const handleCreateProject = async () => {
-    if (!projectName.trim()) {
-      toast.error("Project name is required");
-      return;
-    }
-    
-    // FIX: Check if we have a valid workspace ID
-    let workspaceIdToUse = finalWorkspaceId;
-    
-    // If no workspace ID from URL/params, use the first available workspace
-    if (!workspaceIdToUse && availableWorkspaces.length > 0) {
-      workspaceIdToUse = availableWorkspaces[0]._id;
-    }
-    
-    if (!workspaceIdToUse) {
-      toast.error("Please create a workspace first");
-      return;
-    }
-
-    try {
-      const payload = {
-        name: projectName,
-        description: projectDescription || "New project",
-      };
-
-      // FIX: Use the validated workspace ID
-      const result = await createProject(workspaceIdToUse, payload);
-
-      setProjects((prev) => [
-        ...prev,
-        {
-          id: result._id,
-          name: result.name,
-          description: result.description,
-          createdAt: result.createdAt,
-          workspaceId: result.workspaceId,
-        },
-      ]);
-
-      setProjectName("");
-      setProjectDescription("");
-      setShowCreateModal(false);
-      toast.success("Project created successfully!");
-    } catch (error) {
-      console.error("Create project error:", error);
-      toast.error(error.response?.data?.message || error.message || "Failed to create project");
-    }
-  };
-
-  const handleDeleteProject = async (id) => {
-    try {
-      await deleteProject(id);
-      setProjects((prev) => prev.filter((p) => p.id !== id));
-      setShowDeleteModal(false);
-      setDeleteId(null);
-      toast.success("Project deleted successfully!");
-    } catch (error) {
-      toast.error(error.message || "Failed to delete project");
-    }
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editName.trim()) {
+  // Handlers
+  const handleCreateProjectMod = async () => {
+    if (!projectNameMod.trim()) {
       toast.error("Project name is required");
       return;
     }
 
-    try {
-      await updateProject(editId, { name: editName, description: editDescription });
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === editId ? { ...p, name: editName, description: editDescription } : p
-        )
-      );
-      setShowEditModal(false);
-      setEditId(null);
-      toast.success("Project updated successfully!");
-    } catch (error) {
-      toast.error(error.message || "Failed to update project");
-    }
+    const newProject = {
+      id: `proj${projectsMod.length + 1}`,
+      name: projectNameMod,
+      description: projectDescriptionMod || "New project",
+      createdAt: new Date().toISOString(),
+      workspaceId: currentWorkspaceMod?._id || "ws1"
+    };
+
+    setProjectsMod(prev => [...prev, newProject]);
+    setProjectNameMod("");
+    setProjectDescriptionMod("");
+    setShowCreateModalMod(false);
+    toast.success("Project created successfully!");
   };
 
-  const handleProjectClick = (project) => {
+  const handleDeleteProjectMod = async (id) => {
+    setProjectsMod(prev => prev.filter(p => p.id !== id));
+    setShowDeleteModalMod(false);
+    setDeleteIdMod(null);
+    toast.success("Project deleted successfully!");
+  };
+
+  const handleSaveEditMod = async () => {
+    if (!editNameMod.trim()) {
+      toast.error("Project name is required");
+      return;
+    }
+
+    setProjectsMod(prev =>
+      prev.map(p =>
+        p.id === editIdMod ? { ...p, name: editNameMod, description: editDescriptionMod } : p
+      )
+    );
+    setShowEditModalMod(false);
+    setEditIdMod(null);
+    toast.success("Project updated successfully!");
+  };
+
+  const handleProjectClickMod = (project) => {
     navigate(`/studionewblank/${project.id}`);
   };
 
-  const filteredProjects = projects.filter((project) =>
-    project.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProjectsMod = projectsMod.filter(project =>
+    project.name.toLowerCase().includes(searchQueryMod.toLowerCase())
   );
 
-  const tabs = [
-    { id: "all", label: "All", icon: <LayoutGrid className="icon" /> },
-    { id: "recent", label: "Recently Viewed", icon: <Clock className="icon" /> },
-    { id: "flows", label: "Shared Flows", icon: <Share2 className="icon" /> },
-    { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon" /> },
+  const tabsMod = [
+    { id: "all", label: "All", icon: <LayoutGrid className="icon-mod" /> },
+    { id: "recent", label: "Recently Viewed", icon: <Clock className="icon-mod" /> },
+    { id: "flows", label: "Shared Flows", icon: <Share2 className="icon-mod" /> },
+    { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon-mod" /> },
   ];
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
-      if (isTagsOpen) setIsTagsOpen(false);
-      if (openMenuId) setOpenMenuId(null);
+      if (isTagsOpenMod) setIsTagsOpenMod(false);
+      if (openMenuIdMod) setOpenMenuIdMod(null);
     };
 
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, [isTagsOpen, openMenuId]);
+  }, [isTagsOpenMod, openMenuIdMod]);
 
   return (
-    <div className="app">
+    <div className="app-mod">
       <Navbar
-        onNewApp={() => setShowCreateWorkspaceModal(true)}
-        onCreateProject={() => setShowCreateModal(true)}
+        onNewApp={() => setShowCreateWorkspaceModalMod(true)}
+        onCreateProject={() => setShowCreateModalMod(true)}
       />
       <ToastContainer position="top-right" autoClose={3000} style={{ zIndex: 10000 }} />
 
       {/* Tabs & Search */}
-      <div className="studio-container">
-        <div className="studio-inner">
-          <div className="studio-header">
-            <div className="left-section">
-              {tabs.map((tab) => (
+      <div className="studio-container-mod">
+        <div className="studio-inner-mod">
+          <div className="studio-header-mod">
+            <div className="left-section-mod">
+              {tabsMod.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`tab-buttonn ${activeTab === tab.id ? "active" : ""}`}
+                  onClick={() => setActiveTabMod(tab.id)}
+                  className={`tab-button-mod ${activeTabMod === tab.id ? "active-mod" : ""}`}
                 >
-                  <span className="tab-icon">{tab.icon}</span>
+                  <span className="tab-icon-mod">{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
             </div>
-            <div className="right-section">
+            <div className="right-section-mod">
               <div
-                className="creator-checkbox"
-                onClick={() => setIsCreatedByMeChecked(!isCreatedByMeChecked)}
+                className="creator-checkbox-mod"
+                onClick={() => setIsCreatedByMeCheckedMod(!isCreatedByMeCheckedMod)}
               >
-                {isCreatedByMeChecked ? (
-                  <MdCheckBox className="icon mr-2" />
+                {isCreatedByMeCheckedMod ? (
+                  <MdCheckBox className="icon-mod mr-2-mod" />
                 ) : (
-                  <MdOutlineCheckBoxOutlineBlank className="icon mr-2" />
+                  <MdOutlineCheckBoxOutlineBlank className="icon-mod mr-2-mod" />
                 )}
                 <span>Created by me</span>
               </div>
-              <div className="tag-dropdown-wrapper">
+              <div className="tag-dropdown-wrapper-mod">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsTagsOpen(!isTagsOpen);
+                    setIsTagsOpenMod(!isTagsOpenMod);
                   }} 
-                  className="tag-btn"
+                  className="tag-btn-mod"
                 >
-                  <Tag className="icon mr-2" />
+                  <Tag className="icon-mod mr-2-mod" />
                   All Tags
-                  <ChevronDown className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`} />
+                  <ChevronDown className={`icon-mod ml-2-mod ${isTagsOpenMod ? "rotate-mod" : ""}`} />
                 </button>
-                {isTagsOpen && (
-                  <div className="tag-dropdown">
-                    <button className="tag-option">All Tags</button>
-                    {tagOptions.map((tag) => (
-                      <button key={tag} className="tag-option">
+                {isTagsOpenMod && (
+                  <div className="tag-dropdown-mod">
+                    <button className="tag-option-mod">All Tags</button>
+                    {tagOptionsMod.map((tag) => (
+                      <button key={tag} className="tag-option-mod">
                         {tag}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
-              <div className="search-wrapper">
-                <Search className="search-icon" />
+              <div className="search-wrapper-mod">
+                <Search className="search-icon-mod" />
                 <input
                   type="text"
                   placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
+                  value={searchQueryMod}
+                  onChange={(e) => setSearchQueryMod(e.target.value)}
+                  className="search-input-mod"
                 />
               </div>
             </div>
@@ -426,69 +261,69 @@ const Apppage = () => {
       </div>
 
       {/* Project Grid */}
-      <div className="content-grid-container">
-        <div className="content-grid">
-          <div className="grid-card create-app-card">
-            <div className="index-header">
-              <h1 className="index-title">CREATE APP</h1>
+      <div className="content-grid-container-mod">
+        <div className="content-grid-mod">
+          <div className="grid-card-mod create-app-card-mod">
+            <div className="index-header-mod">
+              <h1 className="index-title-mod">CREATE APP</h1>
             </div>
-            <div className="index-options">
-              <CreateOption
+            <div className="index-options-mod">
+              <CreateOptionModified
                 icon={File}
                 title="Create from Blank"
-                onClick={() => setShowCreateModal(true)}
+                onClick={() => setShowCreateModalMod(true)}
               />
-              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
-              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
+              <CreateOptionModified icon={FileText} title="Create from Template" onClick={() => {}} />
+              <CreateOptionModified icon={Import} title="Import DSL file" onClick={() => {}} />
             </div>
           </div>
 
-          {filteredProjects.map((project) => (
+          {filteredProjectsMod.map((project) => (
             <div
               key={project.id}
-              className="grid-card container-card"
-              onClick={() => handleProjectClick(project)}
+              className="grid-card-mod container-card-mod"
+              onClick={() => handleProjectClickMod(project)}
               style={{ cursor: "pointer" }}
             >
-              <div className="container-content">
+              <div className="container-content-mod">
                 <h3>{project.name}</h3>
                 <p>{project.description}</p>
-                <small className="created-at">
+                <small className="created-at-mod">
                   Created on: {new Date(project.createdAt).toLocaleString()}
                 </small>
               </div>
-              <div className="container-actions" onClick={(e) => e.stopPropagation()}>
-                <div className="dots-container">
+              <div className="container-actions-mod" onClick={(e) => e.stopPropagation()}>
+                <div className="dots-container-mod">
                   <button
-                    className="dots-button"
+                    className="dots-button-mod"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setOpenMenuId(openMenuId === project.id ? null : project.id);
+                      setOpenMenuIdMod(openMenuIdMod === project.id ? null : project.id);
                     }}
                   >
-                    <HiOutlineDotsHorizontal className="dots-icon" />
+                    <HiOutlineDotsHorizontal className="dots-icon-mod" />
                   </button>
                 </div>
-                {openMenuId === project.id && (
-                  <div className="dropdown-menu">
+                {openMenuIdMod === project.id && (
+                  <div className="dropdown-menu-mod">
                     <button
-                      className="menu-item"
+                      className="menu-item-mod"
                       onClick={() => {
-                        setEditId(project.id);
-                        setEditName(project.name);
-                        setEditDescription(project.description);
-                        setShowEditModal(true);
-                        setOpenMenuId(null);
+                        setEditIdMod(project.id);
+                        setEditNameMod(project.name);
+                        setEditDescriptionMod(project.description);
+                        setShowEditModalMod(true);
+                        setOpenMenuIdMod(null);
                       }}
                     >
                       Edit Info
                     </button>
                     <button
-                      className="menu-item"
+                      className="menu-item-mod"
                       onClick={() => {
-                        setDeleteId(project.id);
-                        setShowDeleteModal(true);
-                        setOpenMenuId(null);
+                        setDeleteIdMod(project.id);
+                        setShowDeleteModalMod(true);
+                        setOpenMenuIdMod(null);
                       }}
                     >
                       Delete
@@ -501,136 +336,54 @@ const Apppage = () => {
         </div>
       </div>
 
-      {/* Create Workspace Modal */}
-      {showCreateWorkspaceModal && (
-        <div className="modal-overlay">
-          <div className="create-modal">
-            <button
-              onClick={() => setShowCreateWorkspaceModal(false)}
-              className="close-button"
-            >
-              <X className="icon" />
-            </button>
-            <div className="modal-left">
-              <div className="modal-header">
-                <h3>Create New Workspace</h3>
-              </div>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="modal-label">Workspace Name</label>
-                  <div className="app-input-wrapper">
-                    <input
-                      type="text"
-                      placeholder="Give your workspace a name"
-                      value={workspaceName}
-                      onChange={(e) => setWorkspaceName(e.target.value)}
-                      className="modal-input app-input"
-                    />
-                    <div className="icon-box">
-                      <FaRobot className="app-icon" />
-                    </div>
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label className="modal-label">Description</label>
-                  <textarea
-                    placeholder="Enter the description of the workspace"
-                    className="modal-textarea"
-                    rows={4}
-                    value={workspaceDescription}
-                    onChange={(e) => setWorkspaceDescription(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  onClick={() => setShowCreateWorkspaceModal(false)}
-                  className="cancel-button"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={async () => {
-                    if (!workspaceName.trim()) {
-                      toast.error("Workspace name is required");
-                      return;
-                    }
-
-                    try {
-                      const payload = {
-                        name: workspaceName,
-                        description: workspaceDescription || "New workspace",
-                      };
-
-                      const result = await createWorkspace(payload);
-
-                      setWorkspaceName("");
-                      setWorkspaceDescription("");
-                      setShowCreateWorkspaceModal(false);
-                      toast.success("Workspace created successfully!");
-                      
-                      // Optionally navigate to the new workspace
-                      navigate(`/studio?workspaceId=${result._id}`);
-                    } catch (error) {
-                      toast.error(error.message || "Failed to create workspace");
-                    }
-                  }}
-                  className="create-button"
-                >
-                  Create Workspace
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      
 
       {/* Create Project Modal */}
-      {showCreateModal && (
-        <div className="modal-overlay">
-          <div className="create-modal">
-            <button onClick={() => setShowCreateModal(false)} className="close-button">
-              <X className="icon" />
+      {showCreateModalMod && (
+        <div className="modal-overlay-mod">
+          <div className="create-modal-mod">
+            <button onClick={() => setShowCreateModalMod(false)} className="close-button-mod">
+              <X className="icon-mod" />
             </button>
-            <div className="modal-left">
-              <div className="modal-header">
-                <h3>Create New Project</h3>
-                {currentWorkspace && (
-                  <p className="workspace-info">Workspace: {currentWorkspace.name}</p>
+            <div className="modal-left-mod">
+              <div className="modal-header-mod">
+                <h3>Create New App</h3>
+                {currentWorkspaceMod && (
+                  <p className="workspace-info-mod">Workspace: {currentWorkspaceMod.name}</p>
                 )}
               </div>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="modal-label">Project Name</label>
-                  <div className="app-input-wrapper">
+              <div className="modal-body-mod">
+                <div className="form-group-mod">
+                  <label className="modal-label-mod">App Name</label>
+                  <div className="app-input-wrapper-mod">
                     <input
                       type="text"
-                      placeholder="Give your project a name"
-                      value={projectName}
-                      onChange={(e) => setProjectName(e.target.value)}
-                      className="modal-input app-input"
+                      placeholder="Give your App a name"
+                      value={projectNameMod}
+                      onChange={(e) => setProjectNameMod(e.target.value)}
+                      className="modal-input-mod app-input-mod"
                     />
-                    <div className="icon-box">
-                      <FaRobot className="app-icon" />
+                    <div className="icon-box-mod">
+                      <FaRobot className="app-icon-mod" />
                     </div>
                   </div>
                 </div>
-                <div className="form-group">
-                  <label className="modal-label">Description</label>
+                <div className="form-group-mod">
+                  <label className="modal-label-mod">Description</label>
                   <textarea
-                    placeholder="Enter the description of the project"
-                    className="modal-textarea"
+                    placeholder="Enter the description of the App"
+                    className="modal-textarea-mod"
                     rows={4}
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
+                    value={projectDescriptionMod}
+                    onChange={(e) => setProjectDescriptionMod(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="modal-footer">
-                <button onClick={() => setShowCreateModal(false)} className="cancel-button">
+              <div className="modal-footer-mod">
+                <button onClick={() => setShowCreateModalMod(false)} className="cancel-button-mod">
                   Cancel
                 </button>
-                <button onClick={handleCreateProject} className="create-button">
+                <button onClick={handleCreateProjectMod} className="create-button-mod">
                   Create Project
                 </button>
               </div>
@@ -640,20 +393,20 @@ const Apppage = () => {
       )}
 
       {/* Delete & Edit Modals */}
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="confirm-modal">
-            <div className="modal-content">
-              <h3 className="modal-title">Delete this project?</h3>
-              <p className="modal-message">This action cannot be undone.</p>
+      {showDeleteModalMod && (
+        <div className="modal-overlay-mod">
+          <div className="confirm-modal-mod">
+            <div className="modal-content-mod">
+              <h3 className="modal-title-mod">Delete this project?</h3>
+              <p className="modal-message-mod">This action cannot be undone.</p>
             </div>
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>
+            <div className="modal-actions-mod">
+              <button className="cancel-btn-mod" onClick={() => setShowDeleteModalMod(false)}>
                 Cancel
               </button>
               <button
-                className="confirm-btn"
-                onClick={() => deleteId && handleDeleteProject(deleteId)}
+                className="confirm-btn-mod"
+                onClick={() => deleteIdMod && handleDeleteProjectMod(deleteIdMod)}
               >
                 Confirm
               </button>
@@ -662,40 +415,40 @@ const Apppage = () => {
         </div>
       )}
 
-      {showEditModal && (
-        <div className="modal-overlay">
-          <div className="edit-modal">
-            <div className="modal-header">
+      {showEditModalMod && (
+        <div className="modal-overlay-mod">
+          <div className="edit-modal-mod">
+            <div className="modal-header-mod">
               <h3>Edit Project Info</h3>
-              <button onClick={() => setShowEditModal(false)} className="close-button">
-                <X className="icon" />
+              <button onClick={() => setShowEditModalMod(false)} className="close-button-mod">
+                <X className="icon-mod" />
               </button>
             </div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="modal-label">Project Name</label>
+            <div className="modal-body-mod">
+              <div className="form-group-mod">
+                <label className="modal-label-mod">Project Name</label>
                 <input
                   type="text"
-                  className="modal-input"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
+                  className="modal-input-mod"
+                  value={editNameMod}
+                  onChange={(e) => setEditNameMod(e.target.value)}
                 />
               </div>
-              <div className="form-group">
-                <label className="modal-label">Description</label>
+              <div className="form-group-mod">
+                <label className="modal-label-mod">Description</label>
                 <textarea
-                  className="modal-textarea"
+                  className="modal-textarea-mod"
                   rows={4}
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
+                  value={editDescriptionMod}
+                  onChange={(e) => setEditDescriptionMod(e.target.value)}
                 />
               </div>
             </div>
-            <div className="modal-footer">
-              <button onClick={() => setShowEditModal(false)} className="cancel-button">
+            <div className="modal-footer-mod">
+              <button onClick={() => setShowEditModalMod(false)} className="cancel-button-mod">
                 Cancel
               </button>
-              <button onClick={handleSaveEdit} className="create-button">
+              <button onClick={handleSaveEditMod} className="create-button-mod">
                 Save
               </button>
             </div>

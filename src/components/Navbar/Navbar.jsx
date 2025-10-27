@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import { Settings, Square, Layers, BookOpen, Plus } from "lucide-react";
+import { Settings, Square, Layers, BookOpen, Plus, LogOut } from "lucide-react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaChevronDown } from "react-icons/fa";
 import "./Navbar.css";
@@ -63,12 +63,14 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
   const [currentProject, setCurrentProject] = useState(null);
   const [showStudioDropdown, setShowStudioDropdown] = useState(false);
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isHoveringStudio, setIsHoveringStudio] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
 
   // Refs for click outside detection
   const workspaceDropdownRef = useRef(null);
   const studioDropdownRef = useRef(null);
+  const userDropdownRef = useRef(null);
 
   // Check if we're on the studionewblank page
   const isStudioNewBlankPage = location.pathname.startsWith("/studionewblank/");
@@ -93,13 +95,22 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
       ) {
         setShowStudioDropdown(false);
       }
+
+      // Close user dropdown if clicked outside
+      if (
+        showUserDropdown &&
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target)
+      ) {
+        setShowUserDropdown(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showWorkspaceDropdown, showStudioDropdown]);
+  }, [showWorkspaceDropdown, showStudioDropdown, showUserDropdown]);
 
   // Load all workspaces for navbar dropdown
   useEffect(() => {
@@ -253,6 +264,18 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
     }
   };
 
+  const handleSettingsClick = () => {
+    setShowUserDropdown(false);
+    navigate("/settings");
+  };
+
+  const handleLogout = () => {
+    setShowUserDropdown(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
   return (
     <nav className="navbar">
       {/* Left Section */}
@@ -301,88 +324,109 @@ const Navbar = ({ onNewApp, onCreateWorkspace }) => {
         </div>
       </div>
 
- <div className="navbar-center">
-  { (location.pathname.startsWith("/studio/") ||
-     location.pathname.startsWith("/studionewblank/")) && (
-    <div
-      className={`nav-item studio-tab ${
-        activeTab === "Studio" ? "active" : ""
-      }`}
-      onClick={handleStudioClick}
-      onMouseEnter={() => setIsHoveringStudio(true)}
-      onMouseLeave={() => setIsHoveringStudio(false)}
-    >
-      {isHoveringStudio &&
-      (currentApp || currentWorkspace || currentProject) ? (
-        <FaArrowLeftLong size={16} />
-      ) : (
-        <Layers size={16} />
-      )}
-      <span>Studio</span>
+      <div className="navbar-center">
+        { (location.pathname.startsWith("/studio/") ||
+          location.pathname.startsWith("/studionewblank/")) && (
+          <div
+            className={`nav-item studio-tab ${
+              activeTab === "Studio" ? "active" : ""
+            }`}
+            onClick={handleStudioClick}
+            onMouseEnter={() => setIsHoveringStudio(true)}
+            onMouseLeave={() => setIsHoveringStudio(false)}
+          >
+            {isHoveringStudio &&
+            (currentApp || currentWorkspace || currentProject) ? (
+              <FaArrowLeftLong size={16} />
+            ) : (
+              <Layers size={16} />
+            )}
+            <span>Studio</span>
 
-      {/* Show project name when on studionewblank */}
-      {isStudioNewBlankPage && currentProject && (
-        <>
-          <span className="slash">/</span>
-          <span className="app-name">{currentProject.name}</span>
-        </>
-      )}
+            {/* Show project name when on studionewblank */}
+            {isStudioNewBlankPage && currentProject && (
+              <>
+                <span className="slash">/</span>
+                <span className="app-name">{currentProject.name}</span>
+              </>
+            )}
 
-      {/* Show app name when on studio page */}
-      {!isStudioNewBlankPage && currentApp && (
-        <>
-          <span className="slash">/</span>
-          <span className="app-name">{currentApp.name}</span>
-        </>
-      )}
+            {/* Show app name when on studio page */}
+            {!isStudioNewBlankPage && currentApp && (
+              <>
+                <span className="slash">/</span>
+                <span className="app-name">{currentApp.name}</span>
+              </>
+            )}
 
-      <FaChevronDown
-        size={14}
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowStudioDropdown(!showStudioDropdown);
-        }}
-        style={{ cursor: "pointer", marginLeft: "4px" }}
-      />
-      {showStudioDropdown && (
-        <div className="studio-dropdown">
-          <div className="dropdown-item new-app" onClick={handleNewApp}>
-            <Plus size={14} /> Create from Blank
-          </div>
-
-          {projects.length > 0 && (
-            <>
-              <div className="dropdown-divider" />
-              <div className="dropdown-section-header">Projects</div>
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="dropdown-item"
-                  onClick={() => handleStudioWorkspaceSelect(project)}
-                >
-                  <Layers size={16} />
-                  <span>{project.name}</span>
+            <FaChevronDown
+              size={14}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowStudioDropdown(!showStudioDropdown);
+              }}
+              style={{ cursor: "pointer", marginLeft: "4px" }}
+            />
+            {showStudioDropdown && (
+              <div className="studio-dropdown">
+                <div className="dropdown-item new-app" onClick={handleNewApp}>
+                  <Plus size={14} /> Create from Blank
                 </div>
-              ))}
-            </>
-          )}
 
-          {workspaces.length === 0 &&
-            projects.length === 0 &&
-            containers.length === 0 && (
-              <div className="dropdown-item empty">
-                No workspaces, projects, or apps found
+                {projects.length > 0 && (
+                  <>
+                    <div className="dropdown-divider" />
+                    <div className="dropdown-section-header">Projects</div>
+                    {projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="dropdown-item"
+                        onClick={() => handleStudioWorkspaceSelect(project)}
+                      >
+                        <Layers size={16} />
+                        <span>{project.name}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {workspaces.length === 0 &&
+                  projects.length === 0 &&
+                  containers.length === 0 && (
+                    <div className="dropdown-item empty">
+                      No workspaces, projects, or apps found
+                    </div>
+                  )}
               </div>
             )}
-        </div>
-      )}
-    </div>
-  )}
-</div>
+          </div>
+        )}
+      </div>
 
-      {/* Right Section */}
+      {/* Right Section - Only added user dropdown here */}
       <div className="navbar-right">
-        <div className="user-avatar">U</div>
+        <div className="user-avatar-container" ref={userDropdownRef}>
+          <div 
+            className="user-avatar" 
+            onClick={() => setShowUserDropdown(!showUserDropdown)}
+          >
+            U
+          </div>
+          
+          {showUserDropdown && (
+            <div className="user-dropdown">
+              <div className="dropdown-item" onClick={handleSettingsClick}>
+                <Settings size={16} />
+                <span>Settings</span>
+              </div>
+              <div className="dropdown-divider" />
+              <div className="dropdown-item logout" onClick={handleLogout}>
+                <LogOut size={16} />
+                <span>Logout</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Create Workspace Modal */}
