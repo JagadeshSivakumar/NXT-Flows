@@ -21,6 +21,7 @@ import "./Studio.css";
 import Navbar from "../../Navbar/Navbar";
 import { FaRobot } from "react-icons/fa";
 import axios from "axios";
+import { Background } from "@xyflow/react";
 
 const API_URL = "http://192.168.1.137:4000";
 
@@ -437,13 +438,12 @@ const Studio = () => {
               <h1 className="index-title">CREATE PROJECT</h1>
             </div>
             <div className="index-options">
-              <CreateOption
+              <button
+              className="add-buttons"
                 icon={File}
                 title="Create from Blank"
-                onClick={() => setShowCreateModal(true)}
-              />
-              <CreateOption icon={FileText} title="Create from Template" onClick={() => {}} />
-              <CreateOption icon={Import} title="Import DSL file" onClick={() => {}} />
+                onClick={() => setShowCreateModal(true)} style={{width:"230px"}}
+              >+ Create Project</button>
             </div>
           </div>
 
