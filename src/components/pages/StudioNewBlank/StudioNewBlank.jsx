@@ -62,6 +62,7 @@ import Navbar from "../../Navbar/Navbar";
 import "./StudioNewBlank.css";
 import { AiOutlineDelete } from "react-icons/ai";
 import ImportCurlModal from "../../Modal/ImportCurlModal";
+import DataTable from "../../Datatable/Datatable";
 
 const menuItems = [
   { title: "Dashboard", icon: LuGitPullRequest, isActive: true },
@@ -1086,26 +1087,27 @@ const HttpRequestForm = ({ onAddNextStep, requestData, updateRequestData }) => {
           </label>
 
           {showOutputVariable && (
-            <div className="output-variables-container">
-              <div className="output-variable">
-                <label>
-                  body <span className="timeout-span">string</span>
-                </label>
-                <div className="response-content">Response Content</div>
-              </div>
-              <div className="output-variable">
-                <label>
-                  body <span className="timeout-span">string</span>
-                </label>
-                <div className="response-content">Response Content</div>
-              </div>
-              <div className="output-variable">
-                <label>
-                  body <span className="timeout-span">string</span>
-                </label>
-                <div className="response-content">Response Content</div>
-              </div>
-            </div>
+            // <div className="output-variables-container">
+            //   <div className="output-variable">
+            //     <label>
+            //       body <span className="timeout-span">string</span>
+            //     </label>
+            //     <div className="response-content">Response Content</div>
+            //   </div>
+            //   <div className="output-variable">
+            //     <label>
+            //       body <span className="timeout-span">string</span>
+            //     </label>
+            //     <div className="response-content">Response Content</div>
+            //   </div>
+            //   <div className="output-variable">
+            //     <label>
+            //       body <span className="timeout-span">string</span>
+            //     </label>
+            //     <div className="response-content">Response Content</div>
+            //   </div>
+            // </div>
+            <DataTable/>
           )}
         </div>
 

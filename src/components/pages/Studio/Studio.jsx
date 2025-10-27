@@ -65,7 +65,6 @@ export const createProject = async (workspaceId, data) => {
   }
 };
 
-
 export const updateProject = async (id, data) => {
   try {
     const token = localStorage.getItem("token");
@@ -111,8 +110,8 @@ const Studio = () => {
   const workspaceIdFromQuery = searchParams.get("workspaceId");
   const projectIdFromQuery = searchParams.get("projectId");
 
-  // Priority: URL param > workspaceId query > projectId query
-  const finalWorkspaceId = projectId || workspaceIdFromQuery || projectIdFromQuery;
+  // Priority: workspaceId query > projectId query > URL param
+  const finalWorkspaceId = workspaceIdFromQuery || projectIdFromQuery || projectId;
 
   const navigate = useNavigate();
 
@@ -143,10 +142,27 @@ const Studio = () => {
   const [workspaceDescription, setWorkspaceDescription] = useState("");
 
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
+  const [availableWorkspaces, setAvailableWorkspaces] = useState([]);
 
   const tagOptions = ["Design", "Development", "Marketing", "Research", "Planning"];
 
-  // Fetch current workspace details
+  // Fetch available workspaces
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${API_URL}/workspaces`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAvailableWorkspaces(response.data);
+      } catch (error) {
+        console.error("Failed to fetch workspaces:", error);
+      }
+    };
+    fetchWorkspaces();
+  }, []);
+
+  // Fetch current workspace details - ONLY if finalWorkspaceId exists
   useEffect(() => {
     const fetchCurrentWorkspace = async () => {
       if (finalWorkspaceId) {
@@ -166,16 +182,20 @@ const Studio = () => {
     fetchCurrentWorkspace();
   }, [finalWorkspaceId]);
 
-  // Fetch projects for the selected workspace
+  // Fetch projects for the selected workspace - ONLY if finalWorkspaceId exists
   useEffect(() => {
-    fetchProjects();
+    if (finalWorkspaceId) {
+      fetchProjects();
+    } else {
+      // If no workspace ID, clear projects or fetch all projects without workspace filter
+      fetchAllProjects();
+    }
   }, [finalWorkspaceId]);
 
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem("token");
-      let url = `${API_URL}/projects`;
-      if (finalWorkspaceId) url += `?workspaceId=${finalWorkspaceId}`;
+      const url = `${API_URL}/projects?workspaceId=${finalWorkspaceId}`;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -192,41 +212,85 @@ const Studio = () => {
       setProjects(formatted);
     } catch (error) {
       console.error("Failed to fetch projects:", error);
-      toast.error(error.message || "Failed to fetch projects");
+      // Don't show toast for workspace not found errors on page load
+      if (error.response?.status !== 400) {
+        toast.error(error.response?.data?.message || "Failed to fetch projects");
+      }
     }
   };
 
-  // Handlers
- const handleCreateProject = async () => {
-  if (!projectName.trim()) return;
-  try {
-    const payload = {
-      name: projectName,
-      description: projectDescription || "New project",
-    };
+  const fetchAllProjects = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `${API_URL}/projects`;
 
-    const result = await createProject(finalWorkspaceId, payload);
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setProjects((prev) => [
-      ...prev,
-      {
-        id: result._id,
-        name: result.name,
-        description: result.description,
-        createdAt: result.createdAt,
-        workspaceId: result.workspaceId,
-      },
-    ]);
+      const formatted = response.data.map((item) => ({
+        id: item._id,
+        name: item.name,
+        description: item.description || "No description",
+        createdAt: item.createdAt,
+        workspaceId: item.workspaceId,
+      }));
 
-    setProjectName("");
-    setProjectDescription("");
-    setShowCreateModal(false);
-    toast.success("Project created successfully!");
-  } catch (error) {
-    toast.error(error.message || "Failed to create project");
-  }
-};
+      setProjects(formatted);
+    } catch (error) {
+      console.error("Failed to fetch all projects:", error);
+    }
+  };
 
+  // Handlers - FIXED: Added workspace validation
+  const handleCreateProject = async () => {
+    if (!projectName.trim()) {
+      toast.error("Project name is required");
+      return;
+    }
+    
+    // FIX: Check if we have a valid workspace ID
+    let workspaceIdToUse = finalWorkspaceId;
+    
+    // If no workspace ID from URL/params, use the first available workspace
+    if (!workspaceIdToUse && availableWorkspaces.length > 0) {
+      workspaceIdToUse = availableWorkspaces[0]._id;
+    }
+    
+    if (!workspaceIdToUse) {
+      toast.error("Please create a workspace first");
+      return;
+    }
+
+    try {
+      const payload = {
+        name: projectName,
+        description: projectDescription || "New project",
+      };
+
+      // FIX: Use the validated workspace ID
+      const result = await createProject(workspaceIdToUse, payload);
+
+      setProjects((prev) => [
+        ...prev,
+        {
+          id: result._id,
+          name: result.name,
+          description: result.description,
+          createdAt: result.createdAt,
+          workspaceId: result.workspaceId,
+        },
+      ]);
+
+      setProjectName("");
+      setProjectDescription("");
+      setShowCreateModal(false);
+      toast.success("Project created successfully!");
+    } catch (error) {
+      console.error("Create project error:", error);
+      toast.error(error.response?.data?.message || error.message || "Failed to create project");
+    }
+  };
 
   const handleDeleteProject = async (id) => {
     try {
@@ -241,6 +305,11 @@ const Studio = () => {
   };
 
   const handleSaveEdit = async () => {
+    if (!editName.trim()) {
+      toast.error("Project name is required");
+      return;
+    }
+
     try {
       await updateProject(editId, { name: editName, description: editDescription });
       setProjects((prev) =>
@@ -249,6 +318,7 @@ const Studio = () => {
         )
       );
       setShowEditModal(false);
+      setEditId(null);
       toast.success("Project updated successfully!");
     } catch (error) {
       toast.error(error.message || "Failed to update project");
@@ -270,15 +340,24 @@ const Studio = () => {
     { id: "projects", label: "Shared Projects", icon: <FolderOpen className="icon" /> },
   ];
 
-  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (isTagsOpen) setIsTagsOpen(false);
+      if (openMenuId) setOpenMenuId(null);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [isTagsOpen, openMenuId]);
 
   return (
     <div className="app">
       <Navbar
         onNewApp={() => setShowCreateWorkspaceModal(true)}
-        onCreateProject={createProject}
+        onCreateProject={() => setShowCreateModal(true)}
       />
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} style={{ zIndex: 10000 }} />
 
       {/* Tabs & Search */}
       <div className="studio-container">
@@ -309,7 +388,13 @@ const Studio = () => {
                 <span>Created by me</span>
               </div>
               <div className="tag-dropdown-wrapper">
-                <button onClick={() => setIsTagsOpen(!isTagsOpen)} className="tag-btn">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsTagsOpen(!isTagsOpen);
+                  }} 
+                  className="tag-btn"
+                >
                   <Tag className="icon mr-2" />
                   All Tags
                   <ChevronDown className={`icon ml-2 ${isTagsOpen ? "rotate" : ""}`} />
@@ -376,7 +461,10 @@ const Studio = () => {
                 <div className="dots-container">
                   <button
                     className="dots-button"
-                    onClick={() => setOpenMenuId(openMenuId === project.id ? null : project.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === project.id ? null : project.id);
+                    }}
                   >
                     <HiOutlineDotsHorizontal className="dots-icon" />
                   </button>
@@ -462,33 +550,35 @@ const Studio = () => {
                   Cancel
                 </button>
                 <button
-  onClick={async () => {
-    if (!workspaceName.trim()) return toast.error("Workspace name is required");
+                  onClick={async () => {
+                    if (!workspaceName.trim()) {
+                      toast.error("Workspace name is required");
+                      return;
+                    }
 
-    try {
-      const payload = {
-        name: workspaceName,
-        description: workspaceDescription || "New workspace",
-      };
+                    try {
+                      const payload = {
+                        name: workspaceName,
+                        description: workspaceDescription || "New workspace",
+                      };
 
-      const result = await createWorkspace(payload);
+                      const result = await createWorkspace(payload);
 
-      setWorkspaceName("");
-      setWorkspaceDescription("");
-      setShowCreateWorkspaceModal(false);
-      toast.success("Workspace created successfully!");
-      console.log("Created Workspace:", result);
-
-      // Optional: navigate(`/studionewblank?workspaceId=${result._id}`);
-    } catch (error) {
-      toast.error(error.message || "Failed to create workspace");
-    }
-  }}
-  className="create-button"
->
-  Create Workspace
-</button>
-
+                      setWorkspaceName("");
+                      setWorkspaceDescription("");
+                      setShowCreateWorkspaceModal(false);
+                      toast.success("Workspace created successfully!");
+                      
+                      // Optionally navigate to the new workspace
+                      navigate(`/studio?workspaceId=${result._id}`);
+                    } catch (error) {
+                      toast.error(error.message || "Failed to create workspace");
+                    }
+                  }}
+                  className="create-button"
+                >
+                  Create Workspace
+                </button>
               </div>
             </div>
           </div>
@@ -505,6 +595,9 @@ const Studio = () => {
             <div className="modal-left">
               <div className="modal-header">
                 <h3>Create New Project</h3>
+                {currentWorkspace && (
+                  <p className="workspace-info">Workspace: {currentWorkspace.name}</p>
+                )}
               </div>
               <div className="modal-body">
                 <div className="form-group">
