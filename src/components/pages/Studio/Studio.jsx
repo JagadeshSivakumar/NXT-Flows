@@ -391,7 +391,7 @@ const Studio = () => {
                 )}
                 <span>Created by me</span>
               </div>
-              <div className="tag-dropdown-wrapper">
+              {/* <div className="tag-dropdown-wrapper">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -413,7 +413,7 @@ const Studio = () => {
                     ))}
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className="search-wrapper">
                 <Search className="search-icon" />
                 <input
